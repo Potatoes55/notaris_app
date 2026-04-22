@@ -1,28 +1,104 @@
 @import "tailwindcss";
 
-/* .input-group
-    > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(
-        .valid-feedback
-    ):not(.invalid-tooltip):not(.invalid-feedback) {
-    border-left: #000 !important;
-    border-right: #000 !important;
-} */
-
-.input-group
-    > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(
-        .valid-feedback
-    ):not(.invalid-tooltip):not(.invalid-feedback) {
-    /* border-left: 0 !important; */
-    border-right: 1px solid rgb(199, 199, 199) !important;
+/* ==========================================================================
+   1. LAYOUT UTAMA (Sidebar & Content)
+   ========================================================================== */
+body.login-page .main-content {
+    margin-left: 0 !important;
 }
 
-th {
-    text-transform: uppercase;
-    text-align: center;
-    color: secondary;
-    font-size: 13px;
-    font-weight: bold;
-    opacity: 7;
+#sidenav-main {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    height: calc(100vh - 2rem) !important;
+    margin-left: 1.5rem !important;
+    margin-top: 1rem !important;
+    background-color: #ffffff !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    z-index: 999;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.main-content {
+    margin-left: 275px !important; /* Jarak pas: sidebar(250px) + margin(1.5rem) */
+    transition: all 0.3s ease;
+}
+
+#sidenav-collapse-main {
+    height: calc(100vh - 140px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Scrollbar Sidebar */
+#sidenav-collapse-main::-webkit-scrollbar {
+    width: 4px;
+}
+
+#sidenav-collapse-main::-webkit-scrollbar-thumb {
+    background: #e9ecef;
+    border-radius: 10px;
+}
+
+/* ==========================================================================
+   2. KOMPONEN MENU (Navigation)
+   ========================================================================== */
+
+/* Menu Standar */
+.sidenav .nav-link {
+    margin-left: 1rem !important;
+    margin-right: 1rem !important;
+    padding: 0.675rem 1rem !important;
+    border-radius: 0.5rem !important;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Menu Aktif (Sesuai Versi Publik) */
+.sidenav .nav-link.active {
+    background-color: #ffffff !important;
+    color: #344767 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.sidenav .nav-link.active i {
+    color: #fb6240 !important; /* Icon orange */
+}
+
+/* Nav Pills Custom */
+.nav-pills .nav-link {
+    color: #495057 !important;
+    background-color: #fff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 30px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: #f1f1f1 !important;
+    color: #da6a50 !important;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #fb6240 !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ==========================================================================
+   3. UI COMPONENTS (Cards, Tables, Inputs)
+   ========================================================================== */
+
+.card {
+    border: none !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
 .hover-card {
@@ -34,130 +110,48 @@ th {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 1200px) {
-    #iconNavbarSidenav {
-        display: flex !important;
-    }
-    #iconNavbarSidenav.d-none {
-        display: flex !important;
-    }
+th {
+    text-transform: uppercase;
+    text-align: center;
+    color: #6c757d;
+    font-size: 13px;
+    font-weight: bold;
+    opacity: 0.7;
 }
 
+.table-wrapper {
+    min-width: max-content;
+}
 
-@media (max-width: 1200px) {
-    .navbar #iconNavbarSidenav {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
+/* Input Group Fixes */
+.input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    border-right: 1px solid rgb(199, 199, 199) !important;
 }
 
 .input-group > .form-control:not(:first-child),
 .input-group > .form-select:not(:first-child) {
     border-left: 0 !important;
 }
-.nav-pills .nav-link {
-    border-radius: 8px !important;
-    color: #495057 !important;
-    background-color: #fff !important;
-    border: 1px solid #dee2e6 !important;
-    transition: all 0.2s ease-in-out !important;
-    border-radius: 30px !important;
-}
 
-/* Hover effect */
-.nav-pills .nav-link:hover {
-    background-color: #f1f1f1 !important;
-    color: #da6a50 !important;
-}
-
-/* Aktif (yang dipilih) */
-.nav-pills .nav-link.active {
-    background-color: #fb6240 !important;
-    color: #fff !important;
-    font-weight: 600 !important;
-    /* border: 1px solid #0d6efd !important; */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
-}
-
-/* Biar icon ikut putih kalau active */
-.nav-pills .nav-link.active i {
-    color: #fff !important;
-}
-
-.sidenav .nav-link.active {
-    background-color: #f1f1f1 !important; /* warna terang, bisa diganti sesuai kebutuhan */
-    color: #000; /* teks menjadi hitam agar kontras */
-}
-.spinner-overlay {
-    position: fixed; /* fixed supaya menutupi seluruh viewport */
-    top: 0;
-    left: 0;
-    width: 100vw; /* full width */
-    height: 100vh; /* full height */
-    background: rgba(255, 255, 255, 1); /* semi-transparent */
-    z-index: 9999; /* pastikan di atas semua elemen */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.spinner-overlay.show {
-    opacity: 1;
-}
-
-.accordion-button::after {
-    filter: invert(1) !important; /* membuat panah gelap */
-}
+/* ==========================================================================
+   4. SPECIAL ELEMENTS (Octagon, Spinner, Accordion)
+   ========================================================================== */
 
 .octagon-wrapper {
     width: 350px;
     height: 350px;
-    overflow: hidden;
-    /* background: #fff; */
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
     border-radius: 20px;
-}
-
-.octagon-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    clip-path: polygon(
-        30% 0%,
-        70% 0%,
-        100% 30%,
-        100% 70%,
-        70% 100%,
-        30% 100%,
-        0% 70%,
-        0% 30%
-    );
-    transition: transform 0.4s ease;
-}
-
-.octagon-img:hover {
-    transform: scale(1.05);
 }
 
 .octagon-img {
     width: 150px;
     height: 150px;
     object-fit: cover;
-    clip-path: polygon(
-        30% 0%,
-        70% 0%,
-        100% 30%,
-        100% 70%,
-        70% 100%,
-        30% 100%,
-        0% 70%,
-        0% 30%
-    );
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
     border: 3px solid rgba(255, 255, 255, 0.8);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
@@ -168,6 +162,65 @@ th {
     transform: scale(1.05);
 }
 
-.table-wrapper {
-    min-width: max-content;
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 1);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.spinner-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.accordion-button::after {
+    filter: invert(1) !important;
+}
+
+/* ==========================================================================
+   5. RESPONSIVE (Breakpoints)
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    #sidenav-main {
+        transform: translateX(-170%);
+        margin-left: 0 !important;
+    }
+
+    #sidenav-main.show {
+        transform: translateX(0);
+        margin-left: 1rem !important;
+    }
+
+    .navbar #iconNavbarSidenav {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+.sidenav-header {
+    width: 100%;
+}
+
+#sidenav-main {
+    width: 260px; /* samakan dengan main-content */
+}
+
+#sidenav-main .navbar-brand {
+    width: 100%;
 }

@@ -45,7 +45,7 @@ use App\Models\Notaris;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+Route::middleware('guest', 'nocache')->group(function () {
     // LoginController routes
     Route::controller(LoginController::class)->group(function () {
         Route::get('/', 'show')->name('login');

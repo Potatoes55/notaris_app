@@ -1,43 +1,51 @@
-<aside
-    class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 h-100"
-    id="sidenav-main" style="overflow-y:auto; height: 100vh">
-  
-    <div class="sidenav-header">
-       
-        <i class="fas fa-times p-1 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-            aria-hidden="true" id="iconSidenav"></i>
-        <div class="d-flex  justify-content-center mt-3 gap-2 align-items-center">
-            <a class="navbar-brand m-0 p-1" href="{{ route('dashboard') }}" target="_blank">
-                <div class="d-flex align-items-center justify-content-center rounded-circle"
-                    style="width: 60px; height: 60px;">
-                    <div class=" d-flex align-items-center justify-content-center rounded-circle"
-                        style="width: 60px; height: 60px;">
-                        <img src="{{ auth()->user()->notaris && auth()->user()->notaris->image
-                            ? (filter_var(auth()->user()->notaris->image, FILTER_VALIDATE_URL)
-                                ? auth()->user()->notaris->image
-                                : asset('storage/' . auth()->user()->notaris->image))
-                            : asset('img/img_profile.png') }}"
-                            alt="main_logo"
-                            style="width: 60px; height: 60px; object-fit:contain; object-position: center">
-                    </div>
-                    
-                </div>
-            </a>
-           
-            <div>
-                <h6 class="mb-0">Hi, {{ auth()->user()->username }}</h6>
-                <p class="mb-0">{{ auth()->user()->email }}</p>
-            </div>
+<aside 
+class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 d-flex flex-column"
+id="sidenav-main" 
+style="height: 100vh; overflow: hidden;">
+
+<div class="sidenav-header flex-shrink-0 px-3" style="height:80px;">
+
+    <div class="d-flex align-items-center h-100 gap-3 w-100">
+
+        <!-- FOTO -->
+        <div class="rounded-circle overflow-hidden flex-shrink-0"
+            style="width:48px; height:48px;">
+            <img 
+                src="{{ auth()->user()->notaris && auth()->user()->notaris->image
+                    ? (filter_var(auth()->user()->notaris->image, FILTER_VALIDATE_URL)
+                        ? auth()->user()->notaris->image
+                        : asset('storage/' . auth()->user()->notaris->image))
+                    : asset('img/img_profile.png') }}"
+                style="width:100%; height:100%; object-fit:cover;">
+        </div>
+
+        <!-- TEXT -->
+        <div class="flex-grow-1 overflow-hidden" style="min-width:0;">
+            <h6 class="mb-0 text-sm text-truncate">
+                Hi, {{ auth()->user()->username }}
+            </h6>
+            <p class="mb-0 text-xs text-secondary text-truncate">
+                {{ auth()->user()->email }}
+            </p>
+        </div>
+
+
         </div>
     </div>
-    <hr class="horizontal-dark mt-0">
-    {{-- <div class="collapse navbar-collapse" style="height: 100% !important; overflow-y: auto !important;"> --}}
-    <div class="collapse navbar-collapse  overflow-hidden">
+
+    <hr class="horizontal-dark mt-0 mb-2">
+
+    <!-- MENU (SCROLL) -->
+    <div 
+        id="sidenav-collapse-main" 
+        class="flex-grow-1"
+        style="overflow-y: auto; overflow-x: hidden;">
+
         <ul class="navbar-nav">
+
             <li class="nav-item">
                 <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Dashboard</span>
@@ -573,8 +581,26 @@
             @endif
         </ul>
     </div>
-
-
 </aside>
 
- 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const sidebarMenu = document.getElementById('sidenav-collapse-main');
+        
+        if (sidebarMenu) {
+            // 1. Ambil posisi terakhir dari memory browser
+            const scrollPos = localStorage.getItem('sidebar_scroll_pos');
+            if (scrollPos) {
+                // Beri delay sedikit agar sinkron dengan rendering browser
+                setTimeout(() => {
+                    sidebarMenu.scrollTop = scrollPos;
+                }, 150);
+            }
+
+            // 2. Simpan posisi setiap kali user melakukan scroll
+            sidebarMenu.addEventListener('scroll', function() {
+                localStorage.setItem('sidebar_scroll_pos', sidebarMenu.scrollTop);
+            });
+        }
+    });
+</script>
