@@ -69,16 +69,16 @@ class NotaryRelaasDocumentController extends Controller
         $relaas = NotaryRelaasAkta::findOrFail($relaasId);
 
         $validated = $request->validate([
-            'name'      => 'required|string|max:255',
-            'type'      => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
             'uploaded_at' => 'required|date',
-            'file_url'  => 'required|max:2048|mimes:pdf,jpg,jpeg,png',
+            'file_url' => 'required|max:5240|mimes:pdf,jpg,jpeg,png',
         ], [
             'name.required' => 'Nama dokumen harus diisi.',
             'type.required' => 'Tipe dokumen harus diisi.',
             'uploaded_at.required' => 'Tanggal upload harus diisi.',
             'file_url.required' => 'File dokumen harus diupload.',
-            'file_url.max' => 'Ukuran file maksimal 2MB.',
+            'file_url.max' => 'Ukuran file maksimal 5MB.',
             'file_url.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
         ]);
 
@@ -116,10 +116,10 @@ class NotaryRelaasDocumentController extends Controller
         $relaas = NotaryRelaasAkta::findOrFail($relaasId);
 
         $validated = $request->validate([
-            'name'      => 'required|string|max:255',
-            'type'      => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
             'uploaded_at' => 'nullable|date',
-            'file_url'  => 'nullable|max:5000|mimes:pdf,jpg,jpeg,png',
+            'file_url' => 'nullable|max:5000|mimes:pdf,jpg,jpeg,png',
         ], [
             'name.required' => 'Nama dokumen harus diisi.',
             'type.required' => 'Jenis dokumen harus diisi.',
@@ -161,6 +161,7 @@ class NotaryRelaasDocumentController extends Controller
         $this->service->destroy($id);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Dokumen akta berhasil dihapus.');
+
         return redirect()->back();
     }
 
@@ -169,6 +170,7 @@ class NotaryRelaasDocumentController extends Controller
         $this->service->toggleStatus($id);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Status dokumen berhasil diperbarui.');
+
         return redirect()->back();
     }
 }

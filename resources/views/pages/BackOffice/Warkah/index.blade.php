@@ -77,7 +77,7 @@
                                             </button>
                                             <div class="modal fade" id="viewDocumentModal-{{ $product->id }}"
                                                 tabindex="-1" aria-labelledby="viewDocumentModalLabel-{{ $product->id }}"
-                                                aria-hidden="true">
+                                                aria-hidden="true" style="z-index: 9999;">
                                                 @php
                                                     $file = asset('storage/' . $product->warkah_link);
                                                     $ext = strtolower(

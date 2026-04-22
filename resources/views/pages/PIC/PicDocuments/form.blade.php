@@ -92,7 +92,7 @@
                                 <option value="" hidden>Pilih Transaksi PPAT</option>
                                 @foreach ($relaasTransaction as $relaas)
                                     <option value="{{ $relaas->id }}"
-                                        {{ isset($picDocument) && $picDocument->transaction_type === 'ppat' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
+                                        {{ isset($picDocument) && $picDocument->transaction_type === 'relaas' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
                                         {{ $relaas->client->fullname }} - {{ $relaas->transaction_code }} -
                                         {{ $relaas->akta_type->type }}
                                         {{-- -{{ $relaas->title }} --}}
@@ -122,7 +122,7 @@
                         {{-- Status --}}
                         <div class="mb-3">
                             <label for="status" class="form-label text-sm">Status</label>
-                            <select name="status" id="status" class="form-select">
+                            <select name="status" id="status" class="form-select" required>
                                 <option value="">Pilih Status</option>
                                 <option value="delivered"
                                     {{ old('status', $picDocument->status ?? '') == 'delivered' ? 'selected' : '' }}>

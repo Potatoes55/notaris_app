@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('time_estimation')->nullable();
             $table->foreignId('pic_id')
                 ->nullable()
-                ->constrained('pic_id')
+                ->constrained('pic_documents')
                 ->cascadeOnDelete();
             $table->string('status')->nullable();
 

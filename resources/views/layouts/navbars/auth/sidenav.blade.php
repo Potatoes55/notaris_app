@@ -1,7 +1,9 @@
 <aside
     class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 h-100"
     id="sidenav-main" style="overflow-y:auto; height: 100vh">
+  
     <div class="sidenav-header">
+       
         <i class="fas fa-times p-1 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
         <div class="d-flex  justify-content-center mt-3 gap-2 align-items-center">
@@ -18,8 +20,10 @@
                             alt="main_logo"
                             style="width: 60px; height: 60px; object-fit:contain; object-position: center">
                     </div>
+                    
                 </div>
             </a>
+           
             <div>
                 <h6 class="mb-0">Hi, {{ auth()->user()->username }}</h6>
                 <p class="mb-0">{{ auth()->user()->email }}</p>
@@ -569,4 +573,8 @@
             @endif
         </ul>
     </div>
+
+
 </aside>
+
+ 

@@ -34,7 +34,7 @@
         </div>
 
         <!-- Toggle sidenav: hanya tampil <1200px -->
-        <ul class="navbar-nav ms-auto d-flex d-lg-none flex-row">
+        <ul class="navbar-nav ms-auto d-flex d-none flex-row">
             <li class="nav-item d-flex align-items-center">
                 <form method="post" action="{{ route('logout') }}" id="logout-form">
                     @csrf
