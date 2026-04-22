@@ -3,11 +3,18 @@
 /* ==========================================================================
    1. LAYOUT UTAMA (Sidebar & Content)
    ========================================================================== */
+<<<<<<< HEAD
 body.login-page .main-content{
     margin-left: 0 !important;
 }
 
 
+=======
+body.login-page .main-content {
+    margin-left: 0 !important;
+}
+
+>>>>>>> d1c5b2c95e9b92ac1405d50f6ba3d4131f0a3ba5
 #sidenav-main {
     width: 250px !important;
     min-width: 250px !important;
@@ -219,7 +226,11 @@ th {
 }
 
 #sidenav-main {
+<<<<<<< HEAD
     width: 275px; /* samakan dengan main-content */
+=======
+    width: 260px; /* samakan dengan main-content */
+>>>>>>> d1c5b2c95e9b92ac1405d50f6ba3d4131f0a3ba5
 }
 
 #sidenav-main .navbar-brand {
