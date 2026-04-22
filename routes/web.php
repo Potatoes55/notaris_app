@@ -6,7 +6,6 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotaryAktaDocumentsController;
 use App\Http\Controllers\NotaryAktaLogsController;
@@ -27,12 +26,10 @@ use App\Http\Controllers\NotaryRelaasDocumentController;
 use App\Http\Controllers\NotaryRelaasLogsController;
 use App\Http\Controllers\NotaryRelaasPartiesController;
 use App\Http\Controllers\NotaryWaarmerkingController;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\PicDocumentsController;
 use App\Http\Controllers\PicHandOverController;
 use App\Http\Controllers\PicProcessController;
 use App\Http\Controllers\PicStaffController;
-use App\Http\Controllers\ProductDocumentsController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProsesLainController;
 use App\Http\Controllers\PublicPaymentController;
@@ -45,17 +42,8 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\UserProfileController;
 use App\Models\Notaris;
-use App\Models\NotaryAktaTransaction;
-use App\Models\NotaryConsultation;
-use App\Models\NotaryRelaasAkta;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
-use Milon\Barcode\Facades\DNS2DFacade;
-
-
-
-
-
 
 Route::middleware('guest')->group(function () {
     // LoginController routes
@@ -104,26 +92,21 @@ Route::middleware('guest')->group(function () {
     Route::get('/public/payment/{token}', [PublicPaymentController::class, 'show'])
         ->name('public.payment.show');
 
-
     // public form (link yang dikirim ke klien) — jelas beda URI
     Route::get('/client/public/{encryptedNotarisId}', [ClientController::class, 'publicForm'])
         ->name('client.public.create');
-
 
     Route::post('/client/public/{encryptedNotarisId}/store', [ClientController::class, 'storeClient'])
         ->name('client.public.store');
 
     // Detail Klien
 
-
     // Route::post('/client/search', [ClientController::class, 'searchByRegistrationCode'])->name('client.search');
     Route::post('/client/{uuid}/upload-document', [ClientController::class, 'uploadDocument'])
         ->name('client.uploadDocument');
 });
 
-
 Route::middleware(['auth'])->group(function () {
-
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -132,7 +115,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])
         ->name('profile.unlock');
 });
-
 
 Route::middleware(['auth', 'check.full.access'])->group(function () {
 
@@ -164,7 +146,6 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
     // UserProfileController routes
 
-
     Route::controller(SubscriptionsController::class)->group(function () {
         Route::get('/subscriptions', 'index')->name('subscriptions');
     });
@@ -175,7 +156,6 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::put('documents/{document}/deactivate', [DocumentsController::class, 'deactivate'])->name('documents.deactivate');
     Route::put('/documents/{id}/activate', [DocumentsController::class, 'activate'])
         ->name('documents.activate');
-
 
     Route::resource('clients', ClientController::class)->except('show');
     Route::put('/clients/{id}/valid', [ClientController::class, 'markAsValid'])->name('clients.markAsValid');
@@ -213,7 +193,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::post('warkah/store', [NotaryClientWarkahController::class, 'store'])->name('warkah.store');
     Route::get('warkah/create/{id}', [NotaryClientWarkahController::class, 'create'])->name('warkah.create');
     Route::put('warkah/update/{id}', [NotaryClientWarkahController::class, 'update'])->name('warkah.update');
-    // Route::post('warkah/store', [NotaryClientWarkahController::class, 'addDocument'])->name('warkah.addDocument');
+    // Route::post('warkah/add-document/{id}', [NotaryClientWarkahController::class, 'addDocument'])->name('warkah.addDocument');
     Route::post('warkah/status/{id}', [NotaryClientWarkahController::class, 'updateStatus'])->name('warkah.updateStatus');
     // // End
     // Partij Akta / Akta Transaksi
@@ -238,7 +218,6 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     );
     Route::resource('akta-logs', NotaryAktaLogsController::class);
 
-
     // Relaas Akta / PPAT
     Route::resource('relaas-types', RelaasTypeController::class);
     Route::get('relaas-aktas/select-client', [NotaryRelaasAktaController::class, 'selectClient'])
@@ -249,7 +228,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::post('/relaas-parties/store/{relaas_id}', [NotaryRelaasPartiesController::class, 'store'])->name('relaas-parties.store');
     Route::get('/relaas-parties/edit/{relaas_id}/{id}', [NotaryRelaasPartiesController::class, 'edit'])->name('relaas-parties.edit');
     Route::put('/relaas-parties/update/{relaas_id}/{id}', [NotaryRelaasPartiesController::class, 'update'])->name('relaas-parties.update');
-    Route::get('/relaas-number/number_akta',  [NotaryRelaasAktaController::class, 'indexNumber'])->name('relaas_akta.indexNumber');
+    Route::get('/relaas-number/number_akta', [NotaryRelaasAktaController::class, 'indexNumber'])->name('relaas_akta.indexNumber');
     Route::post('/relaas-akta/store', [NotaryRelaasAktaController::class, 'storeNumber'])->name(
         'relaas-akta.store'
     );
@@ -267,8 +246,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::get('laporan-akta/export-pdf', [NotaryLaporanAktaController::class, 'exportPdf'])
         ->name('laporan-akta.export-pdf');
 
-
-    //PIC
+    // PIC
     Route::resource('pic_documents', PicDocumentsController::class);
     Route::get('pic_documents/{id}/print', [PicDocumentsController::class, 'print'])->name('pic_documents.print');
     Route::resource('pic_staff', PicStaffController::class);

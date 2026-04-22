@@ -13,6 +13,7 @@ class UserSeeder extends Seeder
         User::create([
             'notaris_id' => 1,
             'username'   => 'admin_john',
+            'access_code' => 'admin',
             'email'      => 'admin@gmail.com',
             'password'   => 'secret',
             'phone'      => '081234567890',

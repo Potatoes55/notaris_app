@@ -53,13 +53,13 @@
                                 @enderror
                             </div>
 
-
+                                @csrf
                             <div class="mb-3 col-md-12">
                                 <label class="form-label text-sm">Dokumen</label>
                                 <input type="file" name="warkah_link"
                                     class="form-control @error('warkah_link') is-invalid @enderror"
                                     accept=".jpg,.jpeg,.png,.pdf">
-                                <small>Maksimal ukuran file 2MB (Format: JPG,JPEG, PNG atau PDF)</small>
+                                <small>Maksimal ukuran file 15MB  (format: JPG,JPEG, PNG atau PDF)</small>
                                 @error('warkah_link')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -69,6 +69,7 @@
                                             target="_blank">Lihat</a></small>
                                 @endif
                             </div>
+
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label text-sm">Catatan</label>

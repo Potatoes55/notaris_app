@@ -43,6 +43,7 @@ th {
     }
 }
 
+
 @media (max-width: 1200px) {
     .navbar #iconNavbarSidenav {
         display: flex !important;

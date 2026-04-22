@@ -50,7 +50,7 @@
                                     <option value="{{ $doc->id }}"
                                         {{ old('pic_document_id', $cost->pic_document_id ?? '') == $doc->id ? 'selected' : '' }}
                                         class="text-capitalize">
-                                        {{ $doc->pic_document_code }} - {{ $doc->transaction_type }}
+                                        {{ $doc->client->fullname }} - {{ $doc->pic_document_code }} - {{ $doc->transaction_type }}
                                     </option>
                                 @endforeach
                             </select>
@@ -136,7 +136,7 @@
                         </div> --}}
 
                             {{-- Status --}}
-                            {{-- <div class="mb-3 col-md-6">
+                            <div class="mb-3 col-md-6">
                                 <label for="payment_status" class="form-label text-sm">Status <span
                                         class="text-danger">*</span></label>
                                 <select name="payment_status" id="payment_status" class="form-control form-control-md">
@@ -150,7 +150,7 @@
                                         {{ old('payment_status', $cost->payment_status ?? '') == 'paid' ? 'selected' : '' }}>
                                         Lunas</option>
                                 </select>
-                            </div> --}}
+                            </div>
 
                             {{-- Tanggal --}}
                             <div class="row">

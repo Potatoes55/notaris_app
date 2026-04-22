@@ -39,7 +39,7 @@
                                 @foreach ($transactions as $trx)
                                     <option value="{{ $trx->id }}"
                                         {{ isset($log) && $log->akta_transaction_id == $trx->id ? 'selected' : '' }}>
-                                        {{ $trx->client_code }} - {{ $trx->akta_type->type ?? '-' }}
+                                        {{ $trx->transaction_code }} - {{ $trx->akta_type->type ?? '-' }}
                                     </option>
                                 @endforeach
                             </select>

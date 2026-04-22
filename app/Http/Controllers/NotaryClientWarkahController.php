@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Documents;
 use App\Models\NotaryClientWarkah;
-use App\Services\NotaryClientService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class NotaryClientWarkahController extends Controller
@@ -17,7 +15,7 @@ class NotaryClientWarkahController extends Controller
 
         $clients = Client::where('notaris_id', $notarisId)
             ->when($request->search, function ($query, $search) {
-                $query->where('fullname', 'like', '%' . $search . '%')->orWhere('client_code', 'like', '%' . $search . '%');
+                $query->where('fullname', 'like', '%'.$search.'%')->orWhere('client_code', 'like', '%'.$search.'%');
             })
             ->where('deleted_at', null)
             ->paginate(10);
@@ -32,12 +30,12 @@ class NotaryClientWarkahController extends Controller
         $client = Client::findOrFail($clientId);
         $query = NotaryClientWarkah::with('client');
         if ($request->filled('client_code')) {
-            $query->where('client_code', 'like', '%' . $request->client_code . '%');
+            $query->where('client_code', 'like', '%'.$request->client_code.'%');
         }
 
         if ($request->filled('fullname')) {
             $query->whereHas('client', function ($q) use ($request) {
-                $q->where('fullname', 'like', '%' . $request->client_name . '%');
+                $q->where('fullname', 'like', '%'.$request->client_name.'%');
             });
         }
 
@@ -49,7 +47,7 @@ class NotaryClientWarkahController extends Controller
         return view('pages.BackOffice.Warkah.index', [
             'clients' => $clients,
             'documents' => $documents,
-            'client' => $client
+            'client' => $client,
         ]);
     }
 
@@ -66,7 +64,7 @@ class NotaryClientWarkahController extends Controller
 
         return view('pages.BackOffice.Warkah.form', [
             'documents' => $documents,
-            'client' => $client
+            'client' => $client,
         ]);
     }
 
@@ -77,7 +75,7 @@ class NotaryClientWarkahController extends Controller
             'status' => 'required',
         ]);
 
-        $warkah  = NotaryClientWarkah::findOrFail($id);
+        $warkah = NotaryClientWarkah::findOrFail($id);
 
         $warkah->update([
             'status' => $request->status,
@@ -88,6 +86,7 @@ class NotaryClientWarkahController extends Controller
             : 'Dokumen ditandai tidak valid';
 
         notyf()->position('x', 'right')->position('y', 'top')->success($msg);
+
         return back();
     }
 
@@ -98,14 +97,14 @@ class NotaryClientWarkahController extends Controller
         $validated = $request->validate([
             'client_code' => 'required',
             'warkah_code' => 'required',
-            'warkah_link' => 'nullable|mimes:jpg,jpeg,png,pdf|max:5000',
+            'warkah_link' => 'required|mimes:jpg,jpeg,png,pdf|max:15240',
             'note' => 'nullable',
             'uploaded_at' => 'required|date',
         ], [
             'client_code.required' => 'Klien harus dipilih.',
             'warkah_code.required' => 'Dokumen harus dipilih.',
             'warkah_link.required' => 'File warkah harus diupload.',
-            'warkah_link.max' => 'Ukuran file maksimal 1MB.',
+            'warkah_link.max' => 'Ukuran file maksimal 15MB.',
             'warkah_link.mimes' => 'Format file harus JPG, JPEG, PNG, atau PDF.',
         ]);
 
@@ -133,6 +132,7 @@ class NotaryClientWarkahController extends Controller
         ]);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Warkah berhasil ditambahkan');
+
         return redirect()->route('warkah.index', ['id' => $client->id]);
     }
 }
