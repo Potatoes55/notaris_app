@@ -1,3 +1,5 @@
+<body class="login-page">
+
 @extends('layouts.app')
 
 @section('title', 'Login | Notaris App')
