@@ -21,10 +21,18 @@
                             <select name="pic_document_id"
                                 class="form-select @error('pic_document_id') is-invalid @enderror">
                                 <option value="" hidden>Pilih Dokumen</option>
-                                @foreach ($picDocuments as $doc)
-                                    <option value="{{ $doc->id }}" class="text-capitalize">
-                                       {{ $doc->client->fullname }} - {{ $doc->pic_document_code }} -
-                                        {{ $doc->transaction_type }}</option>
+                               @foreach($picDocuments->groupBy('transaction_type') as $type => $docs)
+                                    <optgroup label="{{ $type }}">
+                                        @foreach($docs as $doc)
+                                           <option value="{{ $doc->id }}">
+                                                {{ $doc->client->fullname ?? '-' }} |
+                                                {{ optional($doc->aktaTransaction)->transaction_code ?? optional($doc->relaasTransaction)->transaction_code ?? '-' }} |
+                                                {{ optional($doc->relaasTransaction->akta_type)->type ?? '-' }}
+                                                {{-- {{ $doc->title }} --}}
+
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
                                 @endforeach
                             </select>
                             @error('pic_document_id')

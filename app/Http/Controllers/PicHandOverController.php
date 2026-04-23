@@ -28,7 +28,11 @@ class PicHandoverController extends Controller
 
     public function create()
     {
-        $picDocuments = PicDocuments::where('deleted_at', null)->latest()->get();
+        $picDocuments = PicDocuments::with([
+            'client',
+            'aktaTransaction',
+            'relaasTransaction.akta_type',
+        ])->where('deleted_at', null)->latest()->get();
 
         return view('pages.PIC.PicHandovers.form', compact('picDocuments'));
     }
