@@ -43,8 +43,7 @@
                                     <p class="text-sm mb-0">{{ $subscription->plan->name ?? '-' }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm mb-0">Rp. {{ number_format($subscription->plan->price, 0, ',',
-                                        '.') }}</p>
+                                    <p class="text-sm mb-0">Rp. {{ number_format(optional($subscription->plan)->price ?? 0, 0, ',', '.') }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm mb-0">{{
