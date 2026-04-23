@@ -103,7 +103,7 @@
                             <label class="form-label text-sm">Upload File</label>
                             <input type="file" name="file_path" class="form-control"
                                 {{ old('file_path') ? 'value=' . old('file_path') : '' }}>
-                            <small>Maksimal ukuran file <strong>2MB </strong>(Format: JPG,JPEG, PNG, atau PDF)</small>
+                            <small>Maksimal ukuran file <strong>10MB </strong>(Format: JPG,JPEG, PNG, atau PDF)</small>
                             @if (isset($data) && $data->file_path)
                                 @php
                                     $ext = pathinfo($data->file_path, PATHINFO_EXTENSION);

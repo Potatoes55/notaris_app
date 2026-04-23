@@ -23,7 +23,7 @@
                                 <option value="" hidden>Pilih Dokumen</option>
                                 @foreach ($picDocuments as $doc)
                                     <option value="{{ $doc->id }}" class="text-capitalize">
-                                        {{ $doc->pic_document_code }} -
+                                       {{ $doc->client->fullname }} - {{ $doc->pic_document_code }} -
                                         {{ $doc->transaction_type }}</option>
                                 @endforeach
                             </select>
@@ -64,7 +64,7 @@
                         <div class="mb-3">
                             <label class="form-label text-sm">File Serah Terima Dokumen</label>
                             <input type="file" name="file_path" class="form-control">
-                            <small>Maksimal ukuran file <strong>2MB</strong> (Format: JPG,JPEG, PNG, atau PDF)</small>
+                            <small>Maksimal ukuran file <strong>10MB</strong> (Format: JPG,JPEG, PNG, atau PDF)</small>
                         </div>
 
 

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\PicDocuments;
 use App\Services\PicHandoverService;
 use Illuminate\Http\Request;
-use PDF; // gunakan dompdf / barryvdh
-use Mpdf\Mpdf;
+
+// gunakan dompdf / barryvdh
 
 class PicHandoverController extends Controller
 {
@@ -20,7 +20,7 @@ class PicHandoverController extends Controller
     public function index(Request $request)
     {
         $handovers = $this->service->listHandovers([
-            'search' => $request->get('search')
+            'search' => $request->get('search'),
         ]);
 
         return view('pages.PIC.PicHandovers.index', compact('handovers'));
@@ -29,6 +29,7 @@ class PicHandoverController extends Controller
     public function create()
     {
         $picDocuments = PicDocuments::where('deleted_at', null)->latest()->get();
+
         return view('pages.PIC.PicHandovers.form', compact('picDocuments'));
     }
 
@@ -36,17 +37,17 @@ class PicHandoverController extends Controller
     {
         $validated = $request->validate([
             'pic_document_id' => 'required',
-            'handover_date'   => 'required|date',
-            'recipient_name'  => 'required|string',
+            'handover_date' => 'required|date',
+            'recipient_name' => 'required|string',
             'recipient_contact' => 'required|string',
-            'note'            => 'nullable|string',
-            'file_path'       => 'nullable|file|mimes:jpg,png,png,pdf|max:2048',
+            'note' => 'nullable|string',
+            'file_path' => 'nullable|file|mimes:jpg,png,png,pdf|max:10240',
         ], [
             'pic_document_id.required' => 'Dokumen PIC harus dipilih.',
-            'handover_date.required'   => 'Tanggal serah terima harus diisi.',
-            'recipient_name.required'  => 'Nama penerima harus diisi.',
+            'handover_date.required' => 'Tanggal serah terima harus diisi.',
+            'recipient_name.required' => 'Nama penerima harus diisi.',
             'recipient_contact.required' => 'Kontak penerima harus diisi.',
-            'file_path.max' => 'Ukuran file maksimal 2 MB.',
+            'file_path.max' => 'Ukuran file maksimal 10 MB.',
             'file_path.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
         ]);
 
@@ -59,6 +60,7 @@ class PicHandoverController extends Controller
         $this->service->createHandover($validated);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Serah terima berhasil ditambahkan.');
+
         return redirect()->route('pic_handovers.index');
     }
 
@@ -66,15 +68,17 @@ class PicHandoverController extends Controller
     {
         $this->service->deleteHandover($id);
         notyf()->success('Data serah terima dihapus.');
+
         return back();
     }
+
     public function print($id)
     {
         $handover = $this->service->listHandovers([])->firstWhere('id', $id);
 
         $notaris = auth()->user()->notaris;
 
-        if (!$handover) {
+        if (! $handover) {
             abort(404, 'Data serah terima tidak ditemukan');
         }
 
@@ -83,7 +87,7 @@ class PicHandoverController extends Controller
         $mpdf = new \Mpdf\Mpdf([
             'tempDir' => storage_path('app/mpdf'),
             'format' => 'A4',
-            'mode'   => 'utf-8',
+            'mode' => 'utf-8',
         ]);
 
         $mpdf->WriteHTML($html);
@@ -92,6 +96,6 @@ class PicHandoverController extends Controller
             $mpdf->Output("handover-{$handover->id}.pdf", \Mpdf\Output\Destination::STRING_RETURN)
         )
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="handover-' . $handover->id . '.pdf"');
+            ->header('Content-Disposition', 'inline; filename="handover-'.$handover->id.'.pdf"');
     }
 }
