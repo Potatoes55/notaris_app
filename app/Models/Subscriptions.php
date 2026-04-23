@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\LogsActivityCustom;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -29,6 +28,6 @@ class Subscriptions extends Model
 
     public function plan()
     {
-        return $this->belongsTo(Plans::class);
+        return $this->belongsTo(Plans::class, 'plan_id');
     }
 }

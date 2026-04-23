@@ -40,7 +40,7 @@
                                     </p>
                                 </td>
                                 <td>
-                                    <p class="text-sm mb-0">{{ $subscription->plan->name }}</p>
+                                    <p class="text-sm mb-0">{{ $subscription->plan->name ?? '-' }}</p>
                                 </td>
                                 <td>
                                     <p class="text-sm mb-0">Rp. {{ number_format($subscription->plan->price, 0, ',',
