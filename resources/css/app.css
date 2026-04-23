@@ -37,6 +37,7 @@ body.login-page .main-content {
 
 #sidenav-collapse-main {
     height: calc(100vh - 140px);
+    width: 110%;
     overflow-y: auto;
     overflow-x: hidden;
 }

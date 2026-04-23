@@ -123,7 +123,7 @@
                         <div class="mb-3">
                             <label class="form-label text-sm">File Surat Keluar</label>
                             <input type="file" name="file_path" class="form-control" id="fileInput">
-                            <small>Maksimal ukuran file <strong>2MB </strong>(Format: JPG,JPEG, PNG, atau PDF)</small>
+                            <small>Maksimal ukuran file <strong>10 MB </strong>(Format: JPG,JPEG, PNG, atau PDF)</small>
                             <br>
                             @if (isset($data) && $data->file_path)
                                 @php

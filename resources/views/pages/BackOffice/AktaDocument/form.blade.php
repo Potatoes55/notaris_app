@@ -53,7 +53,7 @@
                                     class="text-danger">*</span></label>
                             <input type="file" name="file_url" id="file_url"
                                 class="form-control @error('file_url') is-invalid @enderror">
-                            <small>Maksimal ukuran file <strong>2MB </strong>(Format: JPG,JPEG, PNG atau PDF)</small>
+                            <small>Maksimal ukuran file <strong>10MB </strong>(Format: JPG,JPEG, PNG atau PDF)</small>
 
                             @error('file_url')
                                 <div class="invalid-feedback">
