@@ -99,7 +99,7 @@
 
                         <div class="mb-3">
                             <label class="form-label text-sm">File</label>
-                            <input type="file" name="file_path" class="form-control"
+                            <input type="file" name="file_path" class="form-control" @error('file_path') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png"
                                 {{ old('file_path') ? 'value=' . old('file_path') : '' }}>
                             <small>Maksimal ukuran file <strong>10MB </strong>(Format: JPG,JPEG, PNG, atau PDF)</small>
 
