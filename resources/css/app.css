@@ -217,10 +217,12 @@ th {
         visibility: visible !important;
         opacity: 1 !important;
     }
+#sidenav-main{
     width: 275px; /* samakan dengan main-content */
 }
 
 #sidenav-main .navbar-brand {
     width: 100%;
 
+}
 }
