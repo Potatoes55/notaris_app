@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use App\Models\NotaryAktaTransaction;
+use App\Models\NotaryRelaasAkta;
 use App\Models\PicDocuments;
+use App\Models\PicStaff;
 use App\Services\PicHandoverService;
 use Illuminate\Http\Request;
 
@@ -28,13 +32,13 @@ class PicHandoverController extends Controller
 
     public function create()
     {
-        $picDocuments = PicDocuments::with([
-            'client',
-            'aktaTransaction',
-            'relaasTransaction.akta_type',
-        ])->where('deleted_at', null)->latest()->get();
+        $picDocuments = PicDocuments::where('deleted_at', null)->latest()->get();
+        $clients = Client::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->get();
+        $picStaffList = PicStaff::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->get();
+        $aktaTransaction = NotaryAktaTransaction::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->where('status', 'draft')->get();
+        $relaasTransaction = NotaryRelaasAkta::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->where('status', 'draft')->get();
 
-        return view('pages.PIC.PicHandovers.form', compact('picDocuments'));
+        return view('pages.PIC.PicHandovers.form', compact('picDocuments', 'clients', 'picStaffList', 'aktaTransaction', 'relaasTransaction'));
     }
 
     public function store(Request $request)
