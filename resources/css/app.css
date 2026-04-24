@@ -13,11 +13,10 @@ html, body {
    ========================================================================== */
 
 /* Buat halaman login biar gak ada sisa margin sidebar */
-body.login-page .main-content {
+body.login-page .main-content{
     margin-left: 0 !important;
 }
 
-/* Sidebar Utama */
 #sidenav-main {
     width: 250px !important;
     min-width: 250px !important;
@@ -55,6 +54,7 @@ body.login-page .main-content {
 /* Area Scroll Menu Sidebar */
 #sidenav-collapse-main {
     height: calc(100vh - 140px);
+    width: 110%;
     overflow-y: auto;
     overflow-x: hidden !important;
     width: 100% !important;
@@ -217,4 +217,10 @@ th {
         visibility: visible !important;
         opacity: 1 !important;
     }
+    width: 275px; /* samakan dengan main-content */
+}
+
+#sidenav-main .navbar-brand {
+    width: 100%;
+
 }

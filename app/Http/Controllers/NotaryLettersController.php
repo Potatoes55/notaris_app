@@ -20,34 +20,38 @@ class NotaryLettersController extends Controller
     {
         $search = $request->query('search');
         $notaryLetters = $this->service->getAll($search);
+
         return view('pages.BackOffice.Letters.index', compact('notaryLetters'));
     }
 
     public function create()
     {
         $clients = Client::all()->where('notaris_id', auth()->user()->notaris_id);
+
         return view('pages.BackOffice.Letters.form', compact('clients'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'client_code'     => 'required',
+            'client_code' => 'required',
             'letter_number' => 'required|string',
-            'type'          => 'nullable|string',
-            'recipient'     => 'required|string',
-            'subject'       => 'required|string',
-            'date'          => 'required|date',
-            'summary'       => 'nullable|string',
-            'attachment'    => 'nullable|string',
-            'notes'         => 'nullable|string',
-            'file_path'     => 'nullable|file|mimes:pdf,jpg,png,doc,docx',
+            'type' => 'nullable|string',
+            'recipient' => 'required|string',
+            'subject' => 'required|string',
+            'date' => 'required|date',
+            'summary' => 'nullable|string',
+            'attachment' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'file_path' => 'nullable|file|mimes:pdf,jpg,png,doc,docx|max:10240',
         ], [
             'client_code.required' => 'Klien harus dipilih.',
             'letter_number.required' => 'Nomor surat harus diisi.',
             'recipient.required' => 'Penerima harus diisi.',
-            'subject.required'   => 'Perihal harus diisi.',
-            'date.required'      => 'Tanggal harus diisi.',
+            'subject.required' => 'Perihal harus diisi.',
+            'date.required' => 'Tanggal harus diisi.',
+            'file_path.max' => 'Ukuran file maksimal 10 MB.',
+            'file_path.mimes' => 'Format file harus PDF, JPG, PNG, DOC, atau DOCX.',
         ]);
 
         if ($request->hasFile('file_path')) {
@@ -59,6 +63,7 @@ class NotaryLettersController extends Controller
         $this->service->create($data);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Surat berhasil ditambahkan.');
+
         return redirect()->route('notary-letters.index');
     }
 
@@ -68,6 +73,7 @@ class NotaryLettersController extends Controller
     {
         $data = $this->service->getById($id);
         $clients = Client::all();
+
         return view('pages.BackOffice.Letters.form', compact('data', 'clients'));
     }
 
@@ -75,22 +81,25 @@ class NotaryLettersController extends Controller
     {
 
         $data = $request->validate([
-            'client_code'     => 'required',
+            'client_code' => 'required',
             'letter_number' => 'required|string',
-            'type'          => 'nullable|string',
-            'recipient'     => 'required|string',
-            'subject'       => 'required|string',
-            'date'          => 'required|date',
-            'summary'       => 'nullable|string',
-            'attachment'    => 'nullable|string',
-            'notes'         => 'nullable|string',
-            'file_path'     => 'nullable|file|mimes:pdf,jpg,png,doc,docx',
+            'type' => 'nullable|string',
+            'recipient' => 'required|string',
+            'subject' => 'required|string',
+            'date' => 'required|date',
+            'summary' => 'nullable|string',
+            'attachment' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'file_path' => 'nullable|file|mimes:pdf,jpg,png,doc,docx|max:10240',
         ], [
             'client_code.required' => 'Klien harus dipilih.',
             'letter_number.required' => 'Nomor surat harus diisi.',
             'recipient.required' => 'Penerima harus diisi.',
-            'subject.required'   => 'Perihal harus diisi.',
-            'date.required'      => 'Tanggal harus diisi.',
+            'subject.required' => 'Perihal harus diisi.',
+            'date.required' => 'Tanggal harus diisi.',
+            'file_path.max' => 'Ukuran file maksimal 10 MB.',
+            'file_path.mimes' => 'Format file harus PDF, JPG, PNG, DOC, atau DOCX.',
+
         ]);
 
         if ($request->hasFile('file_path')) {
@@ -101,6 +110,7 @@ class NotaryLettersController extends Controller
 
         $this->service->update($id, $data);
         notyf()->position('x', 'right')->position('y', 'top')->success('Surat berhasil diubah.');
+
         return redirect()->route('notary-letters.index');
     }
 
@@ -108,6 +118,7 @@ class NotaryLettersController extends Controller
     {
         $this->service->delete($id);
         notyf()->position('x', 'right')->position('y', 'top')->success('Surat berhasil dihapus.');
+
         return redirect()->route('notary-letters.index');
     }
 }
