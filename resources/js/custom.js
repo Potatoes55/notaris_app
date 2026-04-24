@@ -4,24 +4,29 @@
 
   if (isWindows) {
     // if we are on windows OS we activate the perfectScrollbar function
-    if (document.getElementsByClassName('main-content')[0]) {
-      var mainpanel = document.querySelector('.main-content');
+    
+    // FIX 1: Main Content
+    var mainpanel = document.querySelector('.main-content');
+    if (mainpanel) { // Cek dulu ada gak elemennya
       var ps = new PerfectScrollbar(mainpanel);
     };
 
-    if (document.getElementsByClassName('sidenav')[0]) {
-      var sidebar = document.querySelector('.sidenav');
+    // FIX 2: Sidenav
+    var sidebar = document.querySelector('.sidenav');
+    if (sidebar) { // Cek dulu ada gak elemennya
       var ps1 = new PerfectScrollbar(sidebar);
     };
 
-    if (document.getElementsByClassName('navbar-collapse')[0]) {
-      var fixedplugin = document.querySelector('.navbar:not(.navbar-expand-lg) .navbar-collapse');
-      var ps2 = new PerfectScrollbar(fixedplugin);
+    // FIX 3: Navbar Collapse
+    var fixedplugin_nav = document.querySelector('.navbar:not(.navbar-expand-lg) .navbar-collapse');
+    if (fixedplugin_nav) { // Cek dulu ada gak elemennya
+      var ps2 = new PerfectScrollbar(fixedplugin_nav);
     };
 
-    if (document.getElementsByClassName('fixed-plugin')[0]) {
-      var fixedplugin = document.querySelector('.fixed-plugin');
-      var ps3 = new PerfectScrollbar(fixedplugin);
+    // FIX 4: Fixed Plugin
+    var fixedplugin_card = document.querySelector('.fixed-plugin');
+    if (fixedplugin_card) { // Cek dulu ada gak elemennya
+      var ps3 = new PerfectScrollbar(fixedplugin_card);
     };
   };
 })();

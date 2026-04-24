@@ -48,6 +48,16 @@
         @endif
     @endauth
 
+<script>
+    // Fix buat cegah error PerfectScrollbar sebelum file argon-dashboard.js jalan
+    if (!document.querySelector('.main-content')) {
+        let dummy = document.createElement('div');
+        dummy.className = 'main-content';
+        dummy.style.display = 'none';
+        document.body.appendChild(dummy);
+    }
+</script>
+
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script> --}}
     <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
@@ -65,7 +75,9 @@
     <!-- Github buttons -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
+
+
+<script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
