@@ -16,29 +16,8 @@
                 <div class="card-body pt-0">
                     <form method="POST" action="{{ route('pic_handovers.store') }}" enctype="multipart/form-data">
                         @csrf
-                        <div class="mb-3">
-                            <label class="form-label text-sm">Dokumen <span class="text-danger">*</span></label>
-                            <select name="pic_document_id"
-                                class="form-select @error('pic_document_id') is-invalid @enderror">
-                                <option value="" hidden>Pilih Dokumen</option>
-                               @foreach($picDocuments->groupBy('transaction_type') as $type => $docs)
-                                    <optgroup label="{{ $type }}">
-                                        @foreach($docs as $doc)
-                                           <option value="{{ $doc->id }}">
-                                                {{ $doc->client->fullname ?? '-' }} |
-                                                {{ optional($doc->aktaTransaction)->transaction_code ?? optional($doc->relaasTransaction)->transaction_code ?? '-' }} |
-                                                {{ optional($doc->relaasTransaction->akta_type)->type ?? '-' }}
-                                                {{-- {{ $doc->title }} --}}
-
-                                            </option>
-                                        @endforeach
-                                    </optgroup>
-                                @endforeach
-                            </select>
-                            @error('pic_document_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        {{-- Tipe Transaksi --}}
+                        <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction" />
 
                         <div class="mb-3">
                             <label class="form-label text-sm">Nama Penerima <span class="text-danger">*</span></label>
@@ -89,3 +68,36 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('transaction_type');
+            const akta = document.getElementById('akta_transaction_id');
+            const ppat = document.getElementById('ppat_transaction_id');
+            const transactionId = document.getElementById('transaction_id');
+
+            const aktaSection = document.getElementById('akta_section');
+            const relaasSection = document.getElementById('relaas_section');
+
+            function toggleSections() {
+                const value = typeSelect.value;
+                aktaSection.style.display = value === 'akta' ? 'block' : 'none';
+                relaasSection.style.display = value === 'ppat' ? 'block' : 'none';
+            }
+
+            toggleSections();
+            typeSelect.addEventListener('change', toggleSections);
+
+            const form = document.getElementById("picDocumentForm");
+
+            form.addEventListener("submit", function() {
+                if (typeSelect.value === 'akta') {
+                    transactionId.value = akta.value || "";
+                } else if (typeSelect.value === 'ppat') {
+                    transactionId.value = ppat.value || "";
+                }
+            });
+
+        });
+    </script>
+@endpush
