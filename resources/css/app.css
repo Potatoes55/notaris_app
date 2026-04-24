@@ -12,10 +12,8 @@ html, body {
    1. LAYOUT UTAMA (SIDEBAR & CONTENT)
    ========================================================================== */
 
-
-
-   
-body.login-page .main-content {
+/* Buat halaman login biar gak ada sisa margin sidebar */
+body.login-page .main-content{
     margin-left: 0 !important;
 }
 
