@@ -1,21 +1,31 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   0. RESET & BASE
+   ========================================================================== */
 html, body {
     max-width: 100%;
     overflow-x: hidden !important;
     position: relative;
-    touch-action: manipulation;
-    overscroll-behavior-y: none;
+    touch-action: auto; 
+    overscroll-behavior-y: auto; /* Aktifkan Pull-to-Refresh */
+}
+
+/* Navbar Global - Kasta Tinggi */
+.navbar-main, .navbar {
+    z-index: 1040 !important;
 }
 
 /* ==========================================================================
    1. LAYOUT UTAMA (SIDEBAR & CONTENT)
    ========================================================================== */
 
+/* Kondisi Halaman Login */
 body.login-page .main-content {
     margin-left: 0 !important;
 }
 
+/* Sidebar Desktop */
 #sidenav-main {
     width: 250px !important;
     min-width: 250px !important;
@@ -26,40 +36,43 @@ body.login-page .main-content {
     background-color: #ffffff !important;
     border-radius: 1rem !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-    z-index: 999;
+    z-index: 1050 !important; /* Di atas navbar sedikit */
     overflow-x: hidden !important;
     transition: all 0.3s ease;
     touch-action: pan-y;
 }
 
+/* Area Konten Utama */
 .main-content {
     margin-left: 275px !important; 
-    height: 100vh;            /* Paksa tinggi layar penuh */
-    overflow-y: auto !important; /* Aktifkan scroll vertikal */
+    min-height: 100vh;           
+    height: auto !important;     /* Biar gak kaku saat konten panjang */
+    overflow-y: visible !important; 
     overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch; /* Biar smooth di touchpad/HP */
+    -webkit-overflow-scrolling: touch; 
+    z-index: 1;                  /* Kasta paling bawah */
+    position: relative;
 }
 
+/* Custom Scrollbar Konten */
 .main-content::-webkit-scrollbar {
     width: 6px;
 }
-
 .main-content::-webkit-scrollbar-thumb {
     background: #e9ecef;
     border-radius: 10px;
 }
 
+/* Scrollbar di dalam Menu Sidebar */
 #sidenav-collapse-main {
     height: calc(100vh - 140px);
     overflow-y: auto;
     overflow-x: hidden !important;
     width: 100% !important;
 }
-
 #sidenav-collapse-main::-webkit-scrollbar {
     width: 4px;
 }
-
 #sidenav-collapse-main::-webkit-scrollbar-thumb {
     background: #e9ecef;
     border-radius: 10px;
@@ -71,10 +84,8 @@ body.login-page .main-content {
 /* ==========================================================================
    2. KOMPONEN MENU (NAV LINK)
    ========================================================================== */
-
 .sidenav .nav-link {
-    margin-left: 1rem !important;
-    margin-right: 1rem !important;
+    margin: 0.2rem 1rem !important;
     padding: 0.675rem 1rem !important;
     border-radius: 0.5rem !important;
     display: flex;
@@ -94,29 +105,47 @@ body.login-page .main-content {
     color: #fb6240 !important;
 }
 
-.nav-pills .nav-link {
-    color: #495057 !important;
-    background-color: #fff !important;
-    border: 1px solid #dee2e6 !important;
-    border-radius: 30px !important;
-    transition: all 0.2s ease-in-out !important;
-}
+/* ==========================================================================
+   3. RESPONSIVE (MOBILE FIX - BURGER & SIDEBAR)
+   ========================================================================== */
 
-.nav-pills .nav-link:hover {
-    background-color: #f1f1f1 !important;
-    color: #da6a50 !important;
-}
+@media (max-width: 1200px) {
+    /* Mencegah konten menindih sidebar */
+    .main-content {
+        margin-left: 0 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
 
-.nav-pills .nav-link.active {
-    background-color: #fb6240 !important;
-    color: #fff !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    /* Fix Sidebar melayang di atas konten */
+    #sidenav-main {
+        transform: translateX(-110%) !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        margin-left: 0 !important;
+        height: 100vh !important;
+        z-index: 9999 !important; /* Paksa kasta tertinggi */
+        visibility: hidden;
+        background-color: #ffffff !important;
+    }
+
+    /* Fungsi SHOW Sidebar */
+    body.g-sidenav-pinned #sidenav-main {
+        transform: translateX(0) !important;
+        visibility: visible !important;
+    }
+
+    /* Tombol Burger biar selalu bisa dipencet */
+    .navbar #iconNavbarSidenav {
+        display: flex !important;
+        z-index: 10000 !important;
+    }
 }
 
 /* ==========================================================================
-   3. UI COMPONENTS (CARDS, TABLES, INPUTS)
+   4. UI COMPONENTS & OTHERS
    ========================================================================== */
-
 .card {
     border: none !important;
     border-radius: 1rem !important;
@@ -129,37 +158,6 @@ body.login-page .main-content {
     transition: all 0.3s ease-in-out;
 }
 
-th {
-    text-transform: uppercase;
-    text-align: center;
-    color: #6c757d;
-    font-size: 13px;
-    font-weight: bold;
-    opacity: 0.7;
-}
-
-.input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
-    border-right: 1px solid rgb(199, 199, 199) !important;
-}
-
-.input-group > .form-control:not(:first-child) {
-    border-left: 0 !important;
-}
-
-/* ==========================================================================
-   4. SPECIAL STUFF (SPINNER, OCTAGON)
-   ========================================================================== */
-
-.octagon-wrapper {
-    width: 350px;
-    height: 350px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    border-radius: 20px;
-}
-
 .octagon-img {
     width: 150px;
     height: 150px;
@@ -167,8 +165,6 @@ th {
     clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
     transition: transform 0.3s ease;
 }
-
-.octagon-img:hover { transform: scale(1.05); }
 
 .spinner-overlay {
     position: fixed;
@@ -182,35 +178,4 @@ th {
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
-
 .spinner-overlay.show { opacity: 1; pointer-events: all; }
-
-/* ==========================================================================
-   5. RESPONSIVE (MOBILE)
-   ========================================================================== */
-
-@media (max-width: 1200px) {
-    .main-content {
-        margin-left: 0 !important;
-        overflow-x: hidden !important;
-    }
-
-    #sidenav-main {
-        transform: translateX(-110%) !important;
-        position: fixed;
-        left: 0;
-        margin-left: 0 !important;
-    }
-
-    body.g-sidenav-pinned #sidenav-main {
-        transform: translateX(0) !important;
-        margin-left: 1rem !important;
-        z-index: 1050;
-    }
-
-    .navbar #iconNavbarSidenav {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-}
