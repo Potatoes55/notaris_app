@@ -25,7 +25,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-light">
+<body class="g-sidenav-show bg-light">
     @guest
         @yield('content')
     @endguest
@@ -82,6 +82,22 @@
     <script>
         AOS.init();
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var iconNavbarSidenav = document.getElementById('iconNavbarSidenav');
+            var body = document.getElementsByTagName('body')[0];
+            var className = 'g-sidenav-pinned';
+
+            if (iconNavbarSidenav) {
+                iconNavbarSidenav.addEventListener("click", function() {
+                    // Gunakan toggle agar lebih ringkas
+                    body.classList.toggle(className);
+                });
+            }
+        });
+    </script>
+    
     @stack('js')
 </body>
 
