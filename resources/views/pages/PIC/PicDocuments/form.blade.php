@@ -101,8 +101,7 @@
                         </div> --}}
 
                         <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction" />
-
-                        {{-- Nama Penerima --}}
+                        
 
                         {{-- Tanggal Terima --}}
                         <div class="mb-3">
