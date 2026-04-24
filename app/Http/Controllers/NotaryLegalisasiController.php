@@ -10,14 +10,12 @@ use Illuminate\Validation\Rule;
 
 class NotaryLegalisasiController extends Controller
 {
-
     protected $service;
 
     public function __construct(NotaryLegalisasiService $service)
     {
         $this->service = $service;
     }
-
 
     public function index(Request $request)
     {
@@ -29,13 +27,13 @@ class NotaryLegalisasiController extends Controller
         return view('pages.BackOffice.Legalisasi.index', compact('data'));
     }
 
-
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         $clients = Client::all()->where('notaris_id', auth()->user()->notaris_id);
+
         return view('pages.BackOffice.Legalisasi.form', compact('clients'));
     }
 
@@ -48,16 +46,16 @@ class NotaryLegalisasiController extends Controller
         // Validasi input
         $validated = $request->validate(
             [
-                'client_code'         => 'required',
+                'client_code' => 'required',
                 'legalisasi_number' => 'required|string|max:255',
-                'applicant_name'    => 'required|string|max:255',
-                'officer_name'      => 'required|string|max:255',
-                'document_type'     => 'nullable|string|max:255',
-                'document_number'   => 'nullable|string|max:255',
-                'request_date'      => 'nullable|date',
-                'release_date'      => 'nullable|date',
-                'notes'             => 'nullable|string',
-                'file_path'         => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
+                'applicant_name' => 'required|string|max:255',
+                'officer_name' => 'required|string|max:255',
+                'document_type' => 'nullable|string|max:255',
+                'document_number' => 'nullable|string|max:255',
+                'request_date' => 'nullable|date',
+                'release_date' => 'nullable|date',
+                'notes' => 'nullable|string',
+                'file_path' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
             ],
             [
                 'client_code.required' => 'Klien harus dipilih.',
@@ -65,7 +63,8 @@ class NotaryLegalisasiController extends Controller
                 'legalisasi_number.unique' => 'Nomor Legalisasi sudah ada.',
                 'applicant_name.required' => 'Nama Pemohon harus diisi.',
                 'officer_name.required' => 'Nama Petugas harus diisi.',
-                'file_path.max' => 'Ukuran file maksimal 2 MB.',
+                'file_path.required' => 'File harus diunggah.',
+                'file_path.max' => 'Ukuran file maksimal 10 MB.',
                 'file_path.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
             ]
         );
@@ -83,10 +82,10 @@ class NotaryLegalisasiController extends Controller
 
         // Tambahkan pesan sukses
         notyf()->position('x', 'right')->position('y', 'top')->success('Legalisasi berhasil ditambahkan.');
+
         // Redirect dengan pesan sukses
         return redirect()->route('notary-legalisasi.index');
     }
-
 
     /**
      * Display the specified resource.
@@ -103,37 +102,37 @@ class NotaryLegalisasiController extends Controller
     {
         $clients = Client::all();
         $data = $this->service->findById($id);
+
         return view('pages.BackOffice.Legalisasi.form', compact('data', 'clients'));
     }
-
-
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate(
             [
-                'client_code'         => 'required',
+                'client_code' => 'required',
                 'legalisasi_number' => [
                     'required',
                     'string',
                     'max:255',
                     Rule::unique('notary_legalisasis', 'legalisasi_number')->ignore($id),
                 ],
-                'applicant_name'    => 'nullable|string|max:255',
-                'officer_name'      => 'nullable|string|max:255',
-                'document_type'     => 'nullable|string|max:255',
-                'document_number'   => 'nullable|string|max:255',
-                'request_date'      => 'nullable|date',
-                'release_date'      => 'nullable|date',
-                'notes'             => 'nullable|string',
-                'file_path'         => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+                'applicant_name' => 'nullable|string|max:255',
+                'officer_name' => 'nullable|string|max:255',
+                'document_type' => 'nullable|string|max:255',
+                'document_number' => 'nullable|string|max:255',
+                'request_date' => 'nullable|date',
+                'release_date' => 'nullable|date',
+                'notes' => 'nullable|string',
+                'file_path' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
             ],
             [
                 'client_code.required' => 'Klien harus dipilih.',
                 'legalisasi_number.required' => 'Nomor Legalisasi harus diisi.',
                 'legalisasi_number.unique' => 'Nomor Legalisasi sudah ada.',
                 'applicant_name.required' => 'Nama Pemohon harus diisi.',
-                'file_path.max' => 'Ukuran file maksimal 2 MB.',
+                'file_path.required' => 'File harus diupload.',
+                'file_path.max' => 'Ukuran file maksimal 10 MB.',
                 'file_path.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
             ]
         );
@@ -150,6 +149,7 @@ class NotaryLegalisasiController extends Controller
         $this->service->update($id, $validated);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Legalisasi berhasil diubah.');
+
         return redirect()->route('notary-legalisasi.index');
     }
 
@@ -160,6 +160,7 @@ class NotaryLegalisasiController extends Controller
     {
         $this->service->delete($id);
         notyf()->position('x', 'right')->position('y', 'top')->success('Legalisasi berhasil dihapus.');
+
         return redirect()->route('notary-legalisasi.index');
     }
 }

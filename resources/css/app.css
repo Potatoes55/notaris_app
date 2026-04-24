@@ -12,7 +12,8 @@ html, body {
    1. LAYOUT UTAMA (SIDEBAR & CONTENT)
    ========================================================================== */
 
-body.login-page .main-content {
+/* Buat halaman login biar gak ada sisa margin sidebar */
+body.login-page .main-content{
     margin-left: 0 !important;
 }
 
@@ -51,6 +52,7 @@ body.login-page .main-content {
 
 #sidenav-collapse-main {
     height: calc(100vh - 140px);
+    width: 110%;
     overflow-y: auto;
     overflow-x: hidden !important;
     width: 100% !important;
@@ -213,4 +215,12 @@ th {
         visibility: visible !important;
         opacity: 1 !important;
     }
+#sidenav-main{
+    width: 275px; /* samakan dengan main-content */
+}
+
+#sidenav-main .navbar-brand {
+    width: 100%;
+
+}
 }
