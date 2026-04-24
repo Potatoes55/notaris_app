@@ -20,12 +20,20 @@ html, body {
    1. LAYOUT UTAMA (SIDEBAR & CONTENT)
    ========================================================================== */
 
+<<<<<<< HEAD
 /* Kondisi Halaman Login */
 body.login-page .main-content {
     margin-left: 0 !important;
 }
 
 /* Sidebar Desktop */
+=======
+/* Buat halaman login biar gak ada sisa margin sidebar */
+body.login-page .main-content{
+    margin-left: 0 !important;
+}
+
+>>>>>>> ea258778788bf3bffc8752dbb1c0d539d67eb49c
 #sidenav-main {
     width: 250px !important;
     min-width: 250px !important;
@@ -66,6 +74,7 @@ body.login-page .main-content {
 /* Scrollbar di dalam Menu Sidebar */
 #sidenav-collapse-main {
     height: calc(100vh - 140px);
+    width: 110%;
     overflow-y: auto;
     overflow-x: hidden !important;
     width: 100% !important;
@@ -178,4 +187,46 @@ body.login-page .main-content {
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
+<<<<<<< HEAD
 .spinner-overlay.show { opacity: 1; pointer-events: all; }
+=======
+.spinner-overlay.show { opacity: 1; pointer-events: all; }
+
+/* ==========================================================================
+   5. RESPONSIVE (HP & TABLET)
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .main-content {
+        margin-left: 0 !important;
+        overflow-x: hidden !important;
+    }
+
+    #sidenav-main {
+        transform: translateX(-110%) !important; /* Sidebar ngumpet di kiri */
+        position: fixed;
+        left: 0;
+        margin-left: 0 !important;
+    }
+
+    /* Pas burger diklik, sidebar nongol */
+    body.g-sidenav-pinned #sidenav-main {
+        transform: translateX(0) !important;
+        margin-left: 1rem !important;
+        z-index: 1050;
+    }
+
+    /* Burger icon kudu keliatan di mobile */
+    .navbar #iconNavbarSidenav {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    width: 275px; /* samakan dengan main-content */
+}
+
+#sidenav-main .navbar-brand {
+    width: 100%;
+
+}
+>>>>>>> ea258778788bf3bffc8752dbb1c0d539d67eb49c

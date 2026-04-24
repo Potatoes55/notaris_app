@@ -1,10 +1,14 @@
 <body class="login-page">
+<<<<<<< HEAD
+=======
 
+>>>>>>> d1c5b2c95e9b92ac1405d50f6ba3d4131f0a3ba5
 @extends('layouts.app')
 
 @section('title', 'Login | Notaris App')
 
 @section('content')
+
     <main class="main-content mt-0">
         <section>
             <div class="page-header min-vh-100 d-flex align-items-center justify-content-center bg-light">

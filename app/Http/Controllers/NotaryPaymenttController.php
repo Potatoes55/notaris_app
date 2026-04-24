@@ -105,7 +105,7 @@ class NotaryPaymenttController extends Controller
             'amount' => 'required',
             'payment_date' => 'required|date',
             'payment_method' => 'required|string',
-            'payment_file' => 'required|max:5240|mimes:jpg,png,jpeg,pdf',
+            'payment_file' => 'required|max:10240|mimes:jpg,png,jpeg,pdf',
         ], [
             'payment_code.required' => 'Kode pembayaran harus diisi.',
             'payment_type.required' => 'Tipe pembayaran harus diisi.',
@@ -113,7 +113,7 @@ class NotaryPaymenttController extends Controller
             'payment_date.required' => 'Tanggal pembayaran harus diisi.',
             'payment_method.required' => 'Metode pembayaran harus diisi.',
             'payment_file.required' => 'File pembayaran harus diupload.',
-            'payment_file.max' => 'Ukuran file maksimal 5MB.',
+            'payment_file.max' => 'Ukuran file maksimal 10MB.',
             'payment_file.mimes' => 'Format file harus JPG, JPEG, PNG atau PDF.',
         ]);
 

@@ -21,10 +21,18 @@
                             <select name="pic_document_id"
                                 class="form-select @error('pic_document_id') is-invalid @enderror">
                                 <option value="" hidden>Pilih Dokumen</option>
-                                @foreach ($picDocuments as $doc)
-                                    <option value="{{ $doc->id }}" class="text-capitalize">
-                                        {{ $doc->pic_document_code }} -
-                                        {{ $doc->transaction_type }}</option>
+                               @foreach($picDocuments->groupBy('transaction_type') as $type => $docs)
+                                    <optgroup label="{{ $type }}">
+                                        @foreach($docs as $doc)
+                                           <option value="{{ $doc->id }}">
+                                                {{ $doc->client->fullname ?? '-' }} |
+                                                {{ optional($doc->aktaTransaction)->transaction_code ?? optional($doc->relaasTransaction)->transaction_code ?? '-' }} |
+                                                {{ optional($doc->relaasTransaction->akta_type)->type ?? '-' }}
+                                                {{-- {{ $doc->title }} --}}
+
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
                                 @endforeach
                             </select>
                             @error('pic_document_id')
@@ -64,7 +72,7 @@
                         <div class="mb-3">
                             <label class="form-label text-sm">File Serah Terima Dokumen</label>
                             <input type="file" name="file_path" class="form-control">
-                            <small>Maksimal ukuran file <strong>2MB</strong> (Format: JPG,JPEG, PNG, atau PDF)</small>
+                            <small>Maksimal ukuran file <strong>10MB</strong> (Format: JPG,JPEG, PNG, atau PDF)</small>
                         </div>
 
 
