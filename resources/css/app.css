@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
+html, body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+    position: relative;
+    touch-action: manipulation;
+    overscroll-behavior-y: none;
+}
+
 /* ==========================================================================
-   1. LAYOUT UTAMA (Sidebar & Content)
+   1. LAYOUT UTAMA (SIDEBAR & CONTENT)
    ========================================================================== */
+
 body.login-page .main-content {
     margin-left: 0 !important;
 }
@@ -18,23 +27,36 @@ body.login-page .main-content {
     border-radius: 1rem !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
     z-index: 999;
-    overflow: hidden;
+    overflow-x: hidden !important;
     transition: all 0.3s ease;
+    touch-action: pan-y;
 }
 
 .main-content {
-    margin-left: 275px !important; /* Jarak pas: sidebar(250px) + margin(1.5rem) */
-    transition: all 0.3s ease;
+    margin-left: 275px !important; 
+    height: 100vh;            /* Paksa tinggi layar penuh */
+    overflow-y: auto !important; /* Aktifkan scroll vertikal */
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch; /* Biar smooth di touchpad/HP */
+}
+
+.main-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background: #e9ecef;
+    border-radius: 10px;
 }
 
 #sidenav-collapse-main {
     height: calc(100vh - 140px);
     width: 110%;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
+    width: 100% !important;
 }
 
-/* Scrollbar Sidebar */
 #sidenav-collapse-main::-webkit-scrollbar {
     width: 4px;
 }
@@ -44,11 +66,13 @@ body.login-page .main-content {
     border-radius: 10px;
 }
 
+.sidenav-header { width: 100%; }
+#sidenav-main .navbar-brand { width: 100%; }
+
 /* ==========================================================================
-   2. KOMPONEN MENU (Navigation)
+   2. KOMPONEN MENU (NAV LINK)
    ========================================================================== */
 
-/* Menu Standar */
 .sidenav .nav-link {
     margin-left: 1rem !important;
     margin-right: 1rem !important;
@@ -57,9 +81,9 @@ body.login-page .main-content {
     display: flex;
     align-items: center;
     transition: all 0.2s ease-in-out;
+    white-space: nowrap;
 }
 
-/* Menu Aktif (Sesuai Versi Publik) */
 .sidenav .nav-link.active {
     background-color: #ffffff !important;
     color: #344767 !important;
@@ -68,10 +92,9 @@ body.login-page .main-content {
 }
 
 .sidenav .nav-link.active i {
-    color: #fb6240 !important; /* Icon orange */
+    color: #fb6240 !important;
 }
 
-/* Nav Pills Custom */
 .nav-pills .nav-link {
     color: #495057 !important;
     background-color: #fff !important;
@@ -88,12 +111,11 @@ body.login-page .main-content {
 .nav-pills .nav-link.active {
     background-color: #fb6240 !important;
     color: #fff !important;
-    font-weight: 600 !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* ==========================================================================
-   3. UI COMPONENTS (Cards, Tables, Inputs)
+   3. UI COMPONENTS (CARDS, TABLES, INPUTS)
    ========================================================================== */
 
 .card {
@@ -102,13 +124,10 @@ body.login-page .main-content {
     box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-.hover-card {
-    transition: all 0.3s ease-in-out;
-}
-
 .hover-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
 }
 
 th {
@@ -120,22 +139,16 @@ th {
     opacity: 0.7;
 }
 
-.table-wrapper {
-    min-width: max-content;
-}
-
-/* Input Group Fixes */
 .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     border-right: 1px solid rgb(199, 199, 199) !important;
 }
 
-.input-group > .form-control:not(:first-child),
-.input-group > .form-select:not(:first-child) {
+.input-group > .form-control:not(:first-child) {
     border-left: 0 !important;
 }
 
 /* ==========================================================================
-   4. SPECIAL ELEMENTS (Octagon, Spinner, Accordion)
+   4. SPECIAL STUFF (SPINNER, OCTAGON)
    ========================================================================== */
 
 .octagon-wrapper {
@@ -153,22 +166,14 @@ th {
     height: 150px;
     object-fit: cover;
     clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-    border: 3px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
     transition: transform 0.3s ease;
 }
 
-.octagon-img:hover {
-    transform: scale(1.05);
-}
+.octagon-img:hover { transform: scale(1.05); }
 
 .spinner-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     background: rgba(255, 255, 255, 1);
     z-index: 9999;
     display: flex;
@@ -179,32 +184,29 @@ th {
     transition: opacity 0.3s ease;
 }
 
-.spinner-overlay.show {
-    opacity: 1;
-    pointer-events: all;
-}
-
-.accordion-button::after {
-    filter: invert(1) !important;
-}
+.spinner-overlay.show { opacity: 1; pointer-events: all; }
 
 /* ==========================================================================
-   5. RESPONSIVE (Breakpoints)
+   5. RESPONSIVE (MOBILE)
    ========================================================================== */
 
 @media (max-width: 1200px) {
     .main-content {
         margin-left: 0 !important;
+        overflow-x: hidden !important;
     }
 
     #sidenav-main {
-        transform: translateX(-170%);
+        transform: translateX(-110%) !important;
+        position: fixed;
+        left: 0;
         margin-left: 0 !important;
     }
 
-    #sidenav-main.show {
-        transform: translateX(0);
+    body.g-sidenav-pinned #sidenav-main {
+        transform: translateX(0) !important;
         margin-left: 1rem !important;
+        z-index: 1050;
     }
 
     .navbar #iconNavbarSidenav {
@@ -212,16 +214,4 @@ th {
         visibility: visible !important;
         opacity: 1 !important;
     }
-}
-
-.sidenav-header {
-    width: 100%;
-}
-
-#sidenav-main {
-    width: 260px; /* samakan dengan main-content */
-}
-
-#sidenav-main .navbar-brand {
-    width: 100%;
 }
