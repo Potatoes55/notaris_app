@@ -55,7 +55,7 @@ class NotaryLegalisasiController extends Controller
                 'request_date' => 'nullable|date',
                 'release_date' => 'nullable|date',
                 'notes' => 'nullable|string',
-                'file_path' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
+                'file_path' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
             ],
             [
                 'client_code.required' => 'Klien harus dipilih.',
@@ -63,7 +63,8 @@ class NotaryLegalisasiController extends Controller
                 'legalisasi_number.unique' => 'Nomor Legalisasi sudah ada.',
                 'applicant_name.required' => 'Nama Pemohon harus diisi.',
                 'officer_name.required' => 'Nama Petugas harus diisi.',
-                'file_path.max' => 'Ukuran file maksimal 2 MB.',
+                'file_path.required' => 'File harus diunggah.',
+                'file_path.max' => 'Ukuran file maksimal 10 MB.',
                 'file_path.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
             ]
         );
@@ -123,13 +124,14 @@ class NotaryLegalisasiController extends Controller
                 'request_date' => 'nullable|date',
                 'release_date' => 'nullable|date',
                 'notes' => 'nullable|string',
-                'file_path' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+                'file_path' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
             ],
             [
                 'client_code.required' => 'Klien harus dipilih.',
                 'legalisasi_number.required' => 'Nomor Legalisasi harus diisi.',
                 'legalisasi_number.unique' => 'Nomor Legalisasi sudah ada.',
                 'applicant_name.required' => 'Nama Pemohon harus diisi.',
+                'file_path.required' => 'File harus diupload.',
                 'file_path.max' => 'Ukuran file maksimal 10 MB.',
                 'file_path.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
             ]

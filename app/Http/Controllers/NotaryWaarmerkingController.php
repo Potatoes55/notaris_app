@@ -44,14 +44,15 @@ class NotaryWaarmerkingController extends Controller
             'request_date' => 'nullable|date',
             'release_date' => 'nullable|date',
             'notes' => 'nullable|string',
-            'file_path' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5000',
+            'file_path' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
         ], [
             'client_code.required' => 'Klien harus dipilih.',
             'waarmerking_number.required' => 'Nomor Waarmarking harus diisi.',
             'officer_name.required' => 'Nama Petugas harus diisi.',
             'document_type.required' => 'Jenis Dokumen harus diisi.',
             'applicant_name.required' => 'Nama Pemohon harus diisi.',
-            'file_path.max' => 'Ukuran file maksimal 5 MB.',
+            'file_path.required' => 'File harus diunggah.',
+            'file_path.max' => 'Ukuran file maksimal 10 MB.',
             'file_path.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
         ]);
 
@@ -88,13 +89,14 @@ class NotaryWaarmerkingController extends Controller
             'request_date' => 'nullable|date',
             'release_date' => 'nullable|date',
             'notes' => 'nullable|string',
-            'file_path' => 'nullable|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_path' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
         ], [
             'client_code.required' => 'Klien harus dipilih.',
             'waarmerking_number.required' => 'Nomor Waarmarking harus diisi.',
             'officer_name.required' => 'Nama Petugas harus diisi.',
             'document_type.required' => 'Jenis Dokumen harus diisi.',
             'applicant_name.required' => 'Nama Pemohon harus diisi.',
+            'file_path.required' => 'File harus diunggah.',
             'file_path.max' => 'Ukuran file maksimal 10 MB.',
             'file_path.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
         ]);
