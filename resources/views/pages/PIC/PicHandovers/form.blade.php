@@ -17,7 +17,7 @@
                     <form method="POST" action="{{ route('pic_handovers.store') }}" enctype="multipart/form-data">
                         @csrf
                         {{-- Tipe Transaksi --}}
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="transaction_type" class="form-label text-sm">Tipe Transaksi <span
                                     class="text-danger">*</span></label>
                             <select name="transaction_type" id="transaction_type"
@@ -35,10 +35,10 @@
                             @error('transaction_type')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         {{-- Akta Transaction --}}
-                        <div class="mb-3" id="akta_section" style="display: none;">
+                        {{-- <div class="mb-3" id="akta_section" style="display: none;">
                             <label for="akta_transaction_id" class="form-label text-sm">Transaksi Akta </label>
                             <select id="akta_transaction_id" name="akta_transaction_id"
                                 class="form-select @error('akta_transaction_id') is-invalid @enderror">
@@ -57,10 +57,10 @@
                             @error('transaction_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         {{-- Relaas Transaction --}}
-                        <div class="mb-3" id="relaas_section" style="display: none;">
+                        {{-- <div class="mb-3" id="relaas_section" style="display: none;">
                             <label for="ppat_transaction_id" class="form-label text-sm">Transaksi PPAT</label>
                             <select id="ppat_transaction_id" name="ppat_transaction_id"
                                 class="form-select @error('akta_transaction_id') is-invalid @enderror">
@@ -68,13 +68,15 @@
                                 @foreach ($relaasTransaction as $relaas)
                                     <option value="{{ $relaas->id }}"
                                         {{ isset($picDocument) && $picDocument->transaction_type === 'relaas' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
-                                        {{ $relaas->client->fullname }} - {{ $relaasTransaction->transaction_code }} -
+                                        {{ $relaas->client->fullname }} - {{ $relaas->transaction_code }} -
                                         {{ $relaas->akta_type->type }}
-                                        {{-- -{{ $relaas->title }} --}}
+                                        
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div>  --}}
+                        <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction"/>
+                    
                         
 
                         {{-- Nama Penerima --}}
