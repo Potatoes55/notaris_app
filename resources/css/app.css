@@ -1,123 +1,98 @@
 @import "tailwindcss";
 
-/* ==========================================================================
-   0. RESET & BASE
-   ========================================================================== */
+/* 1. RESET & DASAR */
 html, body {
     max-width: 100%;
     overflow-x: hidden !important;
     position: relative;
-    touch-action: auto; 
-    overscroll-behavior-y: auto; /* Aktifkan Pull-to-Refresh */
+    touch-action: auto;
+    overscroll-behavior-y: auto;
 }
 
-/* Navbar Global - Kasta Tinggi */
-.navbar-main, .navbar {
-    z-index: 1040 !important;
-}
-
-/* ==========================================================================
-   1. LAYOUT UTAMA (SIDEBAR & CONTENT)
-   ========================================================================== */
-
-/* Buat halaman login biar gak ada sisa margin sidebar */
-body.login-page .main-content{
-    margin-left: 0 !important;
-}
-
+/* 2. SIDEBAR (NAVIGASI KIRI) */
 #sidenav-main {
     width: 250px !important;
-    min-width: 250px !important;
-    max-width: 250px !important;
     height: calc(100vh - 2rem) !important;
-    margin-left: 1.5rem !important;
-    margin-top: 1rem !important;
+    margin: 1rem 0 0 1.5rem !important;
     background-color: #ffffff !important;
     border-radius: 1rem !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-    z-index: 1050 !important; /* Di atas navbar sedikit */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    z-index: 1050 !important;
     overflow-x: hidden !important;
     transition: all 0.3s ease;
-    touch-action: pan-y;
 }
 
-/* Area Konten Utama */
-.main-content {
-    margin-left: 275px !important; 
-    min-height: 100vh;           
-    height: auto !important;     /* Biar gak kaku saat konten panjang */
-    overflow-y: visible !important; 
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch; 
-    z-index: 1;                  /* Kasta paling bawah */
-    position: relative;
-}
-
-/* Custom Scrollbar Konten */
-.main-content::-webkit-scrollbar {
-    width: 6px;
-}
-.main-content::-webkit-scrollbar-thumb {
-    background: #e9ecef;
-    border-radius: 10px;
-}
-
-/* Scrollbar di dalam Menu Sidebar */
+/* Scrollbar dalam menu sidebar */
 #sidenav-collapse-main {
     height: calc(100vh - 140px);
-    width: 110%;
     overflow-y: auto;
-    overflow-x: hidden !important;
     width: 100% !important;
 }
-#sidenav-collapse-main::-webkit-scrollbar {
-    width: 4px;
-}
+
+#sidenav-collapse-main::-webkit-scrollbar { width: 4px; }
 #sidenav-collapse-main::-webkit-scrollbar-thumb {
     background: #e9ecef;
     border-radius: 10px;
 }
 
-.sidenav-header { width: 100%; }
-#sidenav-main .navbar-brand { width: 100%; }
+/* 3. KONTEN UTAMA */
+.main-content {
+    margin-left: 275px !important; 
+    min-height: 100vh;
+    overflow-x: hidden !important;
+    position: relative;
+    z-index: 1;
+}
 
-/* ==========================================================================
-   2. KOMPONEN MENU (NAV LINK)
-   ========================================================================== */
+/* Hilangkan margin sidebar khusus halaman login */
+body.login-page .main-content {
+    margin-left: 0 !important;
+}
+
+/* 4. MODAL & POPUP (FOKUS) */
+.modal-backdrop {
+    z-index: 1060 !important; 
+}
+
+/* Pastikan modal di depan backdrop */
+.modal {
+    z-index: 1070 !important;
+}
+
+/* Matikan interaksi sidebar saat modal muncul */
+body.modal-open .sidenav {
+    z-index: 1040 !important;
+    pointer-events: none;
+}
+
+/* 5. ELEMEN UI (NAV LINK, CARD, DLL) */
 .sidenav .nav-link {
     margin: 0.2rem 1rem !important;
     padding: 0.675rem 1rem !important;
     border-radius: 0.5rem !important;
     display: flex;
     align-items: center;
-    transition: all 0.2s ease-in-out;
-    white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
 .sidenav .nav-link.active {
     background-color: #ffffff !important;
     color: #344767 !important;
-    font-weight: 600 !important;
     box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-.sidenav .nav-link.active i {
-    color: #fb6240 !important;
+.card {
+    border: none !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-/* ==========================================================================
-   3. RESPONSIVE (MOBILE FIX - BURGER & SIDEBAR)
-   ========================================================================== */
-
+/* 6. RESPONSIVE (MOBILE) */
 @media (max-width: 1200px) {
-    /* Mencegah konten menindih sidebar */
     .main-content {
         margin-left: 0 !important;
-        position: relative !important;
-        z-index: 1 !important;
     }
 
-    /* Fix Sidebar melayang di atas konten */
     #sidenav-main {
         transform: translateX(-110%) !important;
         position: fixed !important;
@@ -125,97 +100,31 @@ body.login-page .main-content{
         top: 0 !important;
         margin-left: 0 !important;
         height: 100vh !important;
-        z-index: 9999 !important; /* Paksa kasta tertinggi */
+        z-index: 9999 !important;
         visibility: hidden;
-        background-color: #ffffff !important;
     }
 
-    /* Fungsi SHOW Sidebar */
     body.g-sidenav-pinned #sidenav-main {
         transform: translateX(0) !important;
         visibility: visible !important;
+        margin-left: 1rem !important;
     }
 
-    /* Tombol Burger biar selalu bisa dipencet */
+    /* Burger icon */
     .navbar #iconNavbarSidenav {
         display: flex !important;
         z-index: 10000 !important;
     }
 }
 
-/* ==========================================================================
-   4. UI COMPONENTS & OTHERS
-   ========================================================================== */
-.card {
-    border: none !important;
-    border-radius: 1rem !important;
-    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
+/* Warna teks dan icon jadi oranye pas aktif */
+.sidenav .nav-link.active {
+    background-color: #f6f9fc !important; 
+    color: #fb6340 !important;           
+    font-weight: 700 !important;
+    border-left: 4px solid #fb6340;       
 }
 
-.hover-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-}
-
-.octagon-img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-    transition: transform 0.3s ease;
-}
-
-.spinner-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(255, 255, 255, 1);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-.spinner-overlay.show { opacity: 1; pointer-events: all; }
-
-/* ==========================================================================
-   5. RESPONSIVE (HP & TABLET)
-   ========================================================================== */
-
-@media (max-width: 1200px) {
-    .main-content {
-        margin-left: 0 !important;
-        overflow-x: hidden !important;
-    }
-
-    #sidenav-main {
-        transform: translateX(-110%) !important; /* Sidebar ngumpet di kiri */
-        position: fixed;
-        left: 0;
-        margin-left: 0 !important;
-    }
-
-    /* Pas burger diklik, sidebar nongol */
-    body.g-sidenav-pinned #sidenav-main {
-        transform: translateX(0) !important;
-        margin-left: 1rem !important;
-        z-index: 1050;
-    }
-
-    /* Burger icon kudu keliatan di mobile */
-    .navbar #iconNavbarSidenav {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-#sidenav-main{
-    width: 275px; /* samakan dengan main-content */
-}
-
-#sidenav-main .navbar-brand {
-    width: 100%;
-
-}
+.sidenav .nav-link.active i {
+    color: #fb6340 !important;
 }
