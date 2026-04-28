@@ -114,6 +114,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])
         ->name('profile.unlock');
+
 });
 
 Route::middleware(['auth', 'check.full.access'])->group(function () {
@@ -265,8 +266,6 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::get('report-payment/print', [ReportPaymentController::class, 'print'])->name('report-payment.print');
     Route::get('report-progress', [ReportProcessController::class, 'index'])->name('report-progress.index');
     Route::get('report-progress/print', [ReportProcessController::class, 'print'])->name('report-progress.print');
-    // Logout route
-    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
     // Proses Lain
     Route::resource('proses-lain-transaksi', ProsesLainController::class);
@@ -280,3 +279,6 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::put('proses-lain-progress/{id}', [ProsesLainController::class, 'updateProgress'])->name('proses-lain-progress.update');
     Route::delete('proses-lain-progress/{id}', [ProsesLainController::class, 'destroyProgress'])->name('proses-lain-progress.destroy');
 });
+
+// Logout route
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
