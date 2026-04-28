@@ -76,7 +76,23 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-
+<script>
+    (function() {
+        // Cek & buat elemen bayangan secara instan
+        if (!document.querySelector('.main-content')) {
+            var main = document.createElement('div');
+            main.className = 'main-content';
+            main.style.display = 'none';
+            document.body.appendChild(main);
+        }
+        if (!document.querySelector('.sidenav')) {
+            var side = document.createElement('nav');
+            side.className = 'sidenav';
+            side.style.display = 'none';
+            document.body.appendChild(side);
+        }
+    })();
+</script>
 <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -95,20 +111,22 @@
         AOS.init();
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var iconNavbarSidenav = document.getElementById('iconNavbarSidenav');
-            var body = document.getElementsByTagName('body')[0];
-            var className = 'g-sidenav-pinned';
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var iconNavbarSidenav = document.getElementById('iconNavbarSidenav');
+    var body = document.body;
 
-            if (iconNavbarSidenav) {
-                iconNavbarSidenav.addEventListener("click", function() {
-                    // Gunakan toggle agar lebih ringkas
-                    body.classList.toggle(className);
-                });
-            }
+    if (iconNavbarSidenav) {
+        // Gabungkan click dan touchstart agar di HP lancar
+        ['click', 'touchstart'].forEach(evt => {
+            iconNavbarSidenav.addEventListener(evt, function(e) {
+                if(evt === 'touchstart') e.preventDefault();
+                body.classList.toggle('g-sidenav-pinned');
+            });
         });
-    </script>
+    }
+});
+</script>
     
     @stack('js')
 </body>

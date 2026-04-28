@@ -68,35 +68,16 @@
                                 <option value="" hidden>Pilih Dokumen PPAT</option>
                                 @foreach ($ppatDocuments as $relaas)
                                     <option value="{{ $relaas->id }}"
-                                        {{ isset($picDocument) && $picDocument->transaction_type === 'relaas' ? 'selected' : '' }}>
-                                        {{ $relaas->client->fullname }} - {{ $relaas->pic_document_code }} -
-                                        {{ $relaas->transaction_type }}
-                                        {{ $relaas->title  }}
+                                        {{ isset($picDocument) && $picDocument->transaction_type === 'relaas' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
+                                        {{ $relaas->client->fullname }} - {{ $relaas->transaction_code }} -
+                                        {{ $relaas->akta_type->type }}
+                                        
                                     </option>
                                 @endforeach
                             </select>
-                        </div> --}} 
-
-
-                    <div class="mb-3">
-                            <label class="form-label text-sm">Dokumen <span class="text-danger">*</span></label>
-                            <select name="pic_document_id"
-                                class="form-select @error('pic_document_id') is-invalid @enderror">
-                                <option value="" hidden>Pilih Dokumen</option>
-                                @foreach ($picDocuments as $doc)
-                                    <option value="{{ $doc->id }}" class="text-capitalize">
-                                       {{ $doc->client->fullname }} - {{ $doc->pic_document_code }} -
-                                        {{ $doc->transaction_type }}</option>
-                                @endforeach
-                            </select>
-                            @error('pic_document_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-
-                        
-                        
+                        </div>  --}}
+                        <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction"/>
+                    
                         
 
                         {{-- Nama Penerima --}}
