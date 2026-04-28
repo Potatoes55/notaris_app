@@ -19,7 +19,7 @@
                             {{-- Pilih Type --}}
                             <div class="col-lg-4">
                                 <label for="type" class="form-label text-sm">Jenis Akta</label>
-                                <select name="type" id="type" class="form-select">
+                                <select name="type" id="type" class="form-select" required>
                                     <option value="" hidden>Pilih Jenis</option>
                                     <option value="notaris" {{ request('type') == 'notaris' ? 'selected' : '' }}>
                                         Notaris
@@ -32,14 +32,14 @@
                             <div class="col-lg-2">
                                 <label for="start_date" class="form-label text-sm">Tanggal Mulai</label>
                                 <input type="date" class="form-control" name="start_date" id="start_date"
-                                    value="{{ request('start_date') }}">
+                                    value="{{ request('start_date') }}" required>
                             </div>
 
                             {{-- End Date --}}
                             <div class="col-lg-2">
                                 <label for="end_date" class="form-label text-sm">Tanggal Selesai</label>
                                 <input type="date" class="form-control" name="end_date" id="end_date"
-                                    value="{{ request('end_date') }}">
+                                    value="{{ request('end_date') }}" required>
                             </div>
                             <div class="col-lg-2">
                                 <label for="status" class="form-label text-sm">Status</label>
