@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class CheckFullAccess
 {
@@ -16,11 +15,13 @@ class CheckFullAccess
     public function handle($request, Closure $next)
     {
         if (
-            !session('access_all_menu')
+            ! session('access_all_menu')
             // ||
             // now()->greaterThan(session('access_expires_at'))
+
         ) {
             // return redirect()->route('login');
+            return redirect()->route('settings')->with('error', 'Anda tidak memiliki akses penuh. Silakan hubungi administrator untuk mendapatkan akses.');
         }
 
         return $next($request);
