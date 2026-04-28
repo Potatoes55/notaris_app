@@ -20,7 +20,7 @@
                             <h6 class="text-white"> Nomor Akta Terakhir: {{ $lastAkta->relaas_number }}</h6>
                             <h6 class="text-white">
                                 Waktu Dibuat:
-                                {{ $lastAkta->relaas_number_created_at?->format('d-m-Y H:i:s') ?? '-' }}
+                                {{ $lastAkta->relaas_number_created_at ? $lastAkta->relaas_number_created_at->format('d-m-Y H:i:s') : '-' }}
                             </h6>
                         </div>
                     @else

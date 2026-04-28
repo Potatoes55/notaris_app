@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use App\Models\Notaris;
 use App\Models\NotaryRelaasAkta;
-use App\Models\NotaryRelaasLogs;
 use App\Services\NotaryRelaasLogsService;
 use Illuminate\Http\Request;
 
@@ -20,14 +18,20 @@ class NotaryRelaasLogsController extends Controller
 
     public function index()
     {
+        $filters = request()->only(['client_code', 'step']);
         $logs = $this->service->getAll();
+
         return view('pages.BackOffice.RelaasAkta.AktaLogs.index', compact('logs'));
     }
 
     public function create()
     {
-        $relaasAktas = NotaryRelaasAkta::with('notaris', 'client')->where('deleted_at', null)->get();
-        $clients = Client::where('deleted_at', null)->get();
+        // Tambahkan with('client') agar data klien ikut terbawa ke View & JS
+        $relaasAktas = NotaryRelaasAkta::with('client')->get();
+        $clients = Client::whereNull('deleted_at')->get();
+
+        // dd($relaasAktas, $clients);
+
         return view('pages.BackOffice.RelaasAkta.AktaLogs.form', compact('relaasAktas', 'clients'));
     }
 
@@ -55,30 +59,35 @@ class NotaryRelaasLogsController extends Controller
             'note' => $validated['note'],
         ]);
         notyf()->position('x', 'right')->position('y', 'top')->success('Log berhasil ditambahkan.');
+
         return redirect()->route('relaas-logs.index');
     }
 
     public function edit($id)
     {
         $data = $this->service->findById($id);
-        $relaasAktas = NotaryRelaasAkta::with('notaris', 'client')->where('deleted_at', null)->get();
-        $clients = Client::where('deleted_at', null)->get();
+        $relaasAktas = NotaryRelaasAkta::with('client')->get();
+        $clients = Client::whereNull('deleted_at')->get();
+
         return view('pages.BackOffice.RelaasAkta.AktaLogs.form', compact('data', 'relaasAktas', 'clients'));
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
+            'client_code' => 'required',
             'relaas_id' => 'required|integer',
             'step' => 'required|string',
             'note' => 'nullable|string',
         ], [
+            'client_code.required' => 'Klien harus dipilih.',
             'relaas_id.required' => 'Relaas Akta harus dipilih.',
             'step.required' => 'Langkah harus diisi.',
         ]);
 
         $this->service->update($id, $validated);
         notyf()->position('x', 'right')->position('y', 'top')->success('Log berhasil diperbarui.');
+
         return redirect()->route('relaas-logs.index');
     }
 
@@ -86,6 +95,7 @@ class NotaryRelaasLogsController extends Controller
     {
         $this->service->delete($id);
         notyf()->position('x', 'right')->position('y', 'top')->success('Log berhasil dihapus.');
+
         return redirect()->route('relaas-logs.index');
     }
 }

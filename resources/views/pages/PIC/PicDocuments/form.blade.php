@@ -95,22 +95,12 @@
                                         {{ isset($picDocument) && $picDocument->transaction_type === 'relaas' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
                                         {{ $relaas->client->fullname }} - {{ $relaas->transaction_code }} -
                                         {{ $relaas->akta_type->type }}
-<<<<<<< HEAD
-                                        
-=======
->>>>>>> 26429eb4f57bb0b816287d76baa999338bad938b
                                     </option>
                                 @endforeach
                             </select>
                         </div> --}}
-<<<<<<< HEAD
-                        <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction"/>
-=======
 
                         <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction" />
-
-                        {{-- Nama Penerima --}}
->>>>>>> 26429eb4f57bb0b816287d76baa999338bad938b
 
                         {{-- Tanggal Terima --}}
                         <div class="mb-3">

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\NotaryAktaTransaction;
 use App\Models\NotaryCost;
+use App\Models\NotaryRelaasAkta;
 use App\Models\PicDocuments;
 use App\Services\NotaryCostService;
 use Illuminate\Http\Request;
-use Mpdf\Mpdf;
 
 class NotaryCostController extends Controller
 {
@@ -22,6 +23,7 @@ class NotaryCostController extends Controller
     {
         $search = $request->get('search');
         $costs = $this->service->list(['search' => $search]);
+
         return view('pages.Biaya.TotalBiaya.index', compact('costs', 'search'));
     }
 
@@ -30,6 +32,7 @@ class NotaryCostController extends Controller
         $clients = Client::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->get();
         $picDocuments = PicDocuments::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->get();
         $cost = null;
+
         return view('pages.Biaya.TotalBiaya.form', compact('clients', 'picDocuments', 'cost'));
     }
 
@@ -58,9 +61,9 @@ class NotaryCostController extends Controller
             ]
         );
         $productCost = (int) str_replace('.', '', $request->product_cost);
-        $adminCost   = (int) str_replace('.', '', $request->admin_cost ?? 0);
-        $otherCost   = (int) str_replace('.', '', $request->other_cost ?? 0);
-        $amountPaid  = (int) str_replace('.', '', $request->amount_paid ?? 0);
+        $adminCost = (int) str_replace('.', '', $request->admin_cost ?? 0);
+        $otherCost = (int) str_replace('.', '', $request->other_cost ?? 0);
+        $amountPaid = (int) str_replace('.', '', $request->amount_paid ?? 0);
         $totalCost = $productCost + $adminCost + $otherCost;
         if ($amountPaid > $totalCost) {
             notyf()
@@ -71,7 +74,6 @@ class NotaryCostController extends Controller
             return back()->withInput();
         }
 
-
         // Ambil tanggal hari ini (format: 20251112)
         $today = now()->format('Ymd');
 
@@ -79,14 +81,15 @@ class NotaryCostController extends Controller
         $countToday = NotaryCost::whereDate('created_at', now())->count() + 1;
 
         // Generate kode dengan padding 3 digit
-        $paymentCode = 'N-' . $today . '-' . str_pad($countToday, 3, '0', STR_PAD_LEFT);
+        $paymentCode = 'N-'.$today.'-'.str_pad($countToday, 3, '0', STR_PAD_LEFT);
 
         $validated['payment_code'] = $paymentCode;
         $validated['notaris_id'] = auth()->user()->notaris_id;
 
         $this->service->create($validated);
 
-        notyf()->position('x', 'right')->position('y', 'top')->success("Biaya berhasil ditambahkan.");
+        notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil ditambahkan.');
+
         return redirect()->route('notary_costs.index');
     }
 
@@ -95,7 +98,10 @@ class NotaryCostController extends Controller
         $cost = $this->service->detail($id);
         $clients = Client::where('deleted_at', null)->get();
         $picDocuments = PicDocuments::where('deleted_at', null)->get();
-        return view('pages.Biaya.TotalBiaya.form', compact('cost', 'clients', 'picDocuments'));
+        $aktaTransaction = NotaryAktaTransaction::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->where('status', 'draft')->get();
+        $relaasTransaction = NotaryRelaasAkta::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->where('status', 'draft')->get();
+
+        return view('pages.Biaya.TotalBiaya.form', compact('cost', 'clients', 'picDocuments', 'aktaTransaction', 'relaasTransaction'));
     }
 
     // public function show($id)
@@ -133,16 +139,19 @@ class NotaryCostController extends Controller
         $validated['notaris_id'] = auth()->user()->notaris_id;
 
         $this->service->update($id, $validated);
-        notyf()->position('x', 'right')->position('y', 'top')->success("Biaya berhasil diubah.");
+        notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil diubah.');
+
         return redirect()->route('notary_costs.index');
     }
 
     public function destroy($id)
     {
         $this->service->delete($id);
-        notyf()->position('x', 'right')->position('y', 'top')->success("Biaya berhasil dihapus.");
+        notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil dihapus.');
+
         return back();
     }
+
     public function print($id)
     {
         $costs = $this->service->detail($id);
@@ -151,15 +160,15 @@ class NotaryCostController extends Controller
         $mpdf = new \Mpdf\Mpdf([
             'format' => 'A4', // A4 portrait
             // 'format' => 'A4-L', // jika ingin landscape
-            'margin_left'   => 15,
-            'margin_right'  => 15,
-            'margin_top'    => 10,
+            'margin_left' => 15,
+            'margin_right' => 15,
+            'margin_top' => 10,
             'margin_bottom' => 0,
             'tempDir' => storage_path('app/mpdf-temp'),
         ]);
 
         $html = view('pages.Biaya.TotalBiaya.print', compact('costs'))->render();
         $mpdf->WriteHTML($html);
-        $mpdf->Output("notary_cost_$id.pdf", "I");
+        $mpdf->Output("notary_cost_$id.pdf", 'I');
     }
 }

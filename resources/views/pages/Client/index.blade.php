@@ -137,8 +137,8 @@
                                             <td>
                                                 {{ $client->company_name ?? '-' }}
                                             </td>
-                                            <td>
-                                                {{ $client->address }}
+                                            <td title="{{ $client->address }}">
+                                                {{ \Illuminate\Support\Str::limit($client->address, 50, '...') }}
                                             </td>
                                             <td>
                                                 <span
