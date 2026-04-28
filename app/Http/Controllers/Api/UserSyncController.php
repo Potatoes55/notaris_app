@@ -7,7 +7,6 @@ use App\Models\Subscriptions;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class UserSyncController extends Controller
 {
@@ -20,25 +19,23 @@ class UserSyncController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'No users found',
-                    'data' => []
+                    'data' => [],
                 ], 404);
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'User data successfully retrieved',
-                'data' => $users
+                'data' => $users,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve user data',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
-
-
 
     // public function store(Request $request)
     // {
@@ -193,7 +190,6 @@ class UserSyncController extends Controller
     //         $payloadUser = $request->input('user');
     //         $payloadSub  = $payloadUser['subscription'] ?? [];
 
-
     //         $validatedUser = validator($payloadUser, [
     //             'notaris_id' => 'nullable',
     //             'email'      => 'required|email',
@@ -203,7 +199,6 @@ class UserSyncController extends Controller
     //             'address'    => 'required|string',
     //             'status'     => 'required|string',
     //         ])->validate();
-
 
     //         $user = User::where('email', $validatedUser['email'])
     //             ->orWhere('username', $validatedUser['username'])
@@ -228,7 +223,6 @@ class UserSyncController extends Controller
     //             'payment_date' => 'nullable',
     //             'status'      => 'required|string',
     //         ])->validate();
-
 
     //         $latestSub = Subscriptions::where('user_id', $user->id)
     //             ->orderBy('end_date', 'desc')
@@ -278,23 +272,23 @@ class UserSyncController extends Controller
             | AMBIL PAYLOAD
             */
             $payloadUser = $request->input('user');
-            $payloadSub  = $payloadUser['subscription'] ?? [];
+            $payloadSub = $payloadUser['subscription'] ?? [];
 
             /*
             | VALIDASI USER
             */
             $validatedUser = validator($payloadUser, [
                 'notaris_id' => 'nullable',
-                'email'      => 'required|email',
-                'username'   => 'required|string|max:255',
-                'password'   => 'nullable|string|min:6',
-                'phone'      => 'required|string',
-                'address'    => 'required|string',
-                'signup_at'  => 'nullable',
-                'active_at'  => 'nullable',
-                'status'     => 'required',
+                'email' => 'required|email',
+                'username' => 'required|string|max:255',
+                'access_code' => 'required|string|max:25',
+                'password' => 'nullable|string|min:6',
+                'phone' => 'required|string',
+                'address' => 'required|string',
+                'signup_at' => 'nullable',
+                'active_at' => 'nullable',
+                'status' => 'required',
             ])->validate();
-
 
             /*
             | CREATE / UPDATE USER
@@ -303,7 +297,7 @@ class UserSyncController extends Controller
                 ->orWhere('username', $validatedUser['username'])
                 ->first();
 
-            if (!empty($validatedUser['password'])) {
+            if (! empty($validatedUser['password'])) {
                 $validatedUser['password'] = $validatedUser['password'];
             } else {
                 unset($validatedUser['password']);
@@ -311,25 +305,24 @@ class UserSyncController extends Controller
 
             $user = $user ? tap($user)->update($validatedUser) : User::create($validatedUser);
 
-
             /*
             | VALIDASI SUBSCRIPTION
             */
             $validatedSub = validator($payloadSub, [
-                'id'          => 'nullable|integer',
-                'plan_id'     => 'nullable',
-                'start_date'  => 'required|date',
-                'end_date'    => 'required|date',
+                'id' => 'nullable|integer',
+                'plan_id' => 'nullable',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
                 'payment_date' => 'nullable',
-                'status'      => 'required',
+                'status' => 'required',
             ])->validate();
-
 
             /*
             | CASE 1: Jika ada subscription id → HARUS dibuat baru
             | Tapi cek dulu apakah id itu sudah ada (duplicate)
             */
-            if (!empty($validatedSub['id'])) {
+            // cek jika payload mengandung subscription menimpa atau create baru
+            if (! empty($validatedSub['id'])) {
 
                 $exists = Subscriptions::where('user_id', $user->id)
                     ->where('id', $validatedSub['id'])
@@ -355,11 +348,10 @@ class UserSyncController extends Controller
                     'message' => 'Subscription baru berhasil ditambahkan (ID custom).',
                     'data' => [
                         'user' => $user,
-                        'subscription' => $subscription
-                    ]
+                        'subscription' => $subscription,
+                    ],
                 ], 200);
             }
-
 
             /*
             | CASE 2: TIDAK ADA subscription.id
@@ -383,16 +375,15 @@ class UserSyncController extends Controller
                 ));
             }
 
-
             DB::commit();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Sync user & subscription berhasil.',
                 'data' => [
-                    'user'         => $user,
-                    'subscription' => $subscription
-                ]
+                    'user' => $user,
+                    'subscription' => $subscription,
+                ],
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -400,7 +391,7 @@ class UserSyncController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi error.',
-                'error'   => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
