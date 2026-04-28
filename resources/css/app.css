@@ -11,22 +11,24 @@ html, body {
 
 /* 2. SIDEBAR (NAVIGASI KIRI) */
 #sidenav-main {
-    width: 250px !important;
-    height: calc(100vh - 2rem) !important;
-    margin: 1rem 0 0 1.5rem !important;
-    background-color: #ffffff !important;
-    border-radius: 1rem !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    z-index: 1050 !important;
-    overflow-x: hidden !important;
-    transition: all 0.3s ease;
+    width: 235px !important;
+    height: calc(100vh - 32px) !important;
+    margin: 17px 0 16px 23px !important;
+    border-radius: 16px !important;
+    background: #fff !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    overflow: hidden !important;
+    -webkit-border-radius: 16px !important;
+    -moz-border-radius: 16px !important;
+    -ms-border-radius: 16px !important;
+    -o-border-radius: 16px !important;
 }
 
 /* Scrollbar dalam menu sidebar */
 #sidenav-collapse-main {
-    height: calc(100vh - 140px);
+    flex: 1;
     overflow-y: auto;
-    width: 100% !important;
+    padding-bottom: 20px;
 }
 
 #sidenav-collapse-main::-webkit-scrollbar { width: 4px; }
@@ -37,7 +39,7 @@ html, body {
 
 /* 3. KONTEN UTAMA */
 .main-content {
-    margin-left: 275px !important; 
+    margin-left: 250px !important; 
     min-height: 100vh;
     overflow-x: hidden !important;
     position: relative;
@@ -49,36 +51,46 @@ body.login-page .main-content {
     margin-left: 0 !important;
 }
 
-/* 4. MODAL & POPUP (FOKUS) */
+/* 4. MODAL & POPUP (FOKUS FIX) */
 .modal-backdrop {
+    /* Backdrop harus lebih tinggi dari sidebar (1000) */
     z-index: 1060 !important; 
 }
 
-/* Pastikan modal di depan backdrop */
 .modal {
+    /* Modal harus lebih tinggi dari backdrop (1060) */
     z-index: 1070 !important;
 }
 
-/* Matikan interaksi sidebar saat modal muncul */
-body.modal-open .sidenav {
+/* Fix Utama: Paksa sidebar turun ke belakang saat modal muncul */
+body.modal-open #sidenav-main {
     z-index: 1040 !important;
     pointer-events: none;
 }
 
 /* 5. ELEMEN UI (NAV LINK, CARD, DLL) */
 .sidenav .nav-link {
-    margin: 0.2rem 1rem !important;
-    padding: 0.675rem 1rem !important;
+    margin: 0.1rem 0.75rem !important;
+    padding: 0.55rem 0.75rem !important;
+    font-size: 13px;
     border-radius: 0.5rem !important;
     display: flex;
     align-items: center;
     transition: all 0.2s ease;
+    border-left: 4px solid transparent !important;
 }
 
 .sidenav .nav-link.active {
-    background-color: #ffffff !important;
-    color: #344767 !important;
-    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
+    background-color: #f6f9fc !important; 
+    color: #fb6340 !important;                   
+    font-weight: 700 !important;
+    border-left: 4px solid #fb6340 !important; 
+    box-shadow: none !important;
+    margin: 0.2rem 1rem !important; 
+}
+
+.sidenav .nav-link.active i {
+    color: #fb6340 !important;
 }
 
 .card {
@@ -94,15 +106,40 @@ body.modal-open .sidenav {
     }
 
     #sidenav-main {
-        transform: translateX(-110%) !important;
+    width: 260px !important; /* jangan kecil */
+    margin-left: 0 !important;
         position: fixed !important;
         left: 0 !important;
         top: 0 !important;
         margin-left: 0 !important;
         height: 100vh !important;
-        z-index: 9999 !important;
+        z-index: 1050 !important; /* Standar mobile */
         visibility: hidden;
     }
+
+.btn {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+}
+
+/* tombol logout / cari */
+button,
+.btn-sm {
+    padding: 5px 8px !important;
+    font-size: 12px !important;
+}
+
+/* icon sidebar biar gak gede */
+.sidenav .icon {
+    width: 28px !important;
+    height: 28px !important;
+}
+
+/* text menu */
+.sidenav .nav-link {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+}
 
     body.g-sidenav-pinned #sidenav-main {
         transform: translateX(0) !important;
@@ -110,21 +147,72 @@ body.modal-open .sidenav {
         margin-left: 1rem !important;
     }
 
-    /* Burger icon */
+    /* Pastikan di mobile pun kalau modal buka, sidebar tetap ngalah */
+    body.modal-open #sidenav-main {
+        z-index: 1040 !important;
+    }
+
     .navbar #iconNavbarSidenav {
         display: flex !important;
         z-index: 10000 !important;
     }
 }
 
-/* Warna teks dan icon jadi oranye pas aktif */
-.sidenav .nav-link.active {
-    background-color: #f6f9fc !important; 
-    color: #fb6340 !important;           
-    font-weight: 700 !important;
-    border-left: 4px solid #fb6340;       
+/* Pastikan background oranye tidak menutupi sidebar saat modal buka */
+.min-height-300.bg-primary {
+    z-index: 0 !important;
 }
 
-.sidenav .nav-link.active i {
-    color: #fb6340 !important;
+/* Fix tambahan agar modal yang dipush ke luar body tidak terpotong */
+body.modal-open {
+    overflow: hidden !important;
+    padding-right: 0 !important;
 }
+
+/* HEADER PROFIL */
+.sidenav-header {
+    padding: 16px !important;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* WRAPPER FOTO + TEXT */
+.sidenav-header .d-flex {
+    align-items: center !important;
+    gap: 8px;
+}
+
+/* FOTO */
+.sidenav-header img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* TEXT WRAPPER */
+.sidenav-header .flex-column {
+    justify-content: center;
+    min-width: 0;
+}
+
+/* NAMA */
+.sidenav-header h6 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    line-height: 1.1;
+}
+
+/* EMAIL */
+.sidenav-header p {
+    font-size: 12px;
+    margin: 0;
+    color: #6c757d;
+    line-height: 1.3;
+}
+
+/* NAV LINK */
+.sidenav .nav-link {
+    font-size: 13px;
+}
+

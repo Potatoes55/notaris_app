@@ -3,13 +3,13 @@ class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-
 id="sidenav-main" 
 style="height: 100vh; overflow: hidden;">
 
-<div class="sidenav-header flex-shrink-0 px-3" style="height:80px;">
+<div class="sidenav-header flex-shrink-0 px-3 py-3">
 
-    <div class="d-flex align-items-center h-100 gap-3 w-100">
+    <div class="d-flex align-items-center gap-3">
 
         <!-- FOTO -->
         <div class="rounded-circle overflow-hidden flex-shrink-0"
-            style="width:48px; height:48px;">
+            style="width:50px; height:50px;">
             <img 
                 src="{{ auth()->user()->notaris && auth()->user()->notaris->image
                     ? (filter_var(auth()->user()->notaris->image, FILTER_VALIDATE_URL)
@@ -20,7 +20,7 @@ style="height: 100vh; overflow: hidden;">
         </div>
 
         <!-- TEXT -->
-        <div class="flex-grow-1 overflow-hidden" style="min-width:0;">
+        <div class="d-flex flex-column justify-content-center overflow-hidden" style="min-width:0;">
             <h6 class="mb-0 text-sm text-truncate">
                 Hi, {{ auth()->user()->username }}
             </h6>

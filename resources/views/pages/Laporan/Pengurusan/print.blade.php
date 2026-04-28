@@ -171,9 +171,10 @@
             </tr>
             <tr>
                 <td>Notaris</td>
-                <td>{{ $processes[0]->notaris->display_name }}</td>
+                {{-- Ganti $processes[0] jadi $processes->first() --}}
+                <td>{{ $processes->first()->notaris->display_name ?? '-' }}</td>
                 <td>Kode</td>
-                <td>{{ $processes[0]->pic_document->pic_document_code }}</td>
+                <td>{{ $processes->first()->pic_document->pic_document_code ?? '-' }}</td>
             </tr>
         </table>
     </div>

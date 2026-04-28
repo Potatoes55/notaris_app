@@ -190,9 +190,6 @@
     </table>
 
     <!-- JUDUL -->
-    <div class="header">
-        <h2 style="text-transform: capitalize">Laporan Pembayaran</h2>
-    </div>
     <div class="info">
         <table class="info-table">
             <tr>
@@ -203,63 +200,55 @@
             </tr>
             <tr>
                 <td style="font-weight: bold">Notaris</td>
-                <td>{{ $costs[0]->notaris->display_name }}</td>
+                <td>{{ $notaris->display_name ?? '-' }}</td>
+                
                 <td>Kode Dokumen</td>
-                <td>{{ $costs[0]->picDocument->pic_document_code }}</td>
+                <td>{{ $costs->first()->picDocument->pic_document_code ?? '-' }}</td>
             </tr>
         </table>
     </div>
 
-    <!-- TABEL DATA -->
-    <table>
-        <thead>
+<table>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Kode Pembayaran</th>
+            <th>Nama Klien</th>
+            <th>Tanggal Pelunasan</th>
+            <th>Total Biaya</th>
+            <th>Total Pembayaran</th>
+            <th>Piutang</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($costs as $payment)
+            @php
+                $status = $payment->payment_status;
+                $statusText = match ($status) {
+                    'full' => 'Lunas',
+                    'partial' => 'Bayar Sebagian',
+                    'dp' => 'DP',
+                    default => ucfirst($status),
+                };
+            @endphp
             <tr>
-                <th>No</th>
-                <th>Kode Pembayaran</th>
-                <th>Nama Klien</th>
-                <th>Tanggal Pelunasan</th>
-                <th>Total Biaya</th>
-                <th>Total Pembayaran</th>
-                <th>Piutang</th>
-                <th>Status</th>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $payment->payment_code }}</td>
+                <td>{{ $payment->client->fullname ?? '-' }}</td>
+                <td>{{ $payment->paid_date ? \Carbon\Carbon::parse($payment->paid_date)->format('d-m-Y') : '-' }}</td>
+                <td class="amount">Rp {{ number_format($payment->total_cost, 0, ',', '.') }}</td>
+                <td class="amount">Rp {{ number_format($payment->amount_paid, 0, ',', '.') }}</td>
+                <td class="amount">Rp {{ number_format($payment->total_cost - $payment->amount_paid, 0, ',', '.') }}</td>
+                <td>{{ $statusText }}</td>
             </tr>
-        </thead>
-        <tbody>
-            @forelse ($costs as $payment)
-                @php
-                    $status = $payment->payment_status;
-                    $badgeColor = match ($status) {
-                        'full' => 'success',
-                        'partial' => 'warning',
-                        'dp' => 'info',
-                        default => 'secondary',
-                    };
-                    $statusText = match ($status) {
-                        'full' => 'Lunas',
-                        'partial' => 'Bayar Sebagian',
-                        'dp' => 'DP',
-                        default => ucfirst($status),
-                    };
-                @endphp
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $payment->payment_code }}</td>
-                    <td>{{ $payment->client->fullname ?? '-' }}</td>
-                    <td>{{ $payment->paid_date ? \Carbon\Carbon::parse($payment->paid_date)->format('d-m-Y') : '-' }}
-                    </td>
-                    <td class="amount">Rp {{ number_format($payment->total_cost, 0, ',', '.') }}</td>
-                    <td class="amount">Rp {{ number_format($payment->amount_paid, 0, ',', '.') }}</td>
-                    <td class="amount">Rp
-                        {{ number_format($payment->total_cost - $payment->amount_paid, 0, ',', '.') }}</td>
-                    <td>{{ $statusText }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="8" style="text-align:center;">Tidak ada data ditemukan</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+        @empty
+            <tr>
+                <td colspan="8" style="text-align:center;">Tidak ada data ditemukan untuk periode ini</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
 </body>
 
 </html>

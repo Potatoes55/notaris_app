@@ -9,11 +9,13 @@
             <div class="card shadow-sm border-0 pb-0">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                     <h5>Laporan Pembayaran</h5>
-                    @if (request()->filled('start_date') || request()->filled('end_date') || request()->filled('status'))
-                        <a href="{{ route('report-payment.print', request()->all()) }}" target="_blank"
-                            class="btn btn-danger mb-0 btn-sm">
-                            <i class="bi fs-6 bi-file-earmark-pdf me-1"></i> Cetak PDF
-                        </a>
+                    @if (request()->anyFilled(['start_date', 'end_date', 'status']))
+<a href="{{ route('report-payment.print', request()->all()) }}" 
+   target="_blank"
+   class="btn btn-danger mb-0 btn-sm"
+   onclick="return confirmPrint(event, this)">
+   <i class="bi bi-file-earmark-pdf"></i> PDF
+</a>
                     @endif
                 </div>
                 <hr>
@@ -117,4 +119,29 @@
             </div>
         </div>
     </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+<script>
+function confirmPrint(event, element) {
+    const table = document.querySelector('table');
+
+    if (table && table.innerText.includes('Tidak ada data')) {
+        event.preventDefault();
+        const notyf = new Notyf({
+            duration: 4000,
+            position: { x: 'right', y: 'top' },
+            types: [{
+                type: 'error',
+                background: '#f5365c',
+                dismissible: true
+            }]
+        });
+
+        notyf.error('Data Pada Rentang Jarak Tersebut Kosong.');
+        return false;
+    }
+    return true;
+}
+</script>
 @endsection
