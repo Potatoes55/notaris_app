@@ -42,12 +42,15 @@
                                 class="form-select @error('relaas_id') is-invalid @enderror">
                                 <option value="" hidden>Pilih Transaksi Akta</option>
                                 @foreach ($relaasAktas as $ra)
+                                        {{-- <option value="{{ $ra->id }}"
+                                            {{ isset($data) && $data->relaas_id == $ra->id ? 'selected' : '' }}>
+                                            {{ $ra->client->fullname }} - {{ $ra->transaction_code }} - {{ $ra->title }}
+                                        </option> --}}
                                     <option value="{{ $ra->id }}"
-                                        {{ old('relaas_id', $data->relaas_id ?? '') == $ra->id ? 'selected' : '' }}>
-                                        {{ $ra->client_code }}
-                                        {{-- ({{ $ra->notaris->display_name }}) --}}
-                                        - {{ $ra->title }}
+                                        {{ isset($data) && $data->relaas_id == $ra->id ? 'selected' : '' }}>
+                                        {{ $ra->client->fullname }} - {{ $ra->transaction_code }} - {{ $ra->title }}
                                     </option>
+
                                 @endforeach
                             </select>
                             @error('relaas_id')
@@ -84,4 +87,59 @@
             </div>
         </div>
     </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const clientSelect = document.getElementById('client_code');
+        const relaasSelect = document.getElementById('relaas_id');
+        
+        // Ambil ID yang tersimpan jika dalam mode EDIT atau OLD input
+        const selectedRelaasId = "{{ old('relaas_id', $data->relaas_id ?? '') }}";
+
+        function updateRelaasOptions() {
+            const selectedClientCode = clientSelect.value;
+            
+            // Bersihkan dropdown
+            relaasSelect.innerHTML = '<option value="" hidden>Pilih Transaksi Akta</option>';
+
+            // Filter data berdasarkan client_code
+            const filtered = relaasData.filter(item => {
+                return item.client && String(item.client.client_code) === String(selectedClientCode);
+            });
+
+            // Isi dropdown
+            filtered.forEach(ra => {
+                const option = document.createElement('option');
+                option.value = ra.id;
+                option.textContent = `${ra.client.fullname} - ${ra.transaction_code} - ${ra.title}`;
+                
+                // Set 'selected' jika ID cocok
+                if (String(ra.id) === String(selectedRelaasId)) {
+                    option.selected = true;
+                }
+                
+                relaasSelect.appendChild(option);
+            });
+        }
+
+        // Jalankan saat client dipilih
+        clientSelect.addEventListener('change', updateRelaasOptions);
+
+        // Jika pakai Select2, gunakan event khusus Select2
+        $(clientSelect).on('select2:select', function() {
+            updateRelaasOptions();
+        });
+
+        // Jalankan sekali saat halaman load (untuk mode Edit)
+        if (clientSelect.value) {
+            updateRelaasOptions();
+        }
+    });
+</script>
+@endpush
+
+
+
 @endsection
+
