@@ -32,9 +32,11 @@ class NotaryAktaLogsController extends Controller
         $notaris = Notaris::all();
         $clients = Client::all();
         $transactions = NotaryAktaTransaction::all();
+
+        // dd($notaris, $clients, $transactions);
+
         return view('pages.BackOffice.AktaLogs.form', compact('notaris', 'clients', 'transactions'));
     }
-
 
     // public function generateRegistrationCode(int $notarisId, int $clientId): string
     // {
@@ -50,7 +52,6 @@ class NotaryAktaLogsController extends Controller
 
     //     return 'N' . '-' . $today . '-' . $notarisId . '-' . $clientId . '-' . $countToday;
     // }
-
 
     public function store(Request $request)
     {
@@ -68,10 +69,10 @@ class NotaryAktaLogsController extends Controller
 
         $data['notaris_id'] = auth()->user()->notaris_id;
 
-
         $this->service->create($data);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil menambahkan log.');
+
         return redirect()->route('akta-logs.index');
     }
 
@@ -81,6 +82,7 @@ class NotaryAktaLogsController extends Controller
         $notaris = Notaris::all();
         $clients = Client::all();
         $transactions = NotaryAktaTransaction::all();
+
         return view('pages.BackOffice.AktaLogs.form', compact('log', 'notaris', 'clients', 'transactions'));
     }
 
@@ -110,6 +112,7 @@ class NotaryAktaLogsController extends Controller
         $this->service->delete($id);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil menghapus log.');
+
         return redirect()->route('akta-logs.index');
     }
 }

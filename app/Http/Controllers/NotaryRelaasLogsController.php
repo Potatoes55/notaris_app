@@ -30,6 +30,8 @@ class NotaryRelaasLogsController extends Controller
         $relaasAktas = NotaryRelaasAkta::with('client')->get();
         $clients = Client::whereNull('deleted_at')->get();
 
+        // dd($relaasAktas, $clients);
+
         return view('pages.BackOffice.RelaasAkta.AktaLogs.form', compact('relaasAktas', 'clients'));
     }
 
