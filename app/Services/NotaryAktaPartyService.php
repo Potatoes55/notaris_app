@@ -15,17 +15,22 @@ class NotaryAktaPartyService
         $this->repo = $repo;
     }
 
-    public function searchAkta(array $filters)
-    {
-        return NotaryAktaTransaction::query()->where('notaris_id', auth()->user()->notaris_id)
-            ->when(!empty($filters['client_code']), function ($query) use ($filters) {
-                $query->where('client_code', $filters['client_code']);
-            })
-            ->when(!empty($filters['akta_number']), function ($query) use ($filters) {
+public function searchAkta(array $filters)
+{
+    return NotaryAktaTransaction::query()
+        ->where('notaris_id', auth()->user()->notaris_id)
+        ->where(function ($query) use ($filters) {
+            
+            if (!empty($filters['transaction_code'])) {
+                $query->where('transaction_code', $filters['transaction_code']);
+            }
+
+            if (!empty($filters['akta_number'])) {
                 $query->orWhere('akta_number', $filters['akta_number']);
-            })
-            ->get();
-    }
+            }
+        })
+        ->get();
+}
 
     public function findParty(int $id)
     {

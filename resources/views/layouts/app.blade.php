@@ -4,131 +4,109 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('img/favicon.png') }}">
 
     <title>@yield('title', 'Notaris App')</title>
+    
+    {{-- Fonts & Icons --}}
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <!-- Nucleo Icons -->
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
-    <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- CSS Files -->
+    
+    {{-- CSS Dasar Argon --}}
     <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    {{-- CSS UTAMA (Vite) - Berisi app.css yang lu kasih tadi --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+<style>
+    /* 1. Paksa Modal & Layar Hitam ke angka tertinggi (di atas segalanya) */
+    .modal-backdrop { 
+        z-index: 10000 !important; 
+        background-color: #000 !important;
+        opacity: 0.5 !important;
+    }
+    .modal { 
+        z-index: 10001 !important; 
+    }
+
+    /* 2. Sidebar tetap nampil tapi di bawah angka 10000 */
+    body.modal-open #sidenav-main { 
+        z-index: 9999 !important; /* Satu angka di bawah backdrop */
+        opacity: 1 !important; 
+        visibility: visible !important;
+        pointer-events: none; 
+    }
+
+    /* 3. Pastikan konten utama tidak mengunci layer modal */
+    body.modal-open .main-content {
+        z-index: auto !important;
+    }
+</style>
 </head>
 
 <body class="g-sidenav-show bg-light">
     @guest
         @yield('content')
     @endguest
-    @php
-        $publicRoutes = ['akta.qr.show'];
-    @endphp
+
+    @php $publicRoutes = ['akta.qr.show']; @endphp
 
     @auth
         @if (in_array(request()->route()->getName(), $publicRoutes))
             @yield('content')
         @else
-            {{-- DASHBOARD NORMAL --}}
+            {{-- Latar Oranye --}}
             <div class="min-height-300 bg-primary position-absolute w-100"></div>
-
+            
+            {{-- SIDEBAR --}}
             @include('layouts.navbars.auth.sidenav')
 
+            {{-- KONTEN UTAMA --}}
             <main class="main-content border-radius-lg">
                 @yield('content')
             </main>
         @endif
     @endauth
 
-<script>
-    // Fix buat cegah error PerfectScrollbar sebelum file argon-dashboard.js jalan
-    if (!document.querySelector('.main-content')) {
-        let dummy = document.createElement('div');
-        dummy.className = 'main-content';
-        dummy.style.display = 'none';
-        document.body.appendChild(dummy);
-    }
-</script>
-
+    {{-- CORE JS --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
-            }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-        }
-    </script>
-    <!-- Github buttons -->
+    
+    {{-- PLUGIN & DASHBOARD --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-<script>
-    (function() {
-        // Cek & buat elemen bayangan secara instan
-        if (!document.querySelector('.main-content')) {
-            var main = document.createElement('div');
-            main.className = 'main-content';
-            main.style.display = 'none';
-            document.body.appendChild(main);
-        }
-        if (!document.querySelector('.sidenav')) {
-            var side = document.createElement('nav');
-            side.className = 'sidenav';
-            side.style.display = 'none';
-            document.body.appendChild(side);
-        }
-    })();
-</script>
-<script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         $(document).ready(function() {
-            // otomatis apply Select2 ke semua select yang punya class .select2
-            $('.select2').select2({
-                placeholder: "Pilih Klien",
-                allowClear: true,
-                theme: 'bootstrap-5',
-                width: '100%'
+            // Fix: Bersihkan sisa modal saat ditutup agar tidak nge-hang
+            $(document).on('hidden.bs.modal', '.modal', function () {
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('padding-right', '');
+            });
+
+            // Toggle Sidebar Mobile
+            $('#iconNavbarSidenav').on('click', function() {
+                $('body').toggleClass('g-sidenav-pinned');
             });
         });
     </script>
-    <script>
-        AOS.init();
-    </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var iconNavbarSidenav = document.getElementById('iconNavbarSidenav');
-    var body = document.body;
-
-    if (iconNavbarSidenav) {
-        // Gabungkan click dan touchstart agar di HP lancar
-        ['click', 'touchstart'].forEach(evt => {
-            iconNavbarSidenav.addEventListener(evt, function(e) {
-                if(evt === 'touchstart') e.preventDefault();
-                body.classList.toggle('g-sidenav-pinned');
-            });
-        });
-    }
-});
-</script>
-    
     @stack('js')
-</body>
 
+    {{-- TEMPAT MODAL (Slot Krusial untuk QR Code) --}}
+    @stack('modal_luar')
+
+</body>
 </html>
