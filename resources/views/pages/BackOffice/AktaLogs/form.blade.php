@@ -20,7 +20,7 @@
                             @method('PUT')
                         @endif
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="client_code" class="form-label text-sm">Klien</label>
                             <select name="client_code" id="client_code" class="form-select select2">
                                 <option value="" hidden>Pilih Klien</option>
@@ -39,11 +39,17 @@
                                 @foreach ($transactions as $trx)
                                     <option value="{{ $trx->id }}"
                                         {{ isset($log) && $log->akta_transaction_id == $trx->id ? 'selected' : '' }}>
-                                        {{ $trx->transaction_code }} - {{ $trx->akta_type->type ?? '-' }}
+                                        {{ $trx->client->fullname }} - { { $trx->transaction_code }} - {{ $trx->akta_type->type ?? '-' }}
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
+                            <x-log-akta :clients="$clients" :transactions="$transactions" />
+
+
+
+
+
 
                         {{-- <div class="mb-3">
                         <label for="client_code" class="form-label">Registration Code</label>
@@ -71,3 +77,7 @@
         </div>
     </div>
 @endsection
+
+
+
+
