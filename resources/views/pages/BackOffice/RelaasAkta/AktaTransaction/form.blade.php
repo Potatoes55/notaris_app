@@ -115,7 +115,7 @@
                             @enderror
                         </div>
 
-                        <a href="{{ route('relaas-aktas.index') }}" class="btn btn-secondary">Kembali</a>
+                        <a href="{{ route('relaas-aktas.selectClient', ['client_id' => request('client_id')]) }}" class="btn btn-secondary">Kembali</a>
                         <button type="submit" class="btn btn-primary">{{ isset($data) ? 'Ubah' : 'Simpan' }}</button>
                     </form>
                 </div>

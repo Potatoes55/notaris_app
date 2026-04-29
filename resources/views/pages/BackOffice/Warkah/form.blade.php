@@ -81,7 +81,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <a href="{{ route('warkah.index', $client->id) }}" class="btn btn-secondary">Kembali</a>
+                            <a href="{{ route('warkah.selectClient', $client->id) }}" class="btn btn-secondary">Kembali</a>
                             <button type="submit"
                                 class="btn btn-primary">{{ isset($document) ? 'Ubah' : 'Simpan' }}</button>
                         </div>
