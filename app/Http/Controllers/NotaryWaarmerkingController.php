@@ -18,7 +18,7 @@ class NotaryWaarmerkingController extends Controller
     public function index(Request $request)
     {
         $filters = $request->only(['legalisasi_number', 'sort']);
-        $perPage = $request->get('perPage', 1);
+        $perPage = $request->get('perPage', 10);
 
         $data = $this->service->list($filters, $perPage);
 

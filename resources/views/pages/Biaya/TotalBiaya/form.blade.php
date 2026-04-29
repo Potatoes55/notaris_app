@@ -36,7 +36,7 @@
                             </select>
                             @error('client_code')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @enderrorgit 
                         </div>
 
                         {{-- Dokumen --}}
@@ -57,9 +57,7 @@
                             @error('pic_document_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
-
-                        <x-pilih-transaksi :transactions="$transactions" :selectedTransactionId="old('transaction_id', $cost->transaction_id ?? '')" />
+                        </div>                  
                         {{-- Payment Code --}}
                         {{-- <div class="mb-3">
                         <label for="payment_code" class="form-label text-sm">Kode Pembayaran</label>
