@@ -57,6 +57,7 @@ class NotaryAktaLogsController extends Controller
     {
         $data = $request->validate([
             // 'notaris_id' => 'required|exists:notaris,id',
+
             'client_code' => 'required',
             'akta_transaction_id' => 'required',
             'step' => 'required|string',

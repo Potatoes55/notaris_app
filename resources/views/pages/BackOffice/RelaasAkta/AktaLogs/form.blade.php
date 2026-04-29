@@ -13,7 +13,6 @@
                 </div>
                 <hr>
                 <div class="card-body px-4 pt-0 pb-2">
-                    @dump($relaasAktas, $clients);
                     <form action="{{ isset($data) ? route('relaas-logs.update', $data->id) : route('relaas-logs.store') }}"
                         method="POST">
                         @csrf
@@ -27,8 +26,7 @@
                             <select name="client_code" id="client_code" class="form-select select2">
                                 <option value="" hidden>Pilih Klien</option>
                                 @foreach ($clients as $client)
-                                    <option value="{{ $client->client_code }}"
-                                        {{-- {{ isset($data) && $data->client_code == $client->client_code ? 'selected' : '' }}> --}}
+                                    <option value="{{ $client->client_code }}">
                                         {{ $client->fullname }} - {{ $client->client_code }}
                                     </option>
                                 @endforeach
@@ -43,13 +41,8 @@
                                 class="form-select @error('relaas_id') is-invalid @enderror">
                                 <option value="" hidden>Pilih Transaksi Akta</option>
                                 @foreach ($relaasAktas as $ra)
-                                        {{-- <option value="{{ $ra->id }}"
-                                            {{ isset($data) && $data->relaas_id == $ra->id ? 'selected' : '' }}>
-                                            {{ $ra->client->fullname }} - {{ $ra->transaction_code }} - {{ $ra->title }}
-                                        </option> --}}
-                                    <option value="{{ $ra->id }}"
-                                        {{ isset($data) && $data->relaas_id == $ra->id ? 'selected' : '' }}>
-                                        {{ $ra->client->fullname }} - {{ $ra->transaction_code }} - {{ $ra->title }}
+                                    <option value="{{ $ra->id }}">
+                                        {{ $ra->client->fullname }} - {{ $ra->transaction_code }} - {{ $ra->title ?? '-' }}
                                     </option>
 
                                 @endforeach

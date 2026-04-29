@@ -1,6 +1,6 @@
 <div>
 <label for="select_client" class="form-label text-sm">Klien <span class="text-danger">*</span></label>
-<select name="select_client" id="select_client" class="form-select">
+<select name="client_code" id="select_client" class="form-select">
     <option value="" hidden>Pilih Klien</option>
     @foreach ($clients as $client)
         <option value="{{ $client->client_code }}">
@@ -8,22 +8,22 @@
         </option>
     @endforeach
 </select>
-@error('select_client')
+@error('client_code')
     <div class="invalid-feedback">{{ $message }}</div>
 @enderror
 </div>
 
 <div class="mb-3">
     <label for="select_transaction" class="form-label text-sm">Transaksi Akta <span class="text-danger">*</span></label>
-    <select name="select_transaction" id="select_transaction" class="form-select">
+    <select name="akta_transaction_id" id="select_transaction" class="form-select">
         <option value="" hidden>Pilih Transaksi Akta</option>
         @foreach ($transactions as $trx)
-            <option value="{{ $trx->id }}" 
+            <option value="{{ $trx->id }}" >
                 {{ $trx->client->fullname }} - {{ $trx->transaction_code }} - {{ $trx->akta_type->type ?? '-' }}
             </option>
         @endforeach
     </select>
-    @error('select_transaction')
+    @error('akta_transaction_id')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
 </div>
