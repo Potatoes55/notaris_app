@@ -93,7 +93,7 @@
                                 @foreach ($relaasTransaction as $relaas)
                                     <option value="{{ $relaas->id }}"
                                         {{ isset($picDocument) && $picDocument->transaction_type === 'relaas' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
-                                        {{ $relaas->client->fullname }} - {{ $relaasTransaction->transaction_code }} -
+                                        {{ $relaas->client->fullname }} - {{ $relaas->transaction_code }} -
                                         {{ $relaas->akta_type->type }}
                                     </option>
                                 @endforeach
@@ -101,7 +101,6 @@
                         </div> --}}
 
                         <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction" />
-                        
 
                         {{-- Tanggal Terima --}}
                         <div class="mb-3">

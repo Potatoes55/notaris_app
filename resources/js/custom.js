@@ -1,3 +1,17 @@
+(function() {
+  const originalAddEventListener = EventTarget.prototype.addEventListener;
+
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (type === 'touchstart' || type === 'touchmove' || type === 'wheel') {
+      if (typeof options === 'object') {
+        options.passive = true;
+      } else {
+        options = { passive: true };
+      }
+    }
+    return originalAddEventListener.call(this, type, listener, options);
+  };
+})();
 "use strict";
 (function() {
   var isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
