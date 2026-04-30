@@ -36,7 +36,7 @@
                             </select>
                             @error('client_code')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                            @enderrorgit 
+                            @enderror
                         </div>
 
                         {{-- Dokumen --}}
@@ -183,10 +183,7 @@
             </div>
         </div>
     </div>
-
-@endsection
-
-@push('js')
+    @push('js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const currencyInputs = document.querySelectorAll('input.currency');
@@ -231,3 +228,7 @@
         });
     </script>
 @endpush
+
+@endsection
+
+
