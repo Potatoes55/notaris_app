@@ -17,18 +17,18 @@
                     <form id="picHandoverForm" method="POST" action="{{ route('pic_handovers.store') }}" enctype="multipart/form-data">
                         @csrf
                         {{-- Tipe Transaksi --}}
-                        {{-- <div class="mb-3">
+                        <div class="mb-3">
                             <label for="transaction_type" class="form-label text-sm">Tipe Transaksi <span
                                     class="text-danger">*</span></label>
                             <select name="transaction_type" id="transaction_type"
-                                class="form-select @error('transaction_type') is-invalid @enderror"">
+                                class="form-select @error('transaction_type') is-invalid @enderror">
                                 <option value="" hidden>Pilih Dokumen</option>
                                 <option value="akta"
-                                    {{ old('transaction_type', $picDocument->transaction_type ?? '') == 'akta' ? 'selected' : '' }}>
+                                    {{ old('transaction_type', $pic_handover->picDocument->transaction_type ?? '') == 'akta' ? 'selected' : '' }}>
                                     Notaris
                                 </option>
                                 <option value="ppat"
-                                    {{ old('transaction_type', $picDocument->transaction_type ?? '') == 'ppat' ? 'selected' : '' }}>
+                                    {{ old('transaction_type', $pic_handover->picDocument->transaction_type ?? '') == 'ppat' ? 'selected' : '' }}>
                                     PPAT
                                 </option>
                             </select>
@@ -37,15 +37,18 @@
                             @enderror
                         </div>
 
+                        {{-- Input tersembunyi untuk menyimpan pic_document_id yang dibutuhkan oleh Controller --}}
+                        <input type="hidden" name="pic_document_id" id="pic_document_id" value="{{ old('pic_document_id', $pic_handover->pic_document_id ?? '') }}">
+
                         {{-- Akta Transaction --}}
-                        {{-- <div class="mb-3" id="akta_section" style="display: none;">
-                            <label for="akta_transaction_id" class="form-label text-sm">Dokumen Akta </label>
-                            <select id="akta_transaction_id" name="akta_transaction_id"
-                                class="form-select @error('akta_transaction_id') is-invalid @enderror">
+                        <div class="mb-3" id="akta_section" style="display: none;">
+                            <label for="akta_select" class="form-label text-sm">Dokumen Akta </label>
+                            <select id="akta_select" 
+                                class="form-select @error('pic_document_id') is-invalid @enderror">
                                 <option value="" hidden>Pilih Dokumen Akta</option>
                                 @foreach ($aktaDocuments as $akta)
                                     <option value="{{ $akta->id }}"
-                                        {{ isset($picDocument) && $picDocument->transaction_type === 'akta' ? 'selected' : '' }}>
+                                        {{ old('pic_document_id', $pic_handover->pic_document_id ?? '') == $akta->id ? 'selected' : '' }}>
                                         {{ $akta->client->fullname }} - {{ $akta->pic_document_code }} -
                                         {{ $akta->transaction_type }}
                                         {{ $akta->title  }}
@@ -55,28 +58,29 @@
                             <small class="text-muted">
                                 Format : Nama Klien – Kode Transaksi – Jenis Akta
                             </small>
-                            @error('transaction_id')
+                            @error('pic_document_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div> --}}
+                        </div>
 
                         {{-- Relaas Transaction --}}
-                        {{-- <div class="mb-3" id="relaas_section" style="display: none;">
-                            <label for="ppat_transaction_id" class="form-label text-sm">Dokumen PPAT</label>
-                            <select id="ppat_transaction_id" name="ppat_transaction_id"
-                                class="form-select @error('ppat_transaction_id') is-invalid @enderror">
+                         <div class="mb-3" id="relaas_section" style="display: none;">
+                            <label for="ppat_select" class="form-label text-sm">Dokumen PPAT</label>
+                            <select id="ppat_select" 
+                                class="form-select @error('pic_document_id') is-invalid @enderror">
                                 <option value="" hidden>Pilih Dokumen PPAT</option>
                                 @foreach ($ppatDocuments as $relaas)
                                     <option value="{{ $relaas->id }}"
-                                        {{ isset($picDocument) && $picDocument->transaction_type === 'relaas' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
-                                        {{ $relaas->client->fullname }} - {{ $relaas->transaction_code }} -
-                                        {{ $relaas->akta_type->type }}
+                                        {{ old('pic_document_id', $pic_handover->pic_document_id ?? '') == $relaas->id ? 'selected' : '' }}>
+                                        {{ $relaas->client->fullname }} - {{ $relaas->pic_document_code }} -
+                                        {{ $relaas->transaction_type }}
+                                        {{ $relaas->title  }}
                                         
                                     </option>
                                 @endforeach
                             </select>
-                        </div>  --}}
-                        <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction"/>
+                        </div>
+
                     
                         
 
@@ -137,9 +141,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const typeSelect = document.getElementById('transaction_type');
-            const akta = document.getElementById('akta_transaction_id');
-            const ppat = document.getElementById('ppat_transaction_id');
-
+            const aktaSelect = document.getElementById('akta_select');
+            const ppatSelect = document.getElementById('ppat_select');
+            const hiddenInput = document.getElementById('pic_document_id');
+            
             const aktaSection = document.getElementById('akta_section');
             const relaasSection = document.getElementById('relaas_section');
 
@@ -147,7 +152,19 @@
                 const value = typeSelect.value;
                 aktaSection.style.display = value === 'akta' ? 'block' : 'none';
                 relaasSection.style.display = value === 'ppat' ? 'block' : 'none';
+                
+                // Sinkronkan nilai input hidden berdasarkan bagian yang aktif
+                hiddenInput.value = (value === 'akta') ? aktaSelect.value : (value === 'ppat' ? ppatSelect.value : '');
             }
+
+            // Listener untuk memperbarui input hidden saat pilihan dropdown berubah
+            aktaSelect.addEventListener('change', function() {
+                hiddenInput.value = this.value;
+            });
+
+            ppatSelect.addEventListener('change', function() {
+                hiddenInput.value = this.value;
+            });
 
             toggleSections();
             typeSelect.addEventListener('change', toggleSections);
