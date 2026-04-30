@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
-use App\Models\ActivityLog;
 use App\Models\Notaris;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -35,23 +32,18 @@ class LoginController extends Controller
                     ->position('x', 'right')
                     ->position('y', 'top')
                     ->warning('Akun kamu belum aktif. Silakan hubungi admin untuk aktivasi.');
+
                 return redirect()->route('login');
             }
 
+            $lastSubscription = $user->subscriptions()->latest('end_date')->first();
 
-            $lastSubscription = $user->subscriptions()
-                ->latest('end_date')
-                ->first();
+            // Jika subscription sudah berakhir, hapus access_code di tabel subscription
+            if ($lastSubscription && \Illuminate\Support\Carbon::parse($lastSubscription->end_date)->isPast()) {
+                $user->update(['access_code' => null]);
 
-            if (!$lastSubscription || $lastSubscription->end_date < now()) {
-                Auth::logout();
-
-                notyf()
-                    ->position('x', 'right')
-                    ->position('y', 'top')
-                    ->warning('Akun anda tidak memiliki subscription aktif atau sudah kadaluarsa.');
-
-                return redirect()->route('login');
+                notyf()->position('x', 'right')->position('y', 'top')
+                    ->warning('Subscription Anda telah berakhir. Akses fitur kini terbatas.');
             }
 
             $request->session()->regenerate();
@@ -59,11 +51,13 @@ class LoginController extends Controller
             notyf()
                 ->position('x', 'right')
                 ->position('y', 'top')
-                ->success('Selamat datang, ' . $user->username . '!');
+                ->success('Selamat datang, '.$user->username.'!');
+
             // return redirect()->route('dashboard');
             return redirect()->intended(route('dashboard'));
         } else {
             notyf()->position('x', 'right')->position('y', 'top')->error('Email atau kata sandi salah.');
+
             return redirect()->route('login');
         }
     }
@@ -76,6 +70,7 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil Logout');
+
         return redirect()->route('login');
     }
 
@@ -88,6 +83,7 @@ class LoginController extends Controller
 
         return redirect()->route('login');
     }
+
     public function profileNotaris($hash)
     {
         try {

@@ -14,6 +14,7 @@ class CheckFullAccess
      */
     public function handle($request, Closure $next)
     {
+        $user = auth()->user();
         if (
             ! session('access_all_menu')
             // ||
