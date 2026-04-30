@@ -2,36 +2,105 @@
 
 /* 1. RESET & DASAR */
 html, body {
-    max-width: 100%;
+    max-width: 100% !important;
+    width: 100% !important;
     overflow-x: hidden !important;
     position: relative;
-    touch-action: auto;
-    overscroll-behavior-y: auto;
+    touch-action: pan-y !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior-y: auto !important;
+    scroll-behavior: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Tambahan anti geser horizontal */
+body.g-sidenav-show {
+    overflow-x: hidden !important;
 }
 
 /* 2. SIDEBAR (NAVIGASI KIRI) */
 #sidenav-main {
-    width: 235px !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
+
     height: calc(100vh - 32px) !important;
-    margin: 17px 0 16px 23px !important;
-    border-radius: 16px !important;
+    position: fixed !important;
+
+    top: 16px !important;
+    left: 16px !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    margin: 0 !important;
+
     background: #fff !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    overflow: hidden !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+    border-radius: 16px !important;
     -webkit-border-radius: 16px !important;
     -moz-border-radius: 16px !important;
     -ms-border-radius: 16px !important;
     -o-border-radius: 16px !important;
+
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+
+    /* FIX LONCAT */
+    transform: translate3d(0, 0, 0) !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    will-change: auto !important;
+
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+
+    animation: none !important;
+    transition: none !important;
+
+    scroll-behavior: auto !important;
+
+    /* FIX GESER */
+    touch-action: none !important;
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: auto !important;
+}
+
+/* Paksa Argon tidak inject animasi aneh */
+.sidenav,
+.sidenav.fixed-start,
+.navbar-vertical.navbar-expand-xs.fixed-start {
+    transform: translate3d(0,0,0) !important;
+    left: 16px !important;
+    transition: none !important;
+    animation: none !important;
 }
 
 /* Scrollbar dalam menu sidebar */
 #sidenav-collapse-main {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden !important;
+
     padding-bottom: 20px;
+
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+
+    /* Hanya scroll vertikal */
+    touch-action: pan-y !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior-y: contain !important;
 }
 
-#sidenav-collapse-main::-webkit-scrollbar { width: 4px; }
+#sidenav-collapse-main::-webkit-scrollbar {
+    width: 4px;
+}
+
 #sidenav-collapse-main::-webkit-scrollbar-thumb {
     background: #e9ecef;
     border-radius: 10px;
@@ -39,11 +108,12 @@ html, body {
 
 /* 3. KONTEN UTAMA */
 .main-content {
-    margin-left: 250px !important; 
+    margin-left: 270px !important;
     min-height: 100vh;
     overflow-x: hidden !important;
     position: relative;
     z-index: 1;
+    transition: none !important;
 }
 
 /* Hilangkan margin sidebar khusus halaman login */
@@ -51,168 +121,239 @@ body.login-page .main-content {
     margin-left: 0 !important;
 }
 
-/* 4. MODAL & POPUP (FOKUS FIX) */
+/* 4. MODAL & POPUP */
 .modal-backdrop {
-    /* Backdrop harus lebih tinggi dari sidebar (1000) */
-    z-index: 1060 !important; 
+    z-index: 1060 !important;
 }
 
 .modal {
-    /* Modal harus lebih tinggi dari backdrop (1060) */
     z-index: 1070 !important;
 }
 
-/* Fix Utama: Paksa sidebar turun ke belakang saat modal muncul */
 body.modal-open #sidenav-main {
     z-index: 1040 !important;
-    pointer-events: none;
+    pointer-events: none !important;
 }
 
-/* 5. ELEMEN UI (NAV LINK, CARD, DLL) */
+body.modal-open {
+    overflow: hidden !important;
+    padding-right: 0 !important;
+}
+
+/* Background utama */
+.min-height-300.bg-primary {
+    z-index: 0 !important;
+}
+
+/* 5. NAV LINK */
 .sidenav .nav-link {
     margin: 0.1rem 0.75rem !important;
     padding: 0.55rem 0.75rem !important;
-    font-size: 13px;
+    font-size: 13px !important;
     border-radius: 0.5rem !important;
-    display: flex;
-    align-items: center;
-    transition: all 0.2s ease;
+    display: flex !important;
+    align-items: center !important;
     border-left: 4px solid transparent !important;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
 }
 
 .sidenav .nav-link.active {
-    background-color: #f6f9fc !important; 
-    color: #fb6340 !important;                   
+    background-color: #f6f9fc !important;
+    color: #fb6340 !important;
     font-weight: 700 !important;
-    border-left: 4px solid #fb6340 !important; 
+    border-left: 4px solid #fb6340 !important;
     box-shadow: none !important;
-    margin: 0.2rem 1rem !important; 
+    margin: 0.2rem 1rem !important;
 }
 
 .sidenav .nav-link.active i {
     color: #fb6340 !important;
 }
 
+/* 6. CARD */
 .card {
     border: none !important;
     border-radius: 1rem !important;
     box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-/* 6. RESPONSIVE (MOBILE) */
+/* 7. COLLAPSE */
+.sidenav *,
+#sidenav-main * {
+    box-sizing: border-box !important;
+}
+
+#sidenav-main {
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    transform: translate3d(0,0,0) !important;
+    will-change: auto !important;
+}
+
+#sidenav-collapse-main {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.sidenav .navbar-nav {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.sidenav .nav-item {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+}
+
+.sidenav .nav-link,
+.sidenav .collapse .nav-link {
+    width: calc(100% - 24px) !important;
+    max-width: calc(100% - 24px) !important;
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    position: relative !important;
+}
+
+.sidenav .nav-item > .nav-link[data-bs-toggle="collapse"] {
+    min-height: 48px !important;
+    height: 48px !important;
+    padding-right: 14px !important;
+}
+
+.sidenav .nav-link .ms-auto,
+.sidenav .nav-link [class*="fa-caret"],
+.sidenav .nav-link [class*="fa-chevron"] {
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    right: 0 !important;
+}
+
+.sidenav .collapse,
+.sidenav .collapsing {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    transform: none !important;
+    left: 0 !important;
+}
+
+.sidenav .collapse .nav,
+.sidenav .collapsing .nav {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 4px 0 4px 14px !important;
+}
+
+.sidenav .collapsing {
+    overflow: hidden !important;
+    transition: height 0.2s ease !important;
+}
+
+.sidenav .nav-item .collapse .nav-item,
+.sidenav .nav-item .collapsing .nav-item {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.sidenav,
+.sidenav .collapse,
+.sidenav .collapsing,
+.sidenav .navbar-nav {
+    overflow-x: hidden !important;
+}
+
+/* 8. HEADER PROFIL */
+.sidenav-header {
+    padding: 16px !important;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.sidenav-header .d-flex {
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+.sidenav-header img {
+    width: 56px !important;
+    height: 58px !important;
+    margin-top: -4px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+.sidenav-header .flex-column {
+    justify-content: center !important;
+    min-width: 0 !important;
+}
+
+.sidenav-header h6 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin-bottom: 1px !important;
+    line-height: 1.1 !important;
+}
+
+.sidenav-header p {
+    font-size: 12px !important;
+    margin: 0 !important;
+    color: #6c757d !important;
+    line-height: 1.3 !important;
+}
+
+/* 9. RESPONSIVE MOBILE */
 @media (max-width: 1200px) {
     .main-content {
         margin-left: 0 !important;
     }
 
     #sidenav-main {
-    width: 260px !important; /* jangan kecil */
-    margin-left: 0 !important;
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        margin-left: 0 !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        max-width: 260px !important;
+
         height: 100vh !important;
-        z-index: 1050 !important; /* Standar mobile */
-        visibility: hidden;
-    }
 
-.btn {
-    padding: 6px 10px !important;
-    font-size: 12px !important;
-}
+        top: 0 !important;
+        left: 0 !important;
 
-/* tombol logout / cari */
-button,
-.btn-sm {
-    padding: 5px 8px !important;
-    font-size: 12px !important;
-}
+        margin: 0 !important;
+        border-radius: 0 !important;
 
-/* icon sidebar biar gak gede */
-.sidenav .icon {
-    width: 28px !important;
-    height: 28px !important;
-}
+        transform: translateX(-100%) !important;
 
-/* text menu */
-.sidenav .nav-link {
-    font-size: 12px !important;
-    padding: 8px 10px !important;
-}
-
-    body.g-sidenav-pinned #sidenav-main {
-        transform: translateX(0) !important;
         visibility: visible !important;
-        margin-left: 1rem !important;
+
+        transition: transform 0.25s ease !important;
+
+        z-index: 1050 !important;
+
+        /* mobile tetap bisa slide */
+        touch-action: pan-y !important;
     }
 
-    /* Pastikan di mobile pun kalau modal buka, sidebar tetap ngalah */
-    body.modal-open #sidenav-main {
-        z-index: 1040 !important;
+    body.g-sidenav-pinned #sidenav-main,
+    body.g-sidenav-show #sidenav-main {
+        transform: translateX(0) !important;
     }
 
-    .navbar #iconNavbarSidenav {
-        display: flex !important;
-        z-index: 10000 !important;
+    body:not(.g-sidenav-pinned):not(.g-sidenav-show) #sidenav-main {
+        transform: translateX(-100%) !important;
     }
-}
 
-/* Pastikan background oranye tidak menutupi sidebar saat modal buka */
-.min-height-300.bg-primary {
-    z-index: 0 !important;
-}
-
-/* Fix tambahan agar modal yang dipush ke luar body tidak terpotong */
-body.modal-open {
-    overflow: hidden !important;
-    padding-right: 0 !important;
-}
-
-/* HEADER PROFIL */
-.sidenav-header {
-    padding: 16px !important;
-    border-bottom: 2px solid #e9ecef;
-}
-
-/* WRAPPER FOTO + TEXT */
-.sidenav-header .d-flex {
-    align-items: center !important;
-    gap: 8px;
-}
-
-/* FOTO */
-.sidenav-header img {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* TEXT WRAPPER */
-.sidenav-header .flex-column {
-    justify-content: center;
-    min-width: 0;
-}
-
-/* NAMA */
-.sidenav-header h6 {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 2px;
-    line-height: 1.1;
-}
-
-/* EMAIL */
-.sidenav-header p {
-    font-size: 12px;
-    margin: 0;
-    color: #6c757d;
-    line-height: 1.3;
-}
-
-/* NAV LINK */
-.sidenav .nav-link {
-    font-size: 13px;
+    #iconNavbarSidenav {
+        position: relative !important;
+        z-index: 2000 !important;
+        pointer-events: auto !important;
+    }
 }
 

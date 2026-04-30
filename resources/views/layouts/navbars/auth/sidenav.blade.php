@@ -584,23 +584,27 @@ style="height: 100vh; overflow: hidden;">
 </aside>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const sidebarMenu = document.getElementById('sidenav-collapse-main');
-        
-        if (sidebarMenu) {
-            // 1. Ambil posisi terakhir dari memory browser
-            const scrollPos = localStorage.getItem('sidebar_scroll_pos');
-            if (scrollPos) {
-                // Beri delay sedikit agar sinkron dengan rendering browser
-                setTimeout(() => {
-                    sidebarMenu.scrollTop = scrollPos;
-                }, 150);
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebarMenu = document.getElementById("sidenav-collapse-main");
+
+    if (!sidebarMenu) return;
+
+    sidebarMenu.style.visibility = "hidden";
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const savedScroll = sessionStorage.getItem("sidebarScroll");
+
+            if (savedScroll !== null) {
+                sidebarMenu.scrollTop = parseInt(savedScroll, 10);
             }
 
-            // 2. Simpan posisi setiap kali user melakukan scroll
-            sidebarMenu.addEventListener('scroll', function() {
-                localStorage.setItem('sidebar_scroll_pos', sidebarMenu.scrollTop);
-            });
-        }
+            sidebarMenu.style.visibility = "visible";
+        });
     });
+
+    sidebarMenu.addEventListener("scroll", function () {
+        sessionStorage.setItem("sidebarScroll", sidebarMenu.scrollTop);
+    });
+});
 </script>
