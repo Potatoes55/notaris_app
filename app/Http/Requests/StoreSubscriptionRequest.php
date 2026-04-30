@@ -19,8 +19,6 @@ class StoreSubscriptionRequest extends FormRequest
         return [
             'user_id' => 'required',
             'plan_id' => 'required',
-            'subscription_id' => 'required',
-            'access_token' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'payment_date' => 'required|date',

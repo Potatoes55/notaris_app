@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notaris;
+use App\Models\Plans;
 use App\Models\Subscriptions;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -271,18 +273,44 @@ class UserSyncController extends Controller
             /*
             | AMBIL PAYLOAD
             */
-            $payloadUser = $request->input('user');
+            $payloadUser = $request->input('user', []);
             $payloadSub = $payloadUser['subscription'] ?? [];
+            $payloadPlan = $payloadSub['plan'] ?? [];
+            // $payloadNotaris = $payloadUser['notaris_id'] ?? [];
 
             /*
+            | VALIDASI NOTARIS
+            */
+            Notaris::firstorcreate(
+                ['id' => $payloadUser['notaris_id']],
+                ['display_name' => 'Notaris']);
+
+            // validasi plan
+            // Sync plan
+            if (is_array($payloadPlan) && ! empty($payloadPlan)) {
+                $validatedPlan = validator($payloadPlan, [
+                    'id' => 'required|integer',
+                    'name' => 'required|string',
+                    'description' => 'nullable|string',
+                    'price' => 'nullable',
+                    'duration_days' => 'nullable|integer',
+                    'status' => 'nullable',
+                ])->validate();
+
+                Plans::updateOrCreate(['id' => $validatedPlan['id']], $validatedPlan);
+
+                // Set plan_id di payload subscription menjadi ID skalar untuk foreign key
+                $payloadSub['plan'] = $validatedPlan['id'];
+            }
+
+            /*`
             | VALIDASI USER
             */
             $validatedUser = validator($payloadUser, [
                 'notaris_id' => 'nullable',
                 'email' => 'required|email',
                 'username' => 'required|string|max:255',
-                'subscription_id' => 'required',
-                'access_token' => 'required|string|max:25',
+                'access_code' => 'required|string|max:25',
                 'password' => 'nullable|string|min:6',
                 'phone' => 'required|string',
                 'address' => 'required|string',
@@ -311,7 +339,9 @@ class UserSyncController extends Controller
             */
             $validatedSub = validator($payloadSub, [
                 'id' => 'nullable|integer',
+                'notaris_id' => 'nullable',
                 'plan_id' => 'nullable',
+                'access_code' => 'nullable|string|max:25',
                 'start_date' => 'required|date',
                 'end_date' => 'required|date',
                 'payment_date' => 'nullable',
@@ -323,30 +353,22 @@ class UserSyncController extends Controller
             | Tapi cek dulu apakah id itu sudah ada (duplicate)
             */
             // cek jika payload mengandung subscription menimpa atau create baru
+            // ganti menjadi id saja
             if (! empty($validatedSub['id'])) {
 
-                $exists = Subscriptions::where('user_id', $user->id)
-                    ->where('id', $validatedSub['id'])
-                    ->exists();
-
-                if ($exists) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Subscription ID sudah dipakai oleh user ini.',
-                    ], 400);
-                }
-
-                // Buat baru karena aman (ID belum pernah ada)
-                $subscription = Subscriptions::create(array_merge(
-                    $validatedSub,
-                    ['user_id' => $user->id]
-                ));
+                // Lakukan upsert berdasarkan ID subscription yang dikirim
+                $subscription = Subscriptions::updateOrCreate(
+                    ['id' => $validatedSub['id']],
+                    array_merge($validatedSub, [
+                        'user_id' => $user->id,
+                    ])
+                );
 
                 DB::commit();
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Subscription baru berhasil ditambahkan (ID custom).',
+                    'message' => 'Subscription berhasil di-upsert (ID custom).',
                     'data' => [
                         'user' => $user,
                         'subscription' => $subscription,
