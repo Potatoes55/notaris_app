@@ -26,7 +26,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 <style>
-    /* 1. Paksa Modal & Layar Hitam ke angka tertinggi (di atas segalanya) */
     .modal-backdrop { 
         z-index: 10000 !important; 
         background-color: #000 !important;
@@ -36,19 +35,28 @@
         z-index: 10001 !important; 
     }
 
-    /* 2. Sidebar tetap nampil tapi di bawah angka 10000 */
     body.modal-open #sidenav-main { 
-        z-index: 9999 !important; /* Satu angka di bawah backdrop */
+        z-index: 9999 !important;
         opacity: 1 !important; 
         visibility: visible !important;
         pointer-events: none; 
     }
 
-    /* 3. Pastikan konten utama tidak mengunci layer modal */
     body.modal-open .main-content {
         z-index: auto !important;
     }
 </style>
+
+<script>
+document.documentElement.classList.add("sidebar-preload");
+
+window.addEventListener("pageshow", function () {
+    requestAnimationFrame(() => {
+        document.documentElement.classList.remove("sidebar-preload");
+    });
+});
+</script>
+
 </head>
 
 <body class="g-sidenav-show bg-light">
@@ -80,7 +88,7 @@
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <!-- <script src="{{ asset('assets/js/plugins/smooth-scrollbar.min.js') }}"></script> -->
     
     {{-- PLUGIN & DASHBOARD --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -94,11 +102,6 @@
             $(document).on('hidden.bs.modal', '.modal', function () {
                 $('.modal-backdrop').remove();
                 $('body').removeClass('modal-open').css('padding-right', '');
-            });
-
-            // Toggle Sidebar Mobile
-            $('#iconNavbarSidenav').on('click', function() {
-                $('body').toggleClass('g-sidenav-pinned');
             });
         });
     </script>

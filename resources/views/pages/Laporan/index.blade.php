@@ -10,50 +10,49 @@
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                     <h5>Laporan Pembayaran</h5>
                     @if (request()->anyFilled(['start_date', 'end_date', 'status']))
-<a href="{{ route('report-payment.print', request()->all()) }}" 
-   target="_blank"
-   class="btn btn-danger mb-0 btn-sm"
-   onclick="return confirmPrint(event, this)">
-   <i class="bi bi-file-earmark-pdf"></i> PDF
-</a>
+                        <a href="{{ route('report-payment.print', request()->all()) }}" 
+                        target="_blank"
+                        class="btn btn-danger mb-0 btn-sm"
+                        onclick="return confirmPrint(event, this)">
+                        <i class="bi bi-file-earmark-pdf"></i> PDF
+                        </a>
                     @endif
                 </div>
                 <hr>
-                <div class="card-body px-2 pt-0 pb-2">
+
+                <div class="card-body pt-1">
                     <form method="GET" action="{{ route('report-payment.index') }}"
-                        class="row g-2 mb-4 px-1 flex-wrap no-spinner">
+                        class="row g-3 mb-4 px-0 no-spinner">
+
                         <div class="col-md-4 col-xl-4">
-                            <label for="start_date" class="form-label text-sm">Tanggal Mulai</label>
-                            <input type="date" class="form-control" id="start_date" name="start_date"
+                            <label class="form-label text-sm">Tanggal Mulai</label>
+                            <input type="date" class="form-control" name="start_date"
                                 value="{{ request('start_date') }}">
                         </div>
 
-                        <div class=" col-md-4 col-xl-4">
-                            <label for="end_date" class="form-label text-sm">Tanggal Akhir</label>
-                            <input type="date" class="form-control" id="end_date" name="end_date"
+                        <div class="col-md-4 col-xl-4">
+                            <label class="form-label text-sm">Tanggal Akhir</label>
+                            <input type="date" class="form-control" name="end_date"
                                 value="{{ request('end_date') }}">
                         </div>
 
-                        <div class=" col-sm-2 col-md-4 col-xl-3">
-                            <label for="status" class="form-label text-sm">Status</label>
-                            <select class="form-select" name="status" id="status">
-                                <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua</option>
-                                <option value="full" {{ request('status') == 'full' ? 'selected' : '' }}>Lunas</option>
-                                <option value="dp" {{ request('status') == 'dp' ? 'selected' : '' }}>DP</option>
-                                <option value="partial" {{ request('status') == 'partial' ? 'selected' : '' }}>Bayar
-                                    Sebagian</option>
-                                {{-- <option value="belum" {{ request('status') == 'unpaid' ? 'selected' : '' }}>Belum Bayar --}}
-                                </option>
+                        <div class="col-md-2 col-xl-2">
+                            <label class="form-label text-sm">Status</label>
+                            <select class="form-select" name="status">
+                                <option value="all">Semua</option>
+                                <option value="full">Lunas</option>
+                                <option value="dp">DP</option>
+                                <option value="partial">Bayar Sebagian</option>
                             </select>
                         </div>
 
-                        <div class=" col-lg-2 col-xl-1 d-flex align-items-end mt-0">
-                            <button type="submit" class="btn  btn-primary btn-sm w-100 mb-0 mt-0"
-                                style="height: 40px; font-size: 14px">
+                        <div class="col-md-2 col-xl-2 d-flex align-items-end py-1 justify-content-end">
+                            <button type="submit" class="btn btn-primary btn-sm w-100 mb-0">
                                 Cari
                             </button>
                         </div>
                     </form>
+                    
                     <div class="table-responsive p-0">
                         <table class="table table-hover align-items-center mb-0">
                             <thead>

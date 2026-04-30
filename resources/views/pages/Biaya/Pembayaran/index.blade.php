@@ -19,7 +19,7 @@
                         <div class="input-group">
                             <input type="text" name="payment_code" class="form-control"
                                 placeholder="Masukkan Kode Pembayaran" value="{{ request('payment_code') }}">
-                            <button type="submit" class="btn btn-primary mb-0">Cari</button>
+                            
                         </div>
                     </form>
                 </div>
