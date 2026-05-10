@@ -357,3 +357,15 @@ body.modal-open {
     }
 }
 
+/* EMAIL/NAMA PANJANG TURUN KE BAWAH */
+.profile-text-wrapper,
+.profile-name,
+.profile-email {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+}
+
+.profile-text-wrapper {
+    max-width: 170px !important;
+}

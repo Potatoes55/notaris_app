@@ -20,15 +20,14 @@ style="height: 100vh; overflow: hidden;">
         </div>
 
         <!-- TEXT -->
-        <div class="d-flex flex-column justify-content-center overflow-hidden" style="min-width:0;">
-            <h6 class="mb-0 text-sm text-truncate">
+        <div class="d-flex flex-column justify-content-center profile-text-wrapper" style="min-width:0; width:100%;">
+            <h6 class="mb-0 text-sm profile-name">
                 Hi, {{ auth()->user()->username }}
             </h6>
-            <p class="mb-0 text-xs text-secondary text-truncate">
+            <p class="mb-0 text-xs text-secondary profile-email">
                 {{ auth()->user()->email }}
             </p>
         </div>
-
 
         </div>
     </div>
