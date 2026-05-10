@@ -1,9 +1,9 @@
 <aside 
-class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 d-flex flex-column"
-id="sidenav-main" 
-style="height: 100vh; overflow: hidden;">
+    class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 d-flex flex-column"
+    id="sidenav-main" 
+    style="height: 100vh; overflow: hidden;">
 
-<div class="sidenav-header flex-shrink-0 px-3 py-3">
+    <div class="sidenav-header flex-shrink-0 px-3 py-3">
 
     <div class="d-flex align-items-center gap-3">
 
@@ -21,11 +21,12 @@ style="height: 100vh; overflow: hidden;">
 
         <!-- TEXT -->
         <div class="d-flex flex-column justify-content-center profile-text-wrapper" style="min-width:0; width:100%;">
-            <h6 class="mb-0 text-sm profile-name">
-                Hi, {{ auth()->user()->username }}
+            <h6 class="mb-0 text-sm profile-name" title="{{ auth()->user()->username }}">
+                Hi, {{ \Illuminate\Support\Str::limit(auth()->user()->username, 12, '...') }}
             </h6>
-            <p class="mb-0 text-xs text-secondary profile-email">
-                {{ auth()->user()->email }}
+
+            <p class="mb-0 text-xs text-secondary profile-email" title="{{ auth()->user()->email }}">
+                {{ \Illuminate\Support\Str::limit(auth()->user()->email, 15, '...') }}
             </p>
         </div>
 
@@ -583,27 +584,27 @@ style="height: 100vh; overflow: hidden;">
 </aside>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const sidebarMenu = document.getElementById("sidenav-collapse-main");
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebarMenu = document.getElementById("sidenav-collapse-main");
 
-    if (!sidebarMenu) return;
+        if (!sidebarMenu) return;
 
-    sidebarMenu.style.visibility = "hidden";
+        sidebarMenu.style.visibility = "hidden";
 
-    requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            const savedScroll = sessionStorage.getItem("sidebarScroll");
+            requestAnimationFrame(() => {
+                const savedScroll = sessionStorage.getItem("sidebarScroll");
 
-            if (savedScroll !== null) {
-                sidebarMenu.scrollTop = parseInt(savedScroll, 10);
-            }
+                if (savedScroll !== null) {
+                    sidebarMenu.scrollTop = parseInt(savedScroll, 10);
+                }
 
-            sidebarMenu.style.visibility = "visible";
+                sidebarMenu.style.visibility = "visible";
+            });
+        });
+
+        sidebarMenu.addEventListener("scroll", function () {
+            sessionStorage.setItem("sidebarScroll", sidebarMenu.scrollTop);
         });
     });
-
-    sidebarMenu.addEventListener("scroll", function () {
-        sessionStorage.setItem("sidebarScroll", sidebarMenu.scrollTop);
-    });
-});
 </script>
