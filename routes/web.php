@@ -6,6 +6,7 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotaryAktaDocumentsController;
 use App\Http\Controllers\NotaryAktaLogsController;
@@ -65,20 +66,32 @@ Route::middleware('guest', 'nocache')->group(function () {
     });
 
     // RegisterController routes
-    Route::controller(RegisterController::class)->group(function () {
-        Route::get('/register', 'create')->name('register');
-        Route::post('/register', 'store')->name('register.perform');
-    });
+    // Route::controller(RegisterController::class)->group(function () {
+    //     Route::get('/register', 'create')->name('register');
+    //     Route::post('/register', 'store')->name('register.perform');
+    // });
     // ResetPassword routes
-    Route::controller(ResetPassword::class)->group(function () {
-        Route::get('/reset-password', 'show')->name('reset-password');
-        Route::post('/reset-password', 'send')->name('reset.perform');
+    // Route::controller(ResetPassword::class)->group(function () {
+    //     Route::get('/reset-password', 'show')->name('reset-password');
+    //     Route::post('/reset-password', 'send')->name('reset.perform');
+    // });
+
+    // Forgot Password
+    Route::middleware('guest')->group(function () {
+        // Halaman minta link reset
+        Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+        // Halaman isi password baru
+        Route::get('password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('password/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
     });
     // ChangePassword routes
-    Route::controller(ChangePassword::class)->group(function () {
-        Route::get('/change-password', 'show')->name('change-password');
-        Route::post('/change-password', 'update')->name('change.perform');
-    });
+    // Route::controller(ChangePassword::class)->group(function () {
+    //     Route::get('/change-password', 'show')->name('change-password');
+    //     Route::post('/change-password', 'update')->name('change.perform');
+    // });
+
     Route::get('/public-client/{uuid}', [ClientController::class, 'showByUuid'])->name('clients.showByUuid');
 
     // Public Access
