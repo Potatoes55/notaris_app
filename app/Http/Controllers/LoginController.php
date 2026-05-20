@@ -76,12 +76,17 @@ class LoginController extends Controller
 
     public function alertForgotPassword()
     {
-        notyf()
-            ->position('x', 'right')
-            ->position('y', 'top')
-            ->info('Silakan hubungi admin di nomor 0813-2312-3123 untuk mengatur ulang kata sandi Anda.');
+        // Nomor WhatsApp admin (pastikan menggunakan kode negara tanpa tanda + atau spasi)
+        $nomorAdmin = '6287775790060';
 
-        return redirect()->route('login');
+        // Pesan otomatis yang akan terisi di kolom chat WhatsApp
+        $pesan = 'Halo Admin, saya ingin mengatur ulang kata sandi (reset password) akun Notaris App saya. Mohon bantuannya.';
+
+        // Membuat link WhatsApp yang aman dengan urlencode agar spasi/karakter unik tidak rusak
+        $whatsappUrl = "https://wa.me/{$nomorAdmin}?text=".urlencode($pesan);
+
+        // Redirect langsung ke luar aplikasi (WhatsApp)
+        return redirect()->away($whatsappUrl);
     }
 
     public function profileNotaris($hash)
