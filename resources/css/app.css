@@ -357,3 +357,13 @@ body.modal-open {
     }
 }
 
+/* sidebar username & email jadi... */
+.profile-name,
+.profile-email {
+    display: block !important;
+    max-width: 170px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    cursor: pointer;
+}
