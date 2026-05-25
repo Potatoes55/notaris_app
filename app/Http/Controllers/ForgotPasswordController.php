@@ -26,7 +26,7 @@ class ForgotPasswordController extends Controller
 
         try {
             // Kita sesuaikan URL targetnya di sini:
-            $response = Http::timeout(5)->post("{$this->apiUrl}/reset-password/send", [
+            $response = Http::timeout(20)->post("{$this->apiUrl}/reset-password/send", [
                 'email' => $request->email,
                 'client_url' => url('/'),
             ]);
