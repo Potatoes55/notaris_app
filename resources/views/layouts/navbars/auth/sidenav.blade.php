@@ -404,6 +404,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('covernotes.index') }}"
+                        class="nav-link {{ request()->is('covernotes*') ? 'active' : '' }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            {{-- Icon surat dengan emblem tumpukan dokumen/catatan --}}
+                            <i class="fa-solid fa-file-lines text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Covernote</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#collapsePic" role="button" aria-expanded="false"
                         aria-controls="collapsePic">
                         <div class="d-flex align-items-center justify-content-between px-4 py-2">

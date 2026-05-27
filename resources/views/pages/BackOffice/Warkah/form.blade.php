@@ -11,7 +11,7 @@
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-header pb-0">
-                    <h6>Tambah Warkah</h6>
+                    <h6>{{ isset($document) ? 'Edit Warkah' : 'Tambah Warkah' }}</h6>
                 </div>
                 <hr>
                 <div class="card-body px-4 pt-0 pb-2">
@@ -26,6 +26,7 @@
                         <div class="row">
                             <input type="hidden" name="client_code" value="{{ $client->client_code }}">
 
+                            {{-- JENIS WARKAH --}}
                             <div class="col-md-12 mb-3">
                                 <label class="form-label text-sm">Jenis Warkah <span class="text-danger">*</span></label>
                                 <select name="warkah_code" class="form-select @error('warkah_code') is-invalid @enderror">
@@ -42,18 +43,30 @@
                                 @enderror
                             </div>
 
-
+                            {{-- KOTA / KABUPATEN --}}
                             <div class="col-md-12 mb-3">
-                                <label class="form-label text-sm">Tanggal Upload</label>
+                                <label class="form-label text-sm">Kota / Kabupaten <span class="text-danger">*</span></label>
+                                <input type="text" name="city" 
+                                    class="form-control @error('city') is-invalid @enderror"
+                                    placeholder="Masukkan Nama Kota / Kabupaten"
+                                    value="{{ old('city', $document->city ?? '') }}">
+                                @error('city')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- TANGGAL UPLOAD --}}
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label text-sm">Tanggal Upload <span class="text-danger">*</span></label>
                                 <input type="date" name="uploaded_at"
                                     class="form-control @error('uploaded_at') is-invalid @enderror"
-                                    value="{{ old('uploaded_at', isset($document) ? $document->uploaded_at->format('Y-m-d') : date('Y-m-d')) }}">
+                                    value="{{ old('uploaded_at', isset($document) ? $document->uploaded_at->format('Y-m-d') : '') }}">
                                 @error('uploaded_at')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                                @csrf
+                            {{-- DOKUMEN / FILE --}}
                             <div class="mb-3 col-md-12">
                                 <label class="form-label text-sm">Dokumen</label>
                                 <input type="file" name="warkah_link"
@@ -70,7 +83,7 @@
                                 @endif
                             </div>
 
-
+                            {{-- CATATAN --}}
                             <div class="col-md-12 mb-3">
                                 <label class="form-label text-sm">Catatan</label>
                                 <textarea name="note" class="form-control @error('note') is-invalid @enderror">{{ old('note', $document->note ?? '') }}</textarea>

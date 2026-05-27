@@ -41,6 +41,7 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\CovernoteController;
 use App\Models\Notaris;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
@@ -113,8 +114,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
 
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])
-        ->name('profile.unlock');
-});
+            ->name('profile.unlock');
+        
+        Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
+        Route::resource('covernotes', CovernoteController::class);
+    });
 
 Route::middleware(['auth', 'check.full.access'])->group(function () {
 

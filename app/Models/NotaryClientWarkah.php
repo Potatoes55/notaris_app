@@ -17,6 +17,7 @@ class NotaryClientWarkah extends Model
         'client_code',
         'warkah_code',
         'warkah_name',
+        'city',
         'note',
         'warkah_link',
         'uploaded_at',
