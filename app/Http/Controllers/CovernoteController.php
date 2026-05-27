@@ -7,7 +7,6 @@ use App\Models\Covernote;
 use App\Models\Notaris;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-// PENTING: Gunakan namespace mPDF sesuai dengan package project lu
 use Mpdf\Mpdf; 
 
 class CovernoteController extends Controller
@@ -35,7 +34,6 @@ class CovernoteController extends Controller
     {
         $search = $request->input('search');
 
-        // Ambil data covernote sesuai filter search tanpa pagination
         $covernotes = Covernote::with('client')
             ->when($search, function ($query, $search) {
                 return $query->where('covernote_number', 'like', "%{$search}%")
@@ -48,16 +46,13 @@ class CovernoteController extends Controller
             ->latest()
             ->get();
 
-        // Ambil profile notaris user login
         $notaris = Notaris::where('id', auth()->user()->notaris_id)->first() ?? Notaris::first();
 
-        // PENTING: Render view blade menjadi format HTML string biasa untuk mPDF
         $html = view('pages.BackOffice.Covernote.print', compact('covernotes', 'notaris'))->render();
 
-        // PENTING: Setup & Inisialisasi mPDF dengan format A4 Landscape
         $mpdf = new Mpdf([
             'default_font'  => 'dejavusans',
-            'format'        => 'A4-L', // Akhiran -L artinya Landscape
+            'format'        => 'A4-L',
             'margin_top'    => 10,
             'margin_bottom' => 10,
             'margin_left'   => 15,
@@ -65,10 +60,8 @@ class CovernoteController extends Controller
             'tempDir'       => storage_path('app/mpdf-temp'),
         ]);
 
-        // Tulis HTML tadi ke generator mPDF
         $mpdf->WriteHTML($html);
 
-        // Lempar langsung ke browser sebagai PDF Inline stream
         return response($mpdf->Output('Laporan_Covernote_' . now()->format('YmdHis') . '.pdf', 'I'))
             ->header('Content-Type', 'application/pdf');
     }
