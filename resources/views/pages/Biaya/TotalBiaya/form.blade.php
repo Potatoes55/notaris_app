@@ -57,8 +57,7 @@
                             @error('pic_document_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
-
+                        </div>                  
                         {{-- Payment Code --}}
                         {{-- <div class="mb-3">
                         <label for="payment_code" class="form-label text-sm">Kode Pembayaran</label>
@@ -184,10 +183,7 @@
             </div>
         </div>
     </div>
-
-@endsection
-
-@push('js')
+    @push('js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const currencyInputs = document.querySelectorAll('input.currency');
@@ -232,3 +228,7 @@
         });
     </script>
 @endpush
+
+@endsection
+
+

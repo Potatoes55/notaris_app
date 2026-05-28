@@ -63,14 +63,18 @@
                                                     <i class="fa fa-eye" id="togglePasswordIcon"></i>
                                                 </span>
                                             </div>
+                                            <div class="text-start mt-1">
+                                                <a href="{{ route('password.request') }}" class="text-primary fw-semibold text-decoration-none">
+                                                    <small>Lupa Password?</small>
+                                                </a>
+                                            </div>
                                             @error('password')
                                                 <small class="text-danger">{{ $message }}</small>
                                             @enderror
                                         </div>
-
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
-                                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="remember">
+                                            <label class="form-check-label" for="remember">Remember me</label>
                                         </div>
 
                                         <button type="submit" class="btn btn-primary w-100 btn-lg shadow-sm">
@@ -78,7 +82,7 @@
                                         </button>
 
                                         <div class="text-center mt-3">
-                                            <small class="text-muted">Lupa Password ?
+                                            <small class="text-muted">Ada kendala saat masuk?
                                                 <a href="{{ route('alertForgotPassword') }}"
                                                     class="text-primary fw-semibold">Kontak admin</a>
                                             </small>

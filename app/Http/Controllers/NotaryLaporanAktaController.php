@@ -12,14 +12,13 @@ class NotaryLaporanAktaController extends Controller
 {
     //
 
-
     public function index(Request $request)
     {
         $queryType = $request->get('type');
         $startDate = $request->get('start_date');
-        $endDate   = $request->get('end_date');
-        $status    = $request->get('status');
-        $notaris =  auth()->user()->notaris;
+        $endDate = $request->get('end_date');
+        $status = $request->get('status');
+        $notaris = auth()->user()->notaris;
 
         $data = collect();
 
@@ -37,7 +36,7 @@ class NotaryLaporanAktaController extends Controller
                 $query->where('notaris_id', auth()->user()->notaris_id)
                     ->whereBetween('created_at', [
                         Carbon::parse($startDate)->startOfDay(),
-                        Carbon::parse($endDate)->endOfDay()
+                        Carbon::parse($endDate)->endOfDay(),
                     ]);
 
                 // 🔥 FILTER STATUS (OPSIONAL)
@@ -50,22 +49,21 @@ class NotaryLaporanAktaController extends Controller
         }
 
         return view('pages.BackOffice.LaporanAkta.index', [
-            'data'      => $data,
+            'data' => $data,
             'queryType' => $queryType,
             'startDate' => $startDate,
-            'endDate'   => $endDate,
-            'status'    => $status,
-            'notaris'   => $notaris
+            'endDate' => $endDate,
+            'status' => $status,
+            'notaris' => $notaris,
         ]);
     }
-
 
     public function exportPdf(Request $request)
     {
         $queryType = $request->get('type'); // partij / relaas
         $startDate = $request->get('start_date');
-        $endDate   = $request->get('end_date');
-        $notaris =  auth()->user()->notaris;
+        $endDate = $request->get('end_date');
+        $notaris = auth()->user()->notaris;
 
         $data = collect(); // default kosong
 
@@ -73,27 +71,29 @@ class NotaryLaporanAktaController extends Controller
             if ($queryType === 'notaris') {
                 $data = NotaryAktaTransaction::whereBetween('created_at', [
                     Carbon::parse($startDate)->startOfDay(),
-                    Carbon::parse($endDate)->endOfDay()
+                    Carbon::parse($endDate)->endOfDay(),
                 ])->get();
             } elseif ($queryType === 'ppat') {
                 $data = NotaryRelaasAkta::whereBetween('created_at', [
                     Carbon::parse($startDate)->startOfDay(),
-                    Carbon::parse($endDate)->endOfDay()
+                    Carbon::parse($endDate)->endOfDay(),
                 ])->get();
             }
         }
 
         // render view jadi HTML untuk mPDF
         $html = view('pages.BackOffice.LaporanAkta.export', [
-            'data'      => $data,
+            'data' => $data,
             'queryType' => $queryType,
             'startDate' => $startDate,
-            'endDate'   => $endDate,
-            'notaris' => $notaris
+            'endDate' => $endDate,
+            'notaris' => $notaris,
         ])->render();
 
         // generate PDF
-        $mpdf = new Mpdf();
+        $mpdf = new \Mpdf\Mpdf([
+            'tempDir' => storage_path('app/mpdf-temp'),
+        ]);
         $mpdf->WriteHTML($html);
 
         // Output PDF

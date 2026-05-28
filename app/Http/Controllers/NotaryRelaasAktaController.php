@@ -25,7 +25,7 @@ class NotaryRelaasAktaController extends Controller
 
         $clients = Client::where('notaris_id', $notarisId)
             ->when($request->search, function ($query, $search) {
-                $query->where('fullname', 'like', '%' . $search . '%')->orWhere('client_code', 'like', '%' . $search . '%');
+                $query->where('fullname', 'like', '%'.$search.'%')->orWhere('client_code', 'like', '%'.$search.'%');
             })
             ->where('deleted_at', null)
             ->withCount('aktaTransactionsRelaas')
@@ -59,7 +59,6 @@ class NotaryRelaasAktaController extends Controller
     //     return view('pages.BackOffice.RelaasAkta.AktaTransaction.form', compact('clients', 'notaris', 'relaasType'));
     // }
 
-
     public function generateTransactionCode(int $notarisId, string $clientId): string
     {
         $now = Carbon::now();
@@ -74,7 +73,7 @@ class NotaryRelaasAktaController extends Controller
 
         $count += 1;
 
-        return 'T-P-' . $date . '-' . $notarisId . '-' . $count;
+        return 'T-P-'.$date.'-'.$notarisId.'-'.$count;
     }
 
     // public function generateTransactionCode(int $notarisId, string $clientCode): string
@@ -88,8 +87,6 @@ class NotaryRelaasAktaController extends Controller
 
     //     return 'T-' . $clientCode . '-' . $today . '-' . $countToday;
     // }
-
-
 
     public function create(Request $request)
     {
@@ -105,7 +102,6 @@ class NotaryRelaasAktaController extends Controller
             'relaasType'
         ));
     }
-
 
     public function store(Request $request)
     {
@@ -142,6 +138,7 @@ class NotaryRelaasAktaController extends Controller
         $this->service->create($validated);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Transaksi Akta berhasil ditambahkan.');
+
         return redirect()->route('relaas-aktas.index', ['client_code' => $clientCode]);
     }
 
@@ -173,6 +170,7 @@ class NotaryRelaasAktaController extends Controller
         $this->service->update($id, $validated);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Transaksi akta berhasil diperbarui.');
+
         return redirect()->route('relaas-aktas.index', ['client_code' => $request->client_code]);
     }
 
@@ -181,9 +179,9 @@ class NotaryRelaasAktaController extends Controller
         $this->service->delete($id);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Transaksi akta berhasil dihapus.');
+
         return redirect()->route('relaas-aktas.index', ['client_code' => $request->client_code]);
     }
-
 
     // public function indexNumber(Request $request)
     // {
@@ -204,7 +202,6 @@ class NotaryRelaasAktaController extends Controller
     // {
     //     $aktaInfo = null;
     //     $lastAkta = NotaryRelaasAkta::orderBy('relaas_number_created_at', 'desc')->first();
-
 
     //     // Kalau user melakukan pencarian
     //     if ($request->filled('search')) {
@@ -240,11 +237,11 @@ class NotaryRelaasAktaController extends Controller
                     ->orWhere('relaas_number', 'like', "%$search%");
             })
 
-                ->orderByRaw("CASE WHEN relaas_number IS NULL THEN 1 ELSE 0 END")
+                ->orderByRaw('CASE WHEN relaas_number IS NULL THEN 1 ELSE 0 END')
                 ->orderBy('relaas_number', 'desc')
                 ->first();
 
-            if (!$aktaInfo) {
+            if (! $aktaInfo) {
                 notyf()
                     ->position('x', 'right')
                     ->position('y', 'top')
@@ -272,7 +269,7 @@ class NotaryRelaasAktaController extends Controller
         $akta = NotaryRelaasAkta::findOrFail($request->relaas_id);
 
         // Cek apakah ini edit atau create
-        $isEdit = !is_null($akta->relaas_number);
+        $isEdit = ! is_null($akta->relaas_number);
 
         // Update data
         $akta->update([
@@ -292,7 +289,6 @@ class NotaryRelaasAktaController extends Controller
             'search' => $akta->transaction_code,
         ]);
     }
-
 
     public function updateNumber(Request $request, $id)
     {

@@ -80,7 +80,7 @@
                                 </select>
                             </div>
                         @endif
-                        <a href="{{ route('akta-transactions.index', ['client_id' => request('client_id')]) }}" class="btn btn-secondary">Back</a>
+                        <a href="{{ route('akta-transactions.selectClient', ['client_id' => request('client_id')]) }}" class="btn btn-secondary">Back</a>
                         <button type="submit"
                             class="btn btn-primary">{{ isset($transaction) ? 'Ubah' : 'Simpan' }}</button>
                     </form>

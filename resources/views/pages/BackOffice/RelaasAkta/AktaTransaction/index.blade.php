@@ -58,7 +58,8 @@
                                         <td>{{ ucfirst($akta->akta_type->type) ?? '-' }}</td>
                                         <td>{{ $akta->year ?? '-' }}</td>
                                         <td>{{ $akta->relaas_number ?? '-' }}</td>
-                                        <td>{{ $akta->relaas_number_created_at ? \Carbon\Carbon::parse($akta->relaas_date)->format('d-m-y H:i:ss') : '-' }}
+                                        <td>{{ $akta->relaas_number_created_at ? \Carbon\Carbon::parse
+                                        ($akta->relaas_number_created_at)->format('d-m-y H:i:s') : '-' }}
                                         </td>
                                         <td>{{ $akta->title ?? '-' }}</td>
                                         <td>{{ $akta->story_date ? \Carbon\Carbon::parse($akta->story_date)->format('d-m-y H:i:s') : '-' }}

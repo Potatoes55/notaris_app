@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\LogsActivityCustom;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasApiTokens, LogsActivityCustom, SoftDeletes;
+    use HasApiTokens, HasApiTokens, HasFactory, LogsActivityCustom, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -22,13 +21,14 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'notaris_id',
+        'access_code',
         'email',
         'password',
         'signup_at',
         'active_at',
         'status',
         'phone',
-        'address'
+        'address',
     ];
 
     public function notaris()
@@ -64,7 +64,6 @@ class User extends Authenticatable
     /**
      * Always encrypt the password when it is updated.
      *
-     * @param $value
      * @return string
      */
     public function setPasswordAttribute($value)

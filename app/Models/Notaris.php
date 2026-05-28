@@ -13,6 +13,7 @@ class Notaris extends Model
     protected $table = 'notaris';
 
     protected $fillable = [
+        'id',
         'user_id',
         'first_name',
         'last_name',
@@ -47,7 +48,6 @@ class Notaris extends Model
         'phone' => 'encrypted',
         'email' => 'encrypted',
     ];
-
 
     public function clients()
     {
