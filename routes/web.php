@@ -42,6 +42,7 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\CovernoteController;
 use App\Models\Notaris;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
@@ -127,6 +128,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])
         ->name('profile.unlock');
+        
+    Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
+    Route::resource('covernotes', CovernoteController::class);
 
 });
 
@@ -225,7 +229,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::resource('akta-parties', NotaryAktaPartiesController::class)->except('create', 'store', 'show');
     Route::get('akta-parties/createData/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'createData'])
         ->name('akta-parties.createData');
-    Route::post('/akta-parties,store/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'storeData'])->name('akta-parties.storeData');
+    Route::post('/akta-parties/store/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'storeData'])->name('akta-parties.storeData');
     Route::get('akta-number', [NotaryAktaTransactionController::class, 'indexNumber'])->name('akta_number.index');
     Route::post('akta-number/store', [NotaryAktaTransactionController::class, 'storeNumber'])->name(
         'akta_number.store'
