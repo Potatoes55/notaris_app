@@ -62,6 +62,7 @@
                     <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Menu</h6>
                 </li>
 
+                {{-- menu settings --}}
                 <li class="nav-item">
                     <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
                         <div
@@ -69,6 +70,209 @@
                             <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                         </div>
                         <span class="nav-link-text ms-1">Setting</span>
+                    </a>
+              
+                {{-- jenis warkah --}}
+                    <a href="{{ route('documents.index') }}"
+                        class="nav-link {{ request()->is('documents*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-folder-fill text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Jenis Warkah</span>
+                    </a>
+                </li>
+                {{-- menu cs --}}
+                <li class="nav-item mt-3 d-flex align-items-center">
+                    <div class="ps-4">
+                        <i class="fa-solid fa-headset" style="color: #f4645f;"></i>
+                    </div>
+                    <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">CS</h6>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('clients.index') }}"
+                        class="nav-link {{ request()->is('clients*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-person-add text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Klien</span>
+
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('consultation.index') }}"
+                        class="nav-link {{ request()->is('consultation*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-headset text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Konsultasi Klien</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('pic-progress.indexProcess') }}"
+                        class="nav-link {{ request()->is('client-progress*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-calendar-days text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Proses Pengurusan</span>
+                    </a>
+                </li>
+                {{--menu back office --}}
+                <li class="nav-item mt-3 d-flex align-items-center">
+                    <div class="ps-4">
+                        <i class="fa-solid fa-gears " style="color: #f4645f;"></i>
+                    </div>
+                    <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Back Office</h6>
+                </li>
+                {{-- menu warkah  --}}
+                <li class="nav-item">
+                    <a href="{{ route('warkah.selectClient') }}"
+                        class="nav-link {{ request()->is('warkah*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-folder-fill text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Warkah</span>
+                    </a>
+                </li>
+                {{-- menu laporan akta --}}
+                <li class="nav-item">
+                    <a href="{{ route('laporan-akta.index') }}"
+                        class="nav-link {{ request()->is('laporan-akta*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-chart-bar text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Laporan Akta</span>
+                    </a>
+                </li>
+                {{-- menu surat keluar --}}
+                <li class="nav-item">
+                    <a href="{{ route('notary-letters.index') }}"
+                        class="nav-link {{ request()->is('notary-letters*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Surat Keluar</span>
+                    </a>
+                </li>
+                {{-- menu pic --}}
+                <li class="nav-item">
+                    <a data-bs-toggle="collapse" href="#collapsePic" role="button" aria-expanded="false"
+                        aria-controls="collapsePic">
+                        <div class="d-flex align-items-center justify-content-between px-4 py-2">
+                            <!-- Kiri -->
+                            <div class="d-flex align-items-center">
+                                <div
+                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-user-tie text-dark text-sm opacity-10 pb-0"></i>
+                                </div>
+                                <span class="nav-link-text text-sm">PIC</span>
+                            </div>
+                            <!-- Kanan -->
+                            <i class="bi bi-caret-down-fill"></i>
+                        </div>
+                    </a>
+
+                    <div class="collapse {{ request()->is('pic_staff*') || request()->is('pic_documents*') || request()->is('pic_process*') || request()->is('pic_handovers*') ? 'show' : '' }}"
+                        id="collapsePic">
+                        <ul class="nav nav-collapse mb-0 pb-0 d-flex flex-column  justity-content-between px-3">
+                            <li>
+                                <a href="{{ route('pic_staff.index') }}"
+                                    class="nav-link {{ request()->is('pic_staff*') ? 'active' : '' }}">
+                                    <div
+                                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-users-gear text-dark text-sm opacity-10 pb-0"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1 mt-2">Staff</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('pic_documents.index') }}"
+                                    class="nav-link {{ request()->is('pic_documents*') ? 'active' : '' }}">
+                                    <div
+                                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-file-lines text-dark text-sm opacity-10 pb-0"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1 mt-2">Dokumen</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('pic_process.index') }}"
+                                    class="nav-link {{ request()->is('pic_process*') ? 'active' : '' }}">
+                                    <div
+                                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-gears text-dark text-sm opacity-10 pb-0"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1 mt-2">Proses Pengurusan</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('pic_handovers.index') }}"
+                                    class="nav-link {{ request()->is('pic_handovers*') ? 'active' : '' }}">
+                                    <div
+                                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i
+                                            class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1 mt-2">Surat Terima Dokumen</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {{-- menu laporan pengurusan --}}
+                <li class="nav-item">
+                    <a href="{{ route('report-progress.index') }}"
+                        class="nav-link {{ request()->is('report-progress*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Laporan Pengurusan</span>
+                    </a>
+                </li>
+                {{-- menu proses lain --}}
+                <li class="nav-item mt-3 d-flex align-items-center">
+                    <div class="ps-4">
+                        <i class="fa-solid fa-gears" style="color: #f4645f;"></i>
+                    </div>
+                    <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Proses Lain</h6>
+                
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('proses-lain-transaksi.index') }}"
+                        class="nav-link {{ request()->is('proses-lain-transaksi*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Transaksi</span>
+                    </a>
+                
+                
+                    <a href="{{ route('proses-lain-pic.index') }}"
+                        class="nav-link {{ request()->is('proses-lain-pic*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">PIC</span>
+                    </a>
+                
+                
+                    <a href="{{ route('proses-lain-progress.index') }}"
+                        class="nav-link {{ request()->is('proses-lain-progress*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Progress</span>
                     </a>
                 </li>
             @endif
@@ -592,6 +796,7 @@
         </ul>
     </div>
 </aside>
+{{-- edited --}}
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
