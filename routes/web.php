@@ -305,6 +305,5 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::get('report-payment/print', [ReportPaymentController::class, 'print'])->name('report-payment.print');
 
 });
-
 // Logout route
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
