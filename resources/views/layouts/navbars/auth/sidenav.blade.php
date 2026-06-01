@@ -1,15 +1,15 @@
 <aside 
-class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 d-flex flex-column"
-id="sidenav-main" 
-style="height: 100vh; overflow: hidden;">
+    class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 d-flex flex-column"
+    id="sidenav-main" 
+    style="height: 100vh; overflow: hidden;">
 
-<div class="sidenav-header flex-shrink-0 px-3" style="height:80px;">
+    <div class="sidenav-header flex-shrink-0 px-3 py-3">
 
-    <div class="d-flex align-items-center h-100 gap-3 w-100">
+    <div class="d-flex align-items-center gap-3">
 
         <!-- FOTO -->
         <div class="rounded-circle overflow-hidden flex-shrink-0"
-            style="width:48px; height:48px;">
+            style="width:50px; height:50px;">
             <img 
                 src="{{ auth()->user()->notaris && auth()->user()->notaris->image
                     ? (filter_var(auth()->user()->notaris->image, FILTER_VALIDATE_URL)
@@ -20,15 +20,15 @@ style="height: 100vh; overflow: hidden;">
         </div>
 
         <!-- TEXT -->
-        <div class="flex-grow-1 overflow-hidden" style="min-width:0;">
-            <h6 class="mb-0 text-sm text-truncate">
-                Hi, {{ auth()->user()->username }}
+        <div class="d-flex flex-column justify-content-center profile-text-wrapper" style="min-width:0; width:100%;">
+            <h6 class="mb-0 text-sm profile-name" title="{{ auth()->user()->username }}">
+                Hi, {{ \Illuminate\Support\Str::limit(auth()->user()->username, 12, '...') }}
             </h6>
-            <p class="mb-0 text-xs text-secondary text-truncate">
-                {{ auth()->user()->email }}
+
+            <p class="mb-0 text-xs text-secondary profile-email" title="{{ auth()->user()->email }}">
+                {{ \Illuminate\Support\Str::limit(auth()->user()->email, 15, '...') }}
             </p>
         </div>
-
 
         </div>
     </div>
@@ -62,7 +62,6 @@ style="height: 100vh; overflow: hidden;">
                     <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Menu</h6>
                 </li>
 
-                {{-- menu settings --}}
                 <li class="nav-item">
                     <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
                         <div
@@ -70,209 +69,6 @@ style="height: 100vh; overflow: hidden;">
                             <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                         </div>
                         <span class="nav-link-text ms-1">Setting</span>
-                    </a>
-              
-                {{-- jenis warkah --}}
-                    <a href="{{ route('documents.index') }}"
-                        class="nav-link {{ request()->is('documents*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="bi bi-folder-fill text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Jenis Warkah</span>
-                    </a>
-                </li>
-                {{-- menu cs --}}
-                <li class="nav-item mt-3 d-flex align-items-center">
-                    <div class="ps-4">
-                        <i class="fa-solid fa-headset" style="color: #f4645f;"></i>
-                    </div>
-                    <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">CS</h6>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('clients.index') }}"
-                        class="nav-link {{ request()->is('clients*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="bi bi-person-add text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Klien</span>
-
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('consultation.index') }}"
-                        class="nav-link {{ request()->is('consultation*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="bi bi-headset text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Konsultasi Klien</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('pic-progress.indexProcess') }}"
-                        class="nav-link {{ request()->is('client-progress*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-calendar-days text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Proses Pengurusan</span>
-                    </a>
-                </li>
-                {{--menu back office --}}
-                <li class="nav-item mt-3 d-flex align-items-center">
-                    <div class="ps-4">
-                        <i class="fa-solid fa-gears " style="color: #f4645f;"></i>
-                    </div>
-                    <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Back Office</h6>
-                </li>
-                {{-- menu warkah  --}}
-                <li class="nav-item">
-                    <a href="{{ route('warkah.selectClient') }}"
-                        class="nav-link {{ request()->is('warkah*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="bi bi-folder-fill text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Warkah</span>
-                    </a>
-                </li>
-                {{-- menu laporan akta --}}
-                <li class="nav-item">
-                    <a href="{{ route('laporan-akta.index') }}"
-                        class="nav-link {{ request()->is('laporan-akta*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-chart-bar text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Laporan Akta</span>
-                    </a>
-                </li>
-                {{-- menu surat keluar --}}
-                <li class="nav-item">
-                    <a href="{{ route('notary-letters.index') }}"
-                        class="nav-link {{ request()->is('notary-letters*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Surat Keluar</span>
-                    </a>
-                </li>
-                {{-- menu pic --}}
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#collapsePic" role="button" aria-expanded="false"
-                        aria-controls="collapsePic">
-                        <div class="d-flex align-items-center justify-content-between px-4 py-2">
-                            <!-- Kiri -->
-                            <div class="d-flex align-items-center">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="fa-solid fa-user-tie text-dark text-sm opacity-10 pb-0"></i>
-                                </div>
-                                <span class="nav-link-text text-sm">PIC</span>
-                            </div>
-                            <!-- Kanan -->
-                            <i class="bi bi-caret-down-fill"></i>
-                        </div>
-                    </a>
-
-                    <div class="collapse {{ request()->is('pic_staff*') || request()->is('pic_documents*') || request()->is('pic_process*') || request()->is('pic_handovers*') ? 'show' : '' }}"
-                        id="collapsePic">
-                        <ul class="nav nav-collapse mb-0 pb-0 d-flex flex-column  justity-content-between px-3">
-                            <li>
-                                <a href="{{ route('pic_staff.index') }}"
-                                    class="nav-link {{ request()->is('pic_staff*') ? 'active' : '' }}">
-                                    <div
-                                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-users-gear text-dark text-sm opacity-10 pb-0"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1 mt-2">Staff</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('pic_documents.index') }}"
-                                    class="nav-link {{ request()->is('pic_documents*') ? 'active' : '' }}">
-                                    <div
-                                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-file-lines text-dark text-sm opacity-10 pb-0"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1 mt-2">Dokumen</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('pic_process.index') }}"
-                                    class="nav-link {{ request()->is('pic_process*') ? 'active' : '' }}">
-                                    <div
-                                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-gears text-dark text-sm opacity-10 pb-0"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1 mt-2">Proses Pengurusan</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('pic_handovers.index') }}"
-                                    class="nav-link {{ request()->is('pic_handovers*') ? 'active' : '' }}">
-                                    <div
-                                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i
-                                            class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1 mt-2">Surat Terima Dokumen</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                {{-- menu laporan pengurusan --}}
-                <li class="nav-item">
-                    <a href="{{ route('report-progress.index') }}"
-                        class="nav-link {{ request()->is('report-progress*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Laporan Pengurusan</span>
-                    </a>
-                </li>
-                {{-- menu proses lain --}}
-                <li class="nav-item mt-3 d-flex align-items-center">
-                    <div class="ps-4">
-                        <i class="fa-solid fa-gears" style="color: #f4645f;"></i>
-                    </div>
-                    <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Proses Lain</h6>
-                
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('proses-lain-transaksi.index') }}"
-                        class="nav-link {{ request()->is('proses-lain-transaksi*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Transaksi</span>
-                    </a>
-                
-                
-                    <a href="{{ route('proses-lain-pic.index') }}"
-                        class="nav-link {{ request()->is('proses-lain-pic*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">PIC</span>
-                    </a>
-                
-                
-                    <a href="{{ route('proses-lain-progress.index') }}"
-                        class="nav-link {{ request()->is('proses-lain-progress*') ? 'active' : '' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
-                        </div>
-                        <span class="nav-link-text ms-1 mt-2">Progress</span>
                     </a>
                 </li>
             @endif
@@ -624,6 +420,16 @@ style="height: 100vh; overflow: hidden;">
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('covernotes.index') }}"
+                        class="nav-link {{ request()->is('covernotes*') ? 'active' : '' }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            {{-- Icon surat dengan emblem tumpukan dokumen/catatan --}}
+                            <i class="fa-solid fa-file-lines text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Covernote</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#collapsePic" role="button" aria-expanded="false"
                         aria-controls="collapsePic">
                         <div class="d-flex align-items-center justify-content-between px-4 py-2">
@@ -805,23 +611,27 @@ style="height: 100vh; overflow: hidden;">
 {{-- edit if --}}
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const sidebarMenu = document.getElementById('sidenav-collapse-main');
-        
-        if (sidebarMenu) {
-            // 1. Ambil posisi terakhir dari memory browser
-            const scrollPos = localStorage.getItem('sidebar_scroll_pos');
-            if (scrollPos) {
-                // Beri delay sedikit agar sinkron dengan rendering browser
-                setTimeout(() => {
-                    sidebarMenu.scrollTop = scrollPos;
-                }, 150);
-            }
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebarMenu = document.getElementById("sidenav-collapse-main");
 
-            // 2. Simpan posisi setiap kali user melakukan scroll
-            sidebarMenu.addEventListener('scroll', function() {
-                localStorage.setItem('sidebar_scroll_pos', sidebarMenu.scrollTop);
+        if (!sidebarMenu) return;
+
+        sidebarMenu.style.visibility = "hidden";
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const savedScroll = sessionStorage.getItem("sidebarScroll");
+
+                if (savedScroll !== null) {
+                    sidebarMenu.scrollTop = parseInt(savedScroll, 10);
+                }
+
+                sidebarMenu.style.visibility = "visible";
             });
-        }
+        });
+
+        sidebarMenu.addEventListener("scroll", function () {
+            sessionStorage.setItem("sidebarScroll", sidebarMenu.scrollTop);
+        });
     });
 </script>
