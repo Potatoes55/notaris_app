@@ -45,7 +45,7 @@
                                         <td>{{ $cost->payment_code }}</td>
                                         <td>{{ $cost->client->fullname }}</td>
                                         <td>{{ $cost->client->client_code }}</td>
-                                        <td>{{ $cost->picDocument->pic_document_code }}</td>
+                                        <td>{{ $cost->picDocument?->pic_document_code ?? '-' }}</td>
                                         @php
                                             $totalPaid = $cost->payments->where('is_valid', true)->sum('amount');
                                             $remaining = max(0, $cost->total_cost - $totalPaid);
@@ -192,6 +192,13 @@
                                                                         <label
                                                                             class="form-label text-start w-100 mb-1">Catatan</label>
                                                                         <textarea class="form-control" rows="2" readonly>{{ $cost->note ?? '-' }}</textarea>
+                                                                    </div>
+                                                                    <div class="col-12 text-center mt-3">
+                                                                        <label class="form-label d-block fw-bold">QR Code Notaris</label>
+                                                                        <div class="p-2 d-inline-block border rounded bg-light">
+                                                                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(130)->margin(1)->generate($cost->notaris->notaris_code ?? 'DATA-TIDAK-DITEMUKAN') !!}
+                                                                        </div>
+                                                                        <small class="text-muted d-block mt-1 fw-bold">{{ $cost->notaris->display_name ?? '-' }}</small>
                                                                     </div>
                                                                 </div>
                                                             </form>
