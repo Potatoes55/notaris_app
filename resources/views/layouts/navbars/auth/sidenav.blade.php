@@ -55,6 +55,7 @@ style="height: 100vh; overflow: hidden;">
                 $user = auth()->user();
             @endphp
             @if ($user->access_code !== null && !session('access_all_menu'))
+            {{-- menu --}}
                 <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
                         <i class="fa-solid fa-bars" style="color: #f4645f;"></i>

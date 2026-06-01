@@ -4,7 +4,6 @@ use App\Http\Controllers\AktaQrController;
 use App\Http\Controllers\BackupRestoreController;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\CovernoteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\ForgotPasswordController;
