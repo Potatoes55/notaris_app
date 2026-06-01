@@ -246,6 +246,17 @@ style="height: 100vh; overflow: hidden;">
                     <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Proses Lain</h6>
                 
                 </li>
+                {{-- menu warkah  --}}
+                <li class="nav-item">
+                    <a href="{{ route('warkah.selectClient') }}"
+                        class="nav-link {{ request()->is('warkah*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-folder-fill text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Warkah</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('proses-lain-transaksi.index') }}"
                         class="nav-link {{ request()->is('proses-lain-transaksi*') ? 'active' : '' }}">
@@ -276,6 +287,7 @@ style="height: 100vh; overflow: hidden;">
                         <span class="nav-link-text ms-1 mt-2">Progress</span>
                     </a>
                 </li>
+                
             @endif
 
             {{-- @php
@@ -769,6 +781,17 @@ style="height: 100vh; overflow: hidden;">
                     </div>
                     <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Proses Lain</h6>
                 </li>
+                {{-- menu warkah  --}}
+                <li class="nav-item">
+                    <a href="{{ route('warkah.selectClient') }}"
+                        class="nav-link {{ request()->is('warkah*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-folder-fill text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Warkah</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('proses-lain-transaksi.index') }}"
                         class="nav-link {{ request()->is('proses-lain-transaksi*') ? 'active' : '' }}">
@@ -799,6 +822,7 @@ style="height: 100vh; overflow: hidden;">
                         <span class="nav-link-text ms-1 mt-2">Progress</span>
                     </a>
                 </li>
+                
             @endif
         </ul>
     </div>
