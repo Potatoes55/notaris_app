@@ -4,6 +4,7 @@ use App\Http\Controllers\AktaQrController;
 use App\Http\Controllers\BackupRestoreController;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CovernoteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -128,55 +129,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])
         ->name('profile.unlock');
 
-    // cs routes
-    Route::resource('consultation', NotaryConsultationController::class);
-    Route::get('/consultation/client/{id}', [NotaryConsultationController::class, 'getConsultationByClient'])->name('consultation.getConsultationByClient');
-    Route::get('/consultation/client/product/{consultationId}', [NotaryConsultationController::class, 'getConsultationByProduct'])->name('consultation.detail');
-    Route::get('/consultation/client/product/creates/{consultationId}', [NotaryConsultationController::class, 'creates'])->name('consultation.creates');
-    Route::post('/consultation/client/product/{consultationId}', [NotaryConsultationController::class, 'storeProduct'])->name('consultation.storeProduct');
-    Route::delete('/consultation/client/product/{consultationId}/product/{productId}', [NotaryConsultationController::class, 'deleteProduct'])->name('consultation.deleteProduct');
-
-    // client routes
-    Route::resource('clients', ClientController::class)->except('show');
-    Route::put('/clients/{id}/valid', [ClientController::class, 'markAsValid'])->name('clients.markAsValid');
-    Route::put('/clients/{id}/set-revision', [ClientController::class, 'setRevision'])
-        ->name('clients.setRevision');
-    Route::get('/client/revision/{encryptedClientId}', [ClientController::class, 'showRevisionForm'])
-        ->name('client.public.revision');
-
-    Route::post('/client/revision/{encryptedClientId}', [ClientController::class, 'submitRevision'])
-        ->name('client.revision.submit');
-
-    // Proses Pengurusan
-    Route::get('client-progress', [PicProcessController::class, 'indexProcess'])->name('pic-progress.indexProcess');
-    Route::post('pic_process/progress/store', [PicProcessController::class, 'storeProgress'])
-        ->name('pic-progress.storeProgress');
-    Route::resource('management-process', NotaryClientProductController::class);
-    Route::put('/management-process/{id}/valid', [NotaryClientProductController::class, 'markAsValid'])->name('management-process.markAsValid');
-    Route::post('management-process/mark-done', [NotaryClientProductController::class, 'markDone'])->name('management-process.markDone');
-    Route::post('management-process/add-progress', [NotaryClientProductController::class, 'addProgress'])->name('management-process.addProgress');
-
-    // Warkah
-    Route::get('/warkah', [NotaryClientWarkahController::class, 'selectClient'])->name('warkah.selectClient');
-    Route::get('/warkah/{id}', [NotaryClientWarkahController::class, 'index'])->name('warkah.index');
-    // Route::resource('warkah', NotaryClientWarkahController::class);
-
-    Route::post('warkah/store', [NotaryClientWarkahController::class, 'store'])->name('warkah.store');
-    Route::get('warkah/create/{id}', [NotaryClientWarkahController::class, 'create'])->name('warkah.create');
-    Route::put('warkah/update/{id}', [NotaryClientWarkahController::class, 'update'])->name('warkah.update');
-    // Route::post('warkah/add-document/{id}', [NotaryClientWarkahController::class, 'addDocument'])->name('warkah.addDocument');
-    Route::post('warkah/status/{id}', [NotaryClientWarkahController::class, 'updateStatus'])->name('warkah.updateStatus');
-    // // End
-
-    // PIC
-    Route::resource('pic_documents', PicDocumentsController::class);
-    Route::get('pic_documents/{id}/print', [PicDocumentsController::class, 'print'])->name('pic_documents.print');
-    Route::resource('pic_staff', PicStaffController::class);
-    Route::resource('pic_process', PicProcessController::class);
-    Route::put('/pic_process/{id}/complete', [PicProcessController::class, 'markComplete'])->name('pic_process.markComplete');
-    Route::resource('pic_handovers', PicHandOverController::class);
-    Route::get('pic_handovers/{id}/print', [PicHandoverController::class, 'print'])->name('pic_handovers.print');
-
     // Proses Lain
     Route::resource('proses-lain-transaksi', ProsesLainController::class);
     Route::get('proses-lain-pic', [ProsesLainController::class, 'indexPic'])->name('proses-lain-pic.index');
@@ -188,24 +140,64 @@ Route::middleware(['auth'])->group(function () {
     Route::post('proses-lain-progress/store', [ProsesLainController::class, 'storeProgress'])->name('proses-lain-progress.store');
     Route::put('proses-lain-progress/{id}', [ProsesLainController::class, 'updateProgress'])->name('proses-lain-progress.update');
     Route::delete('proses-lain-progress/{id}', [ProsesLainController::class, 'destroyProgress'])->name('proses-lain-progress.destroy');
+    // cliet
+    Route::resource('clients', ClientController::class)->except('show');
+    Route::put('/clients/{id}/valid', [ClientController::class, 'markAsValid'])->name('clients.markAsValid');
+    Route::put('/clients/{id}/set-revision', [ClientController::class, 'setRevision'])
+        ->name('clients.setRevision');
+    Route::get('/client/revision/{encryptedClientId}', [ClientController::class, 'showRevisionForm'])
+        ->name('client.public.revision');
 
-    // laporan akta
+    Route::post('/client/revision/{encryptedClientId}', [ClientController::class, 'submitRevision'])
+        ->name('client.revision.submit');
+    // cs
+    Route::resource('consultation', NotaryConsultationController::class);
+    Route::get('/consultation/client/{id}', [NotaryConsultationController::class, 'getConsultationByClient'])->name('consultation.getConsultationByClient');
+    Route::get('/consultation/client/product/{consultationId}', [NotaryConsultationController::class, 'getConsultationByProduct'])->name('consultation.detail');
+    Route::get('/consultation/client/product/creates/{consultationId}', [NotaryConsultationController::class, 'creates'])->name('consultation.creates');
+    Route::post('/consultation/client/product/{consultationId}', [NotaryConsultationController::class, 'storeProduct'])->name('consultation.storeProduct');
+    Route::delete('/consultation/client/product/{consultationId}/product/{productId}', [NotaryConsultationController::class, 'deleteProduct'])->name('consultation.deleteProduct');
+    // Warkah
+    Route::get('/warkah', [NotaryClientWarkahController::class, 'selectClient'])->name('warkah.selectClient');
+    Route::get('/warkah/{id}', [NotaryClientWarkahController::class, 'index'])->name('warkah.index');
+    // Route::resource('warkah', NotaryClientWarkahController::class);
+
+    Route::post('warkah/store', [NotaryClientWarkahController::class, 'store'])->name('warkah.store');
+    Route::get('warkah/create/{id}', [NotaryClientWarkahController::class, 'create'])->name('warkah.create');
+    Route::put('warkah/update/{id}', [NotaryClientWarkahController::class, 'update'])->name('warkah.update');
+    // Route::post('warkah/add-document/{id}', [NotaryClientWarkahController::class, 'addDocument'])->name('warkah.addDocument');
+    Route::post('warkah/status/{id}', [NotaryClientWarkahController::class, 'updateStatus'])->name('warkah.updateStatus');
+    // // End
+    //
+    Route::resource('notary-letters', NotaryLettersController::class);
     Route::get('laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan-akta.index');
     Route::get('laporan-akta/export-pdf', [NotaryLaporanAktaController::class, 'exportPdf'])
         ->name('laporan-akta.export-pdf');
 
-    // notary letters
-    Route::resource('notary-letters', NotaryLettersController::class);
+    // PIC
+    Route::resource('pic_documents', PicDocumentsController::class);
+    Route::get('pic_documents/{id}/print', [PicDocumentsController::class, 'print'])->name('pic_documents.print');
+    Route::resource('pic_staff', PicStaffController::class);
+    Route::resource('pic_process', PicProcessController::class);
+    Route::put('/pic_process/{id}/complete', [PicProcessController::class, 'markComplete'])->name('pic_process.markComplete');
+    Route::resource('pic_handovers', PicHandOverController::class);
+    Route::get('pic_handovers/{id}/print', [PicHandoverController::class, 'print'])->name('pic_handovers.print');
 
-    // laporan proses
     Route::get('report-progress', [ReportProcessController::class, 'index'])->name('report-progress.index');
     Route::get('report-progress/print', [ReportProcessController::class, 'print'])->name('report-progress.print');
 
-    // jenis akta
     Route::resource('documents', DocumentsController::class)->except('show');
     Route::put('documents/{document}/deactivate', [DocumentsController::class, 'deactivate'])->name('documents.deactivate');
     Route::put('/documents/{id}/activate', [DocumentsController::class, 'activate'])
         ->name('documents.activate');
+    // Proses Pengurusan
+    Route::get('client-progress', [PicProcessController::class, 'indexProcess'])->name('pic-progress.indexProcess');
+    Route::post('pic_process/progress/store', [PicProcessController::class, 'storeProgress'])
+        ->name('pic-progress.storeProgress');
+    Route::resource('management-process', NotaryClientProductController::class);
+    Route::put('/management-process/{id}/valid', [NotaryClientProductController::class, 'markAsValid'])->name('management-process.markAsValid');
+    Route::post('management-process/mark-done', [NotaryClientProductController::class, 'markDone'])->name('management-process.markDone');
+    Route::post('management-process/add-progress', [NotaryClientProductController::class, 'addProgress'])->name('management-process.addProgress');
 });
 
 Route::middleware(['auth', 'check.full.access'])->group(function () {
@@ -221,6 +213,8 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
         Route::get('/profile', 'show')->name('profile');
         Route::put('/profile', 'update')->name('profile.update');
     });
+    Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
+    Route::resource('covernotes', CovernoteController::class);
 
     Route::get('/backup-restore', [BackupRestoreController::class, 'index'])->name('backup-restore.index');
 
@@ -235,7 +229,6 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
         Route::get('/subscriptions', 'index')->name('subscriptions');
     });
 
-    // unknown routes
     Route::resource('products', ProductsController::class)->except('show');
     Route::put('products/{product}/deactivate', [ProductsController::class, 'deactivate'])->name('products.deactivate');
 
@@ -264,7 +257,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::resource('akta-parties', NotaryAktaPartiesController::class)->except('create', 'store', 'show');
     Route::get('akta-parties/createData/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'createData'])
         ->name('akta-parties.createData');
-    Route::post('/akta-parties,store/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'storeData'])->name('akta-parties.storeData');
+    Route::post('/akta-parties/store/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'storeData'])->name('akta-parties.storeData');
     Route::get('akta-number', [NotaryAktaTransactionController::class, 'indexNumber'])->name('akta_number.index');
     Route::post('akta-number/store', [NotaryAktaTransactionController::class, 'storeNumber'])->name(
         'akta_number.store'
@@ -305,5 +298,6 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::get('report-payment/print', [ReportPaymentController::class, 'print'])->name('report-payment.print');
 
 });
+
 // Logout route
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');

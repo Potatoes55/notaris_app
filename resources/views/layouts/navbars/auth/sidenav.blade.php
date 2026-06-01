@@ -54,7 +54,7 @@ style="height: 100vh; overflow: hidden;">
             @php
                 $user = auth()->user();
             @endphp
-            @if ($user->access_code !== null)
+            @if ($user->access_code !== null && !session('access_all_menu'))
                 <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
                         <i class="fa-solid fa-bars" style="color: #f4645f;"></i>
@@ -322,7 +322,23 @@ style="height: 100vh; overflow: hidden;">
                     </a>
                 </li>
             @elseif (session('access_all_menu'))
+                <li class="nav-item mt-3 d-flex align-items-center">
+                    <div class="ps-4">
+                        <i class="fa-solid fa-bars" style="color: #f4645f;"></i>
+                    </div>
+                    <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Menu</h6>
+                </li>
+
+                {{-- menu settings --}}
                 <li class="nav-item">
+                    <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Setting</span>
+                    </a>
+                 
                     <a href="{{ route('profile') }}" class="nav-link {{ request()->is('profile*') ? 'active' : '' }}">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -348,7 +364,7 @@ style="height: 100vh; overflow: hidden;">
                         </div>
                         <span class="nav-link-text ms-1 mt-2">Jenis Warkah</span>
                     </a>
-                </li>
+                </>
                 <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
                         <i class="fa-solid fa-headset" style="color: #f4645f;"></i>
