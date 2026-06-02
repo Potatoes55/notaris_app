@@ -193,7 +193,8 @@
 
                                 {{-- <div class="col-md-6 mb-3">
                                     <label for="type" class="form-label text-sm">Tipe Klien</label>
-                                    <select name="type" class="form-select">
+                                    <
+                                    select name="type" class="form-select">
                                         <option value="" hidden>Pilih tipe klien</option>
                                         <option value="personal"
                                             {{ old('type', $client->type ?? '') == 'personal' ? 'selected' : '' }}>Personal
@@ -202,7 +203,7 @@
                                             {{ old('type', $client->type ?? '') == 'company' ? 'selected' : '' }}>
                                             Perusahaan
                                         </option>
-                                    </select>
+                                    </>
                                     @error('type')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
@@ -260,7 +261,7 @@
                                         Hukum</label>
                                     <input type="text" name="fullname" class="form-control"
                                         placeholder="Masukkan nama "
-                                        value="{{ old('fullname', $client->fullname ?? '') }}">
+                                        value="{{ old('fullname', $client->fullname ?? '') }}" required>
                                     @error('fullname')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
@@ -287,7 +288,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="business_form" class="form-label text-sm">Bentuk Usaha</label>
-                                    <select name="business_form" class="form-select">
+                                    <select name="business_form" class="form-select" required>
                                         <option value="" hidden>Pilih</option>
                                         <option value="CV"
                                             {{ old('business_form', $client->business_form ?? '') == 'CV' ? 'selected' : '' }}>
@@ -327,7 +328,7 @@
                                     <label for="deed_number" class="form-label text-sm">Nomor Akta Pendirian</label>
                                     <input type="text" name="deed_number" class="form-control"
                                         placeholder="Masukkan nomor akta pendirian"
-                                        value="{{ old('deed_number', $client->deed_number ?? '') }}">
+                                        value="{{ old('deed_number', $client->deed_number ?? '') }}" required>
                                     {{-- @error('deed_number')
                                             <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                         @enderror --}}
@@ -337,7 +338,7 @@
                                     <label for="deed_date" class="form-label text-sm">Tanggal Akta Pendirian</label>
                                     <input type="date" name="deed_date" class="form-control"
                                         placeholder="Masukkan tanggal akta pendirian"
-                                        value="{{ old('deed_date', $client->deed_date ?? '') }}">
+                                        value="{{ old('deed_date', $client->deed_date ?? '') }}" required>
                                     {{-- @error('deed_date')
                                             <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                         @enderror --}}
@@ -346,7 +347,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="nib" class="form-label text-sm">NIB</label>
                                     <input type="text" class="form-control" id="nib" name="nib"
-                                        placeholder="Masukkan nomor NIB" value="{{ old('nib', $client->nib ?? '') }}">
+                                        placeholder="Masukkan nomor NIB" value="{{ old('nib', $client->nib ?? '') }}" required>
                                     {{-- @error('nib')
                                             <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                         @enderror --}}
@@ -365,7 +366,7 @@
                                     <label for="pic_name" class="form-label">PIC Name</label>
                                     <input type="text" class="form-control" id="pic_name" name="pic_name"
                                         placeholder="Masukkan Nama PIC"
-                                        value="{{ old('pic_name', $client->pic_name ?? '') }}">
+                                        value="{{ old('pic_name', $client->pic_name ?? '') }}" required>
                                     {{-- @error('pic_name')
                                             <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                         @enderror --}}
@@ -375,7 +376,7 @@
                                     <label for="pic_position" class="form-label">PIC Position</label>
                                     <input type="text" class="form-control" id="pic_position" name="pic_position"
                                         placeholder="Masukkan Jabatan"
-                                        value="{{ old('pic_position', $client->pic_position ?? '') }}">
+                                        value="{{ old('pic_position', $client->pic_position ?? '') }}" required>
                                     {{-- @error('pic_position')
                                             <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                         @enderror --}}
@@ -385,7 +386,7 @@
                                     <label for="pic_phone" class="form-label">PIC Phone</label>
                                     <input type="text" class="form-control" id="pic_phone" name="pic_phone"
                                         placeholder="Masukkan no hp PIC"
-                                        value="{{ old('pic_phone', $client->pic_phone ?? '') }}">
+                                        value="{{ old('pic_phone', $client->pic_phone ?? '') }}" required>
                                     {{-- @error('pic_phone')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror --}}
@@ -395,36 +396,36 @@
                                     <label for="pic_email" class="form-label">PIC Email</label>
                                     <input type="email" class="form-control" id="pic_email" name="pic_email"
                                         placeholder="Masukkan alamat email PIC"
-                                        value="{{ old('pic_email', $client->pic_email ?? '') }}">
+                                        value="{{ old('pic_email', $client->pic_email ?? '') }}" required>
                                     {{-- @error('pic_email')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror --}}
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="address" class="form-label text-sm">Alamat</label>
+                                    <label for="address" class="form-label text-sm">Alamat Badan</label>
                                     <input type="text" name="address" class="form-control"
                                         placeholder="Masukkan alamat lengkap"
-                                        value="{{ old('address', $client->address ?? '') }}">
+                                        value="{{ old('address', $client->address ?? '') }}" required>
                                     @error('address')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="city" class="form-label text-sm">Kota</label>
+                                    <label for="city" class="form-label text-sm">Kota Badan</label>
                                     <input type="text" name="city" class="form-control"
-                                        placeholder="Masukkan nama kota" value="{{ old('city', $client->city ?? '') }}">
+                                        placeholder="Masukkan nama kota" value="{{ old('city', $client->city ?? '') }}" required>
                                     @error('city')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="province" class="form-label text-sm">Provinsi</label>
+                                    <label for="province" class="form-label text-sm">Provinsi Badan</label>
                                     <input type="text" name="province" class="form-control"
                                         placeholder="Masukkan provinsi"
-                                        value="{{ old('province', $client->province ?? '') }}">
+                                        value="{{ old('province', $client->province ?? '') }}" required>
                                     @error('province')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
@@ -434,7 +435,7 @@
                                     <label for="postcode" class="form-label text-sm">Kode Pos</label>
                                     <input type="text" name="postcode" class="form-control"
                                         placeholder="Masukkan kode pos"
-                                        value="{{ old('postcode', $client->postcode ?? '') }}">
+                                        value="{{ old('postcode', $client->postcode ?? '') }}" required>
                                     @error('postcode')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
@@ -454,7 +455,7 @@
                                     <label for="phone" class="form-label text-sm">Telepon Perusahaan</label>
                                     <input type="text" name="phone" class="form-control"
                                         placeholder="Masukkan nomor telepon perusahaan"
-                                        value="{{ old('phone', $client->phone ?? '') }}">
+                                        value="{{ old('phone', $client->phone ?? '') }}" required>
                                     @error('phone')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
@@ -464,7 +465,7 @@
                                     <label for="email" class="form-label text-sm">Email Perusahaan</label>
                                     <input type="email" name="email" class="form-control"
                                         placeholder="Masukkan alamat email perusahaan"
-                                        value="{{ old('email', $client->email ?? '') }}">
+                                        value="{{ old('email', $client->email ?? '') }}" required>
                                     @error('email')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
