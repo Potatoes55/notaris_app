@@ -70,26 +70,23 @@
                         </div>
 
                         {{-- Status --}}
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="status" class="form-label text-sm">Status <span class="text-danger">*</span>
                             </label>
                             <select name="status" id="status" class="form-select">
                                 <option value="" hidden>Pilih Status</option>
-                                <option value="Baru"
+                                <option value="1"
                                     {{ old('status', $data->status ?? '') == 'Baru' ? 'selected' : '' }}>
                                     Baru</option>
-                                <option value="Proses"
-                                    {{ old('status', $data->status ?? '') == 'Proses' ? 'selected' : '' }}>
+                                <option value="0"
+                                    {{ old('status', $data->status ?? '') == '0' ? 'selected' : '' }}>
                                     Proses</option>
-                                <option value="Selesai"
-                                    {{ old('status', $data->status ?? '') == 'Selesai' ? 'selected' : '' }}>
-                                    Selesai</option>
                             </select>
                             @error('status')
                                 <p class="text-danger mt-2">{{ $message }}</p>
-                            @enderror 
-                        
-                            </div>
+                            @enderror --}}
+                        {{--
+                            </div> --}}
 
                         <div class="mt-4">
                             <a href="{{ route('proses-lain-transaksi.index') }}" class="btn btn-secondary">
