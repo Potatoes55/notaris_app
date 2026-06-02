@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('notary_client_warkahs', function (Blueprint $table) {
-            $table->string('city')->nullable()->after('warkah_name');
+        Schema::table('covernotes', function (Blueprint $table) {
+            $table->unsignedBigInteger('notaris_id')->nullable()->after('id');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notary_client_warkahs', function (Blueprint $table) {
-            $table->dropColumn('city');
+        Schema::table('covernotes', function (Blueprint $table) {
+            $table->dropColumn('notaris_id');
         });
     }
 };

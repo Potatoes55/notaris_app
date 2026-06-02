@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProsesLain extends Model
 {
-
     protected $table = 'proses_lain';
 
     protected $fillable = [
@@ -29,8 +28,14 @@ class ProsesLain extends Model
         return $this->belongsTo(Client::class, 'client_code', 'client_code');
     }
 
+    public function picStaff()
+    {
+        return $this->belongsTo(User::class, 'pic_id');
+    }
+
     public function picDocument()
     {
-        return $this->belongsTo(PicDocuments::class, 'pic_id');
+        return $this->hasOne(PicDocuments::class, 'transaction_id', 'id')
+                    ->where('transaction_type', 'proses_lain');
     }
 }

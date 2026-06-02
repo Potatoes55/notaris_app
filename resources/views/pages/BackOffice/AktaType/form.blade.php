@@ -25,7 +25,7 @@
 
                             @php
                                 // Daftar kategori standar
-                                $defaultCategories = ['pendirian', 'perubahan', 'pemutusan'];
+                                $defaultCategories = ['pendirian', 'perubahan', 'pembubaran'];
 
                                 // Ambil kategori dari database (saat edit)
                                 $selectedCategory = old('category', $aktaType->category ?? '');
