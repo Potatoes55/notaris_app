@@ -48,14 +48,18 @@
                             <label class="form-label text-sm">PIC <span class="text-danger">*</span></label>
                             <select name="pic_id" class="form-select @error('pic_id') is-invalid @enderror">
                                 <option value="" hidden>Pilih PIC</option>
+                                @if (isset($picDocuments)) 
+                                    <option value=""disabled>buat pic document terlebih dahulu</option>
+                                @else
                                 @foreach ($picDocuments as $client)
                                     <option value="{{ $client->pic_id }}" class="text-capitalize"
                                         {{ old('pic_id', $data->pic_id ?? '') == $client->pic_id ? 'selected' : '' }}>
                                         {{ $client->pic->full_name }} - {{ $client->transaction_type }}
                                     </option>
                                 @endforeach
+                                @endif
                             </select>
-                            @error('client_code')
+                            @error('pic_id  ')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
