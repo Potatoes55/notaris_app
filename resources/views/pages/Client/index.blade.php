@@ -48,6 +48,35 @@
                         </div>
 
                         <a href="{{ route('clients.create') }}" class="btn btn-primary btn-sm mb-0">+ Tambah Klien</a>
+                        {{--  --}}
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+
+                                <i class="fas fa-plus me-1"></i>
+                                Tambah Klien
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item py-2"
+                                        href="{{ route('clients.create', ['type' => 'personal']) }}">
+                                        {{-- <a class="dropdown-item py-2" href="{{ route('clients.personal.create') }}"> --}}
+                                        <i class="fas fa-user me-2"></i>
+                                        Personal
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item py-2"
+                                        href="{{ route('clients.create', ['type' => 'company']) }}">
+                                        {{-- <a class="dropdown-item py-2" href="{{ route('clients.company.create') }}"> --}}
+                                        <i class="fas fa-building me-2"></i>
+                                        Badan Usaha
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        {{--  --}}
                     </div>
                     <div class="d-flex  justify-content-end w-100 mt-3">
                         <form method="GET" action="{{ route('clients.index') }}"
@@ -99,9 +128,9 @@
                                         <th>
                                             NPWP
                                         </th>
-                                        <th>
+                                        {{-- <th>
                                             Nama Perusahaan
-                                        </th>
+                                        </th> --}}
                                         <th>
                                             Alamat
                                         </th>
@@ -134,9 +163,9 @@
                                             <td>
                                                 {{ $client->npwp ?? '-' }}
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 {{ $client->company_name ?? '-' }}
-                                            </td>
+                                            </td> --}}
                                             <td title="{{ $client->address }}">
                                                 {{ \Illuminate\Support\Str::limit($client->address, 50, '...') }}
                                             </td>
