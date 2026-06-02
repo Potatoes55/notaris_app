@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class Covernote extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'notaris_id',
         'client_id',
         'client_code',
         'covernote_number',
