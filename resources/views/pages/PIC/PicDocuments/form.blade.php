@@ -75,8 +75,8 @@
                                 @foreach ($aktaTransaction as $akta)
                                     <option value="{{ $akta->id }}"
                                         {{ isset($picDocument) && $picDocument->transaction_type === 'akta' && $picDocument->transaction_id == $akta->id ? 'selected' : '' }}>
-                                        {{ $akta->client->fullname }} - {{ $akta->transaction_code }} -
-                                        {{ $akta->akta_type->type }}
+                                        {{ $akta->client?->fullname ?? 'Tanpa Klien' }} - {{ $akta->transaction_code }} -
+                                        {{ $akta->akta_type?->type ?? 'Tanpa Jenis' }}
                                     </option>
                                 @endforeach
                             </select>
@@ -92,8 +92,8 @@
                                 @foreach ($relaasTransaction as $relaas)
                                     <option value="{{ $relaas->id }}"
                                         {{ isset($picDocument) && $picDocument->transaction_type === 'ppat' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
-                                        {{ $relaas->client->fullname }} - {{ $relaas->transaction_code }} -
-                                        {{ $relaas->akta_type->type }}
+                                        {{ $relaas->client?->fullname ?? 'Tanpa Klien' }} - {{ $relaas->transaction_code }} -
+                                        {{ $relaas->akta_type?->type ?? 'Tanpa Jenis' }}
                                     </option>
                                 @endforeach
                             </select>
@@ -102,14 +102,19 @@
                         {{-- Proses Lain Section --}}
                         <div class="mb-3" id="proses_lain_section" style="display: none;">
                             <label for="proses_lain_transaction_id" class="form-label text-sm">Transaksi Proses Lain</label>
-                            <select id="proses_lain_transaction_id" name="proses_lain_transaction_id"
-                                class="form-select @error('proses_lain_transaction_id') is-invalid @enderror">
+                            <select id="proses_lain_transaction_id" name="proses_lain_transaction_id" class="form-select">
                                 <option value="" hidden>Pilih Transaksi Proses Lain</option>
                                 @if(isset($prosesLainTransaction))
                                     @foreach ($prosesLainTransaction as $proses)
                                         <option value="{{ $proses->id }}"
                                             {{ isset($picDocument) && $picDocument->transaction_type === 'proses_lain' && $picDocument->transaction_id == $proses->id ? 'selected' : '' }}>
-                                            {{ $proses->client->fullname }} - {{ $proses->transaction_code }} - {{ $proses->title ?? 'Proses Lain' }}
+                                            
+                                            {{-- Nama Klien - Kode Transaksi - Proses Lain (Nama Transaksi) --}}
+                                            {{ $proses->client->fullname ?? 'Klien Tanpa Nama' }} - 
+                                            {{ $proses->transaction_code }} - 
+                                            Proses Lain 
+                                            ({{ $proses->name ?? 'Tidak ada nama transaksi' }})
+                                            
                                         </option>
                                     @endforeach
                                 @endif
@@ -171,6 +176,10 @@
             const aktaSection = document.getElementById('akta_section');
             const relaasSection = document.getElementById('relaas_section');
             const prosesLainSection = document.getElementById('proses_lain_section');
+            const initialType = "{{ old('transaction_type', $picDocument->transaction_type ?? '') }}";
+            if (initialType) {
+                toggleSections(); 
+            }
 
             function toggleSections() {
                 const value = typeSelect.value;

@@ -140,7 +140,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
     Route::put('proses-lain-progress/{id}', [ProsesLainController::class, 'updateProgress'])->name('proses-lain-progress.update');
     Route::delete('proses-lain-progress/{id}', [ProsesLainController::class, 'destroyProgress'])->name('proses-lain-progress.destroy');
     Route::get('/proses-lain-pic/get-pic/{client_code}', [ProsesLainController::class, 'getPicByClient'])->name('proses-lain-pic.get-pic');
-    Route::delete('proses-lain-pic/{id}', [ProsesLainController::class, 'destroyPic'])->name('proses-lain-pic.destroy');
+    Route::delete('proses-lain-pic/{id}', [ProsesLainController::class, 'destroy'])->name('proses-lain-pic.destroy');
     // cliet
     Route::resource('clients', ClientController::class)->except('show');
     Route::put('/clients/{id}/valid', [ClientController::class, 'markAsValid'])->name('clients.markAsValid');
