@@ -118,7 +118,7 @@ class ProsesLainController extends Controller
             'notaris_id' => auth()->user()->notaris_id,
             'name' => $request->name,
             'time_estimation' => $request->time_estimation,
-            'status' => $request->status ?? 'Baru',
+            'status' => $request->status,
             'transaction_code' => $transactionCode,
         ]);
 

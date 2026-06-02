@@ -75,14 +75,14 @@
                             </label>
                             <select name="status" id="status" class="form-select">
                                 <option value="" hidden>Pilih Status</option>
-                                <option value="1"
+                                <option value="Baru"
                                     {{ old('status', $data->status ?? '') == 'Baru' ? 'selected' : '' }}>
                                     Baru</option>
-                                <option value="0"
+                                <option value="Proses"
                                     {{ old('status', $data->status ?? '') == 'Proses' ? 'selected' : '' }}>
                                     Proses</option>
-                                <option value="0"
-                                    {{ old('status', $data->status ?? '') == 'selesai' ? 'selected' : '' }}>
+                                <option value="Selesai"
+                                    {{ old('status', $data->status ?? '') == 'Selesai' ? 'selected' : '' }}>
                                     Selesai</option>
                             </select>
                             @error('status')
