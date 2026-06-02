@@ -16,7 +16,9 @@
         "laravel/ui": "^4.6",
         "milon/barcode": "^12.0",
         "mpdf/mpdf": "^8.2",
+        "mpdf/qrcode": "^1.2",
         "php-flasher/flasher-notyf-laravel": "^2.1",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-activitylog": "^4.10"
     },
     "require-dev": {

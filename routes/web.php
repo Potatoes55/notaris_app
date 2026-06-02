@@ -121,14 +121,10 @@ Route::middleware('guest', 'nocache')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
-
-    Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])
-        ->name('profile.unlock');
-        
+    Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])->name('profile.unlock');
+    
     Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
     Route::resource('covernotes', CovernoteController::class);
 
@@ -143,6 +139,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('proses-lain-progress/store', [ProsesLainController::class, 'storeProgress'])->name('proses-lain-progress.store');
     Route::put('proses-lain-progress/{id}', [ProsesLainController::class, 'updateProgress'])->name('proses-lain-progress.update');
     Route::delete('proses-lain-progress/{id}', [ProsesLainController::class, 'destroyProgress'])->name('proses-lain-progress.destroy');
+    Route::get('/proses-lain-pic/get-pic/{client_code}', [ProsesLainController::class, 'getPicByClient'])->name('proses-lain-pic.get-pic');
+    Route::delete('proses-lain-pic/{id}', [ProsesLainController::class, 'destroyPic'])->name('proses-lain-pic.destroy');
     // cliet
     Route::resource('clients', ClientController::class)->except('show');
     Route::put('/clients/{id}/valid', [ClientController::class, 'markAsValid'])->name('clients.markAsValid');

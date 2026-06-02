@@ -42,11 +42,11 @@
                         </div>
 
                         {{-- Tipe Transaksi --}}
-                        {{-- <div class="mb-3">
+                        <div class="mb-3">
                             <label for="transaction_type" class="form-label text-sm">Tipe Transaksi <span
                                     class="text-danger">*</span></label>
                             <select name="transaction_type" id="transaction_type"
-                                class="form-select @error('transaction_type') is-invalid @enderror"">
+                                class="form-select @error('transaction_type') is-invalid @enderror">
                                 <option value="" hidden>Pilih Tipe Transaksi</option>
                                 <option value="akta"
                                     {{ old('transaction_type', $picDocument->transaction_type ?? '') == 'akta' ? 'selected' : '' }}>
@@ -56,18 +56,22 @@
                                     {{ old('transaction_type', $picDocument->transaction_type ?? '') == 'ppat' ? 'selected' : '' }}>
                                     PPAT
                                 </option>
+                                <option value="proses_lain"
+                                    {{ old('transaction_type', $picDocument->transaction_type ?? '') == 'proses_lain' ? 'selected' : '' }}>
+                                    Proses Lain
+                                </option>
                             </select>
                             @error('transaction_type')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div> --}}
+                        </div>
 
-                        {{-- Akta Transaction --}}
-                        {{-- <div class="mb-3" id="akta_section" style="display: none;">
+                        {{-- Akta Transaction (Notaris) --}}
+                        <div class="mb-3" id="akta_section" style="display: none;">
                             <label for="akta_transaction_id" class="form-label text-sm">Transaksi Akta </label>
                             <select id="akta_transaction_id" name="akta_transaction_id"
                                 class="form-select @error('akta_transaction_id') is-invalid @enderror">
-                                <option value="" hidden>Pilih Transaksi</option>
+                                <option value="" hidden>Pilih Transaksi Notaris</option>
                                 @foreach ($aktaTransaction as $akta)
                                     <option value="{{ $akta->id }}"
                                         {{ isset($picDocument) && $picDocument->transaction_type === 'akta' && $picDocument->transaction_id == $akta->id ? 'selected' : '' }}>
@@ -76,31 +80,41 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="text-muted">
-                                Format : Nama Klien – Kode Transaksi – Jenis Akta
-                            </small>
-                            @error('transaction_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div> --}}
+                            <small class="text-muted">Format : Nama Klien – Kode Transaksi – Jenis Akta</small>
+                        </div>
 
-                        {{-- Relaas Transaction --}}
-                        {{-- <div class="mb-3" id="relaas_section" style="display: none;">
+                        {{-- Relaas Transaction (PPAT) --}}
+                        <div class="mb-3" id="relaas_section" style="display: none;">
                             <label for="ppat_transaction_id" class="form-label text-sm">Transaksi PPAT</label>
                             <select id="ppat_transaction_id" name="ppat_transaction_id"
-                                class="form-select @error('akta_transaction_id') is-invalid @enderror">
+                                class="form-select @error('ppat_transaction_id') is-invalid @enderror">
                                 <option value="" hidden>Pilih Transaksi PPAT</option>
                                 @foreach ($relaasTransaction as $relaas)
                                     <option value="{{ $relaas->id }}"
-                                        {{ isset($picDocument) && $picDocument->transaction_type === 'relaas' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
+                                        {{ isset($picDocument) && $picDocument->transaction_type === 'ppat' && $picDocument->transaction_id == $relaas->id ? 'selected' : '' }}>
                                         {{ $relaas->client->fullname }} - {{ $relaas->transaction_code }} -
                                         {{ $relaas->akta_type->type }}
                                     </option>
                                 @endforeach
                             </select>
-                        </div> --}}
+                        </div>
 
-                        <x-pilih-transaksi :aktaTransaction="$aktaTransaction" :relaasTransaction="$relaasTransaction" />
+                        {{-- Proses Lain Section --}}
+                        <div class="mb-3" id="proses_lain_section" style="display: none;">
+                            <label for="proses_lain_transaction_id" class="form-label text-sm">Transaksi Proses Lain</label>
+                            <select id="proses_lain_transaction_id" name="proses_lain_transaction_id"
+                                class="form-select @error('proses_lain_transaction_id') is-invalid @enderror">
+                                <option value="" hidden>Pilih Transaksi Proses Lain</option>
+                                @if(isset($prosesLainTransaction))
+                                    @foreach ($prosesLainTransaction as $proses)
+                                        <option value="{{ $proses->id }}"
+                                            {{ isset($picDocument) && $picDocument->transaction_type === 'proses_lain' && $picDocument->transaction_id == $proses->id ? 'selected' : '' }}>
+                                            {{ $proses->client->fullname }} - {{ $proses->transaction_code }} - {{ $proses->title ?? 'Proses Lain' }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
 
                         {{-- Tanggal Terima --}}
                         <div class="mb-3">
@@ -119,18 +133,10 @@
                             <label for="status" class="form-label text-sm">Status</label>
                             <select name="status" id="status" class="form-select" required>
                                 <option value="">Pilih Status</option>
-                                <option value="delivered"
-                                    {{ old('status', $picDocument->status ?? '') == 'delivered' ? 'selected' : '' }}>
-                                    Dikirim</option>
-                                <option value="process"
-                                    {{ old('status', $picDocument->status ?? '') == 'process' ? 'selected' : '' }}>Proses
-                                </option>
-                                <option value="received"
-                                    {{ old('status', $picDocument->status ?? '') == 'received' ? 'selected' : '' }}>
-                                    Diterima</option>
-                                <option value="completed"
-                                    {{ old('status', $picDocument->status ?? '') == 'completed' ? 'selected' : '' }}>
-                                    Selesai</option>
+                                <option value="delivered" {{ old('status', $picDocument->status ?? '') == 'delivered' ? 'selected' : '' }}>Dikirim</option>
+                                <option value="process" {{ old('status', $picDocument->status ?? '') == 'process' ? 'selected' : '' }}>Proses</option>
+                                <option value="received" {{ old('status', $picDocument->status ?? '') == 'received' ? 'selected' : '' }}>Diterima</option>
+                                <option value="completed" {{ old('status', $picDocument->status ?? '') == 'completed' ? 'selected' : '' }}>Selesai</option>
                             </select>
                         </div>
 
@@ -151,26 +157,26 @@
             </div>
         </div>
     </div>
-
-
 @endsection
 
-{{-- JS untuk toggle --}}
 @push('js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const typeSelect = document.getElementById('transaction_type');
             const akta = document.getElementById('akta_transaction_id');
             const ppat = document.getElementById('ppat_transaction_id');
+            const prosesLain = document.getElementById('proses_lain_transaction_id');
             const transactionId = document.getElementById('transaction_id');
 
             const aktaSection = document.getElementById('akta_section');
             const relaasSection = document.getElementById('relaas_section');
+            const prosesLainSection = document.getElementById('proses_lain_section');
 
             function toggleSections() {
                 const value = typeSelect.value;
                 aktaSection.style.display = value === 'akta' ? 'block' : 'none';
                 relaasSection.style.display = value === 'ppat' ? 'block' : 'none';
+                prosesLainSection.style.display = value === 'proses_lain' ? 'block' : 'none';
             }
 
             toggleSections();
@@ -183,9 +189,10 @@
                     transactionId.value = akta.value || "";
                 } else if (typeSelect.value === 'ppat') {
                     transactionId.value = ppat.value || "";
+                } else if (typeSelect.value === 'proses_lain') {
+                    transactionId.value = prosesLain.value || "";
                 }
             });
-
         });
     </script>
 @endpush

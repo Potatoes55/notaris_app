@@ -7,22 +7,32 @@ use App\Models\Covernote;
 use App\Models\Notaris;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Mpdf\Mpdf; 
+use Illuminate\Support\Facades\Auth;
+use Mpdf\Mpdf;
 
 class CovernoteController extends Controller
 {
+    // Helper untuk mengambil ID Notaris yang sedang login
+    private function getNotarisId()
+    {
+        return Auth::user()->notaris_id;
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
-
+        
         $covernotes = Covernote::with('client')
+            ->where('notaris_id', $this->getNotarisId()) // Filter data milik notaris saja
             ->when($search, function ($query, $search) {
-                return $query->where('covernote_number', 'like', "%{$search}%")
-                            ->orWhere('subject', 'like', "%{$search}%")
-                            ->orWhere('recipient', 'like', "%{$search}%")
-                            ->orWhereHas('client', function ($q) use ($search) {
-                                $q->where('fullname', 'like', "%{$search}%");
-                            });
+                return $query->where(function($q) use ($search) {
+                    $q->where('covernote_number', 'like', "%{$search}%")
+                    ->orWhere('subject', 'like', "%{$search}%")
+                    ->orWhere('recipient', 'like', "%{$search}%")
+                    ->orWhereHas('client', function ($q) use ($search) {
+                        $q->where('fullname', 'like', "%{$search}%");
+                    });
+                });
             })
             ->latest()
             ->paginate(10);
@@ -35,60 +45,51 @@ class CovernoteController extends Controller
         $search = $request->input('search');
 
         $covernotes = Covernote::with('client')
+            ->where('notaris_id', $this->getNotarisId()) // Filter data print milik notaris saja
             ->when($search, function ($query, $search) {
                 return $query->where('covernote_number', 'like', "%{$search}%")
                             ->orWhere('subject', 'like', "%{$search}%")
-                            ->orWhere('recipient', 'like', "%{$search}%")
-                            ->orWhereHas('client', function ($q) use ($search) {
-                                $q->where('fullname', 'like', "%{$search}%");
-                            });
+                            ->orWhere('recipient', 'like', "%{$search}%");
             })
             ->latest()
             ->get();
 
-        $notaris = Notaris::where('id', auth()->user()->notaris_id)->first() ?? Notaris::first();
+        $notaris = Notaris::where('id', $this->getNotarisId())->first();
 
         $html = view('pages.BackOffice.Covernote.print', compact('covernotes', 'notaris'))->render();
 
         $mpdf = new Mpdf([
             'default_font'  => 'dejavusans',
             'format'        => 'A4-L',
-            'margin_top'    => 10,
-            'margin_bottom' => 10,
-            'margin_left'   => 15,
-            'margin_right'  => 15,
             'tempDir'       => storage_path('app/mpdf-temp'),
         ]);
 
         $mpdf->WriteHTML($html);
-
-        return response($mpdf->Output('Laporan_Covernote_' . now()->format('YmdHis') . '.pdf', 'I'))
-            ->header('Content-Type', 'application/pdf');
+        return $mpdf->Output('Laporan_Covernote_' . now()->format('YmdHis') . '.pdf', 'I');
     }
 
     public function create()
     {
-        $clients = Client::all();
+        // Hanya tampilkan klien milik notaris ini di dropdown
+        $clients = Client::where('notaris_id', $this->getNotarisId())->get();
         return view('pages.BackOffice.Covernote.form', compact('clients'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'client_id'        => 'required|exists:clients,id',
+            'client_id'        => 'required',
             'covernote_number' => 'required|string|unique:covernotes,covernote_number',
-            'recipient'        => 'nullable|string',
-            'subject'          => 'nullable|string',
-            'date'             => 'nullable|date',
-            'expiry_date'      => 'nullable|date',
-            'attachment'       => 'nullable|string',
-            'file'             => 'nullable|file|mimes:pdf,jpg,jpeg,png,svg,webp|max:2048',
         ]);
 
-        $data = $request->all();
+        // Verifikasi kepemilikan klien
+        $client = Client::where('id', $request->client_id)
+                        ->where('notaris_id', $this->getNotarisId())
+                        ->firstOrFail();
 
-        $client = Client::find($request->client_id);
-        $data['client_code'] = $client->client_code ?? null;
+        $data = $request->all();
+        $data['notaris_id'] = $this->getNotarisId(); // Simpan notaris_id
+        $data['client_code'] = $client->client_code;
 
         if ($request->hasFile('file')) {
             $data['file_path'] = $request->file('file')->store('covernotes', 'public');
@@ -96,64 +97,63 @@ class CovernoteController extends Controller
 
         Covernote::create($data);
 
-        return redirect()->route('covernotes.index')->with('success', 'Data Covernote berhasil ditambahkan.');
+        return redirect()->route('covernotes.index')->with('success', 'Data berhasil ditambahkan.');
     }
 
     public function show(string $id)
     {
-        $covernote = Covernote::with('client')->findOrFail($id);
+        $covernote = Covernote::where('id', $id)
+                            ->where('notaris_id', $this->getNotarisId())
+                            ->firstOrFail();
         return view('pages.BackOffice.Covernote.show', compact('covernote'));
     }
 
     public function edit(string $id)
     {
-        $data = Covernote::findOrFail($id);
-        $clients = Client::all();
+        $data = Covernote::where('id', $id)
+                        ->where('notaris_id', $this->getNotarisId())
+                        ->firstOrFail();
+        
+        $clients = Client::where('notaris_id', $this->getNotarisId())->get();
         return view('pages.BackOffice.Covernote.form', compact('data', 'clients'));
     }
 
     public function update(Request $request, string $id)
     {
-        $covernote = Covernote::findOrFail($id);
+        $covernote = Covernote::where('id', $id)
+                            ->where('notaris_id', $this->getNotarisId())
+                            ->firstOrFail();
 
         $request->validate([
-            'client_id'        => 'required|exists:clients,id',
-            'covernote_number' => 'required|string|unique:covernotes,covernote_number,' . $id,
-            'recipient'        => 'nullable|string',
-            'subject'          => 'nullable|string',
-            'date'             => 'nullable|date',
-            'expiry_date'      => 'nullable|date',
-            'attachment'       => 'nullable|string|max:65000',
-            'file'             => 'nullable|file|mimes:pdf,jpg,jpeg,png,svg,webp|max:10240',
+            'client_id' => 'required',
+            'covernote_number' => 'required|unique:covernotes,covernote_number,' . $id,
         ]);
 
         $data = $request->all();
-
-        $client = Client::find($request->client_id);
-        $data['client_code'] = $client->client_code ?? null;
+        $client = Client::where('id', $request->client_id)
+                        ->where('notaris_id', $this->getNotarisId())
+                        ->firstOrFail();
+        
+        $data['client_code'] = $client->client_code;
 
         if ($request->hasFile('file')) {
-            if ($covernote->file_path && Storage::disk('public')->exists($covernote->file_path)) {
-                Storage::disk('public')->delete($covernote->file_path);
-            }
+            if ($covernote->file_path) Storage::disk('public')->delete($covernote->file_path);
             $data['file_path'] = $request->file('file')->store('covernotes', 'public');
         }
 
         $covernote->update($data);
-
-        return redirect()->route('covernotes.index')->with('success', 'Data Covernote berhasil diperbarui.');
+        return redirect()->route('covernotes.index')->with('success', 'Data berhasil diperbarui.');
     }
 
     public function destroy(string $id)
     {
-        $covernote = Covernote::findOrFail($id);
+        $covernote = Covernote::where('id', $id)
+                            ->where('notaris_id', $this->getNotarisId())
+                            ->firstOrFail();
 
-        if ($covernote->file_path && Storage::disk('public')->exists($covernote->file_path)) {
-            Storage::disk('public')->delete($covernote->file_path);
-        }
-
+        if ($covernote->file_path) Storage::disk('public')->delete($covernote->file_path);
         $covernote->delete();
 
-        return redirect()->route('covernotes.index')->with('success', 'Data Covernote berhasil dihapus.');
+        return redirect()->route('covernotes.index')->with('success', 'Data berhasil dihapus.');
     }
 }

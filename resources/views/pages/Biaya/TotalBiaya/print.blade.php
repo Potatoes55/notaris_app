@@ -235,13 +235,25 @@
     {{-- Tanda tangan --}}
     <div class="footer">
         <div class="left">
-            <p>Jakarta, {{ now()->format('d F Y') }}</p>
+            <p>Magelang, {{ now()->format('d F Y') }}</p>
             <p class="signature-space">_________________________<br>Notaris</p>
         </div>
         <div class="right">
             <p>Mengetahui,</p>
             <p class="signature-space">_________________________<br>Klien</p>
         </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <div style="margin-bottom: 5px;">QR Code Notaris</div>
+            
+            <div style="border: 1px solid #ccc; padding: 5px; display: inline-block; background-color: #f8f9fa;">
+                <img src="data:image/svg+xml;base64,{{ $qrCode }}" alt="QR Code Notaris" style="width: 100px; height: 100px;">
+            </div>
+            
+            <div style="font-size: 10px; margin-top: 5px;">
+                {{ $costs->notaris->display_name ?? '-' }}
+            </div>
+        </div>
+    </div>
     </div>
 </body>
 
