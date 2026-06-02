@@ -172,7 +172,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
     Route::put('proses-lain-progress/{id}', [ProsesLainController::class, 'updateProgress'])->name('proses-lain-progress.update');
     Route::delete('proses-lain-progress/{id}', [ProsesLainController::class, 'destroyProgress'])->name('proses-lain-progress.destroy');
     Route::get('/proses-lain-pic/get-pic/{client_code}', [ProsesLainController::class, 'getPicByClient'])->name('proses-lain-pic.get-pic');
-
+    
     // --- Laporan & Documents ---
     Route::resource('notary-letters', NotaryLettersController::class);
     Route::get('laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan-akta.index');
