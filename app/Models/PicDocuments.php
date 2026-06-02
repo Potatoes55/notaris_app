@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PicDocuments extends Model
 {
-
     use LogsActivityCustom, SoftDeletes;
     protected $table = 'pic_documents';
 
@@ -58,4 +57,19 @@ class PicDocuments extends Model
     {
         return $this->belongsTo(NotaryRelaasAkta::class, 'transaction_id', 'id');
     }
+
+    public function prosesLain()
+    {
+        return $this->belongsTo(ProsesLain::class, 'transaction_id', 'id');
+    }
+
+public function getTransactionAttribute()
+{
+    switch ($this->transaction_type) {
+        case 'akta': return $this->aktaTransaction;
+        case 'ppat': return $this->relaasTransaction;
+        case 'proses_lain': return $this->prosesLain;
+        default: return null;
+    }
+}
 }
