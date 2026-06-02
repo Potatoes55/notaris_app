@@ -53,12 +53,17 @@
                                             <p class="text-sm mb-0 text-center"> {{ $document->client->fullname ?? '-' }} </p>
                                         </td>
                                         <td>
-                                            <p class="text-sm mb-0 text-center">{{ $document->name }}</p>
+                                            <p class="text-sm mb-0 text-center">
+                                                {{ $document->name }} 
+                                                {{-- Jika ada keterangan tambahan, tampilkan di sini --}}
+                                                @if(!empty($document->note))
+                                                    <br><small class="text-muted">({{ $document->note }})</small>
+                                                @endif
+                                            </p>
                                         </td>
                                         <td>
-                                            {{-- Menghapus kelas 'fw-bold text-dark' agar teks nama PIC tidak bold lagi --}}
                                             <p class="text-sm mb-0 text-center text-secondary">
-                                                {{ $document->picStaff->full_name ?? ($document->picDocument->pic->full_name ?? '-') }}
+                                                {{ $document->picStaff->full_name ?? (optional($document->picDocument)->pic->full_name ?? '-') }}
                                             </p>
                                         </td>
                                         <td class="text-center align-middle">

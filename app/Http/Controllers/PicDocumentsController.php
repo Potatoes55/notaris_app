@@ -40,11 +40,13 @@ class PicDocumentsController extends Controller
 
     public function create()
     {
-        $clients = Client::where('notaris_id', $this->getNotarisId())->get();
-        $picStaffList = PicStaff::where('notaris_id', $this->getNotarisId())->get();
-        $aktaTransaction = NotaryAktaTransaction::where('notaris_id', $this->getNotarisId())->where('status', 'draft')->get();
-        $relaasTransaction = NotaryRelaasAkta::where('notaris_id', $this->getNotarisId())->where('status', 'draft')->get();
-        $prosesLainTransaction = ProsesLain::where('notaris_id', $this->getNotarisId())->get();
+        $notarisId = $this->getNotarisId();
+        $clients = Client::where('notaris_id', $notarisId)->get();
+        $picStaffList = PicStaff::where('notaris_id', $notarisId)->get();
+        
+        $aktaTransaction = NotaryAktaTransaction::where('notaris_id', $notarisId)->with('client')->get();
+        $relaasTransaction = NotaryRelaasAkta::where('notaris_id', $notarisId)->with('client')->get();
+        $prosesLainTransaction = ProsesLain::where('notaris_id', $notarisId)->with('client')->get();
 
         return view('pages.PIC.PicDocuments.form', compact('clients', 'picStaffList', 'aktaTransaction', 'relaasTransaction', 'prosesLainTransaction'));
     }
@@ -85,7 +87,6 @@ class PicDocumentsController extends Controller
 
     public function edit($id)
     {
-        // FIX: Hapus semua ->where('deleted_at', null)
         $clients = Client::where('notaris_id', $this->getNotarisId())->get();
         $picStaffList = PicStaff::where('notaris_id', $this->getNotarisId())->get();
         $picDocument = $this->service->getDocumentById($id);

@@ -35,6 +35,7 @@ class ProsesLain extends Model
 
     public function picDocument()
     {
-        return $this->belongsTo(PicDocuments::class, 'client_code', 'client_code');
+        return $this->hasOne(PicDocuments::class, 'transaction_id', 'id')
+                    ->where('transaction_type', 'proses_lain');
     }
 }
