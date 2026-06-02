@@ -8,6 +8,8 @@ use App\Models\ProsesLain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
+// ss
+
 use function Flasher\Notyf\Prime\notyf;
 
 class ProsesLainController extends Controller
@@ -38,45 +40,6 @@ class ProsesLainController extends Controller
 
         return view('pages.ProsesLain.Transaksi.form', compact('clients'));
     }
-
-    // // Urutan status tetap
-    // $urutan = ['Baru', 'Proses', 'Selesai'];
-
-    // // Ambil data terakhir berdasarkan client_code
-    // $last = ProsesLain::where('client_code', $request->client_code)
-    //     ->latest()
-    //     ->first();
-
-    // if (!$last) {
-    //     $statusBaru = 'Baru';
-    // } else {
-    //     $index = array_search($last->status, $urutan);
-
-    //     // Kalau sudah selesai, tetap selesai
-    //     if ($index === false || $index == count($urutan) - 1) {
-    //         $statusBaru = 'selesai';
-    //     } else {
-    //         $statusBaru = $urutan[$index + 1];
-    //     }
-    // }
-    // $prefix = 'T-' . strtoupper(substr($request->client_code, 0, 3)) . '-';
-
-    // // Ambil kode terakhir untuk client tersebut
-    // $lastCode = ProsesLain::where('client_code', $request->client_code)
-    //     ->where('transaction_code', 'like', $prefix . '%')
-    //     ->orderByDesc('transaction_code')
-    //     ->value('transaction_code');
-
-    // if ($lastCode) {
-    //     // Ambil angka terakhir
-    //     $lastNumber = (int) substr($lastCode, -4);
-    //     $nextNumber = $lastNumber + 1;
-    // } else {
-    //     $nextNumber = 1;
-    // }
-
-    // // Format jadi 4 digit
-    // $paymentCode = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
     public function generateTransactionCode(int $notarisId): string
     {
