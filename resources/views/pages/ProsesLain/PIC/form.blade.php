@@ -62,15 +62,6 @@
                             @enderror
                         </div>
 
-                            <div class="form-group mb-3">
-                                <label for="proses_lain_id" class="form-control-label">PIC / Transaksi <span class="text-danger">*</span></label>
-                                <select name="proses_lain_id" id="proses_lain_id" class="form-select @error('proses_lain_id') is-invalid @enderror">
-                                    <option value="" hidden>Pilih PIC</option>
-                                </select>
-                                @error('proses_lain_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
 
                             <div class="d-flex gap-2">
                                 <a href="{{ route('proses-lain-pic.index') }}" class="btn btn-secondary">Kembali</a>
@@ -83,36 +74,5 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#client_code').on('change', function() {
-                var clientCode = $(this).val();
-                var selectTransaksi = $('#proses_lain_id');
-                
-                selectTransaksi.empty().append('<option value="" hidden>Pilih PIC</option>');
-
-                if (clientCode) {
-                    $.ajax({
-                        url: '/proses-lain-pic/get-pic/' + clientCode,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(data) {
-                            if(data.length > 0) {
-                                $.each(data, function(key, value) {
-                                    var optionText = value.full_name + ' - ' + value.transaction_type + ' (' + value.transaction_name + ')';
-                                    selectTransaksi.append('<option value="'+ value.proses_lain_id +'">'+ optionText +'</option>');
-                                });
-                            } else {
-                                selectTransaksi.append('<option value="" disabled>Tidak ada data transaksi untuk klien ini</option>');
-                            }
-                        },
-                        error: function() {
-                            alert('Gagal mengambil data transaksi.');
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+ 
 @endsection
