@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Milon\Barcode\Facades\DNS2DFacade;
 
+
 class ClientController extends Controller
 {
     protected $clientService;
@@ -45,6 +46,8 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
+
+
         $this->clientService->create($request->all());
         notyf()->position('x', 'right')->position('y', 'top')->success('Klien berhasil ditambahkan');
         return redirect()->route('clients.index');
@@ -116,11 +119,11 @@ class ClientController extends Controller
 
         $validated = $request->validate([
             'fullname' => 'required|string|max:255',
-            'nik' => 'required|string|max:20|unique:clients,nik,' . $client->id,
-            'birth_place' => 'required|string|max:255',
-            'gender' => 'required',
-            'marital_status' => 'required|string',
-            'job' => 'required|string',
+            'nik' => 'required_if:type,personal|string|max:20|unique:clients,nik,' . $client->id,
+            'birth_place' => 'required_if:type,personal|string|max:255',
+            'gender' => 'required_if:type,personal',
+            'marital_status' => 'required_if:type,personal|string',
+            'job' => 'required_if:type,personal|string',
             'address' => 'required|string',
             'city' => 'required|string',
             'province' => 'required|string',
@@ -132,6 +135,16 @@ class ClientController extends Controller
             'company_name' => 'nullable|string',
             'note' => 'nullable|string',
             'status' => 'nullable|string',
+
+            'legal_status' => 'required_if:type,company|string|max:255',
+            'business_form' => 'required_if:type,company|string|max:255',
+            'deed_number' => 'required_if:type,company|string|max:255',
+            'deed_date' => 'required_if:type,company|date',
+            'nib' => 'required_if:type,company|string|max:255',
+            'pic_name' => 'required_if:type,company|string|max:255',
+            'pic_position' => 'required_if:type,company|string|max:255',
+            'pic_phone' => 'required_if:type,company|string|max:20',
+            'pic_email' => 'required_if:type,company|email|max:255',
         ]);
 
         $client->update($validated);
@@ -335,6 +348,16 @@ class ClientController extends Controller
             'type' => 'nullable|string|max:50',
             'address' => 'nullable|string',
             'note' => 'nullable|string',
+            // 
+            'legal_status' => 'nullable|string|max:255',
+            'business_form' => 'nullable|string|max:255',
+            'deed_number' => 'nullable|string|max:255',
+            'deed_date' => 'nullable|date',
+            'nib' => 'nullable|string|max:255',
+            'pic_name' => 'nullable|string|max:255',
+            'pic_position' => 'nullable|string|max:255',
+            'pic_phone' => 'nullable|string|max:20',
+            'pic_email' => 'nullable|email|max:255',
         ]);
 
         $client->update($validated);

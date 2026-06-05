@@ -1,15 +1,15 @@
 <aside 
-class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 d-flex flex-column"
-id="sidenav-main" 
-style="height: 100vh; overflow: hidden;">
+    class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 d-flex flex-column"
+    id="sidenav-main" 
+    style="height: 100vh; overflow: hidden;">
 
-<div class="sidenav-header flex-shrink-0 px-3" style="height:80px;">
+    <div class="sidenav-header flex-shrink-0 px-3 py-3">
 
-    <div class="d-flex align-items-center h-100 gap-3 w-100">
+    <div class="d-flex align-items-center gap-3">
 
         <!-- FOTO -->
         <div class="rounded-circle overflow-hidden flex-shrink-0"
-            style="width:48px; height:48px;">
+            style="width:50px; height:50px;">
             <img 
                 src="{{ auth()->user()->notaris && auth()->user()->notaris->image
                     ? (filter_var(auth()->user()->notaris->image, FILTER_VALIDATE_URL)
@@ -20,15 +20,15 @@ style="height: 100vh; overflow: hidden;">
         </div>
 
         <!-- TEXT -->
-        <div class="flex-grow-1 overflow-hidden" style="min-width:0;">
-            <h6 class="mb-0 text-sm text-truncate">
-                Hi, {{ auth()->user()->username }}
+        <div class="d-flex flex-column justify-content-center profile-text-wrapper" style="min-width:0; width:100%;">
+            <h6 class="mb-0 text-sm profile-name" title="{{ auth()->user()->username }}">
+                Hi, {{ \Illuminate\Support\Str::limit(auth()->user()->username, 12, '...') }}
             </h6>
-            <p class="mb-0 text-xs text-secondary text-truncate">
-                {{ auth()->user()->email }}
+
+            <p class="mb-0 text-xs text-secondary profile-email" title="{{ auth()->user()->email }}">
+                {{ \Illuminate\Support\Str::limit(auth()->user()->email, 15, '...') }}
             </p>
         </div>
-
 
         </div>
     </div>
@@ -637,6 +637,16 @@ style="height: 100vh; overflow: hidden;">
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('covernotes.index') }}"
+                        class="nav-link {{ request()->is('covernotes*') ? 'active' : '' }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            {{-- Icon surat dengan emblem tumpukan dokumen/catatan --}}
+                            <i class="fa-solid fa-file-lines text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Covernote</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#collapsePic" role="button" aria-expanded="false"
                         aria-controls="collapsePic">
                         <div class="d-flex align-items-center justify-content-between px-4 py-2">
@@ -830,23 +840,27 @@ style="height: 100vh; overflow: hidden;">
 {{-- edited --}}
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const sidebarMenu = document.getElementById('sidenav-collapse-main');
-        
-        if (sidebarMenu) {
-            // 1. Ambil posisi terakhir dari memory browser
-            const scrollPos = localStorage.getItem('sidebar_scroll_pos');
-            if (scrollPos) {
-                // Beri delay sedikit agar sinkron dengan rendering browser
-                setTimeout(() => {
-                    sidebarMenu.scrollTop = scrollPos;
-                }, 150);
-            }
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebarMenu = document.getElementById("sidenav-collapse-main");
 
-            // 2. Simpan posisi setiap kali user melakukan scroll
-            sidebarMenu.addEventListener('scroll', function() {
-                localStorage.setItem('sidebar_scroll_pos', sidebarMenu.scrollTop);
+        if (!sidebarMenu) return;
+
+        sidebarMenu.style.visibility = "hidden";
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const savedScroll = sessionStorage.getItem("sidebarScroll");
+
+                if (savedScroll !== null) {
+                    sidebarMenu.scrollTop = parseInt(savedScroll, 10);
+                }
+
+                sidebarMenu.style.visibility = "visible";
             });
-        }
+        });
+
+        sidebarMenu.addEventListener("scroll", function () {
+            sessionStorage.setItem("sidebarScroll", sidebarMenu.scrollTop);
+        });
     });
 </script>

@@ -92,12 +92,13 @@ class ClientService
     protected function validate(array $data, $id = null)
     {
         $rules = [
+
             'fullname' => 'required|string|max:255',
-            'nik' => 'required',
-            'birth_place' => 'required|string|max:255',
-            'gender' => 'required',
-            'marital_status' => 'required|string',
-            'job' => 'required|string',
+            'nik' => 'required_if:type,personal',
+            'birth_place' => 'required_if:type,personal|string|max:255',
+            'gender' => 'required_if:type,personal',
+            'marital_status' => 'required_if:type,personal|string',
+            'job' => 'required_if:type,personal|string',
             'address' => 'required|string',
             'city' => 'required|string',
             'province' => 'required|string',
@@ -107,9 +108,21 @@ class ClientService
             'npwp' => 'nullable|string',
             'type' => 'nullable|in:personal,company',
             'company_name' => 'nullable|string',
-            'status' => 'required',
             'note' => 'nullable|string',
+            'status' => 'nullable|string',
+
+            'legal_status' => 'required_if:type,company|string|max:255',
+            'business_form' => 'required_if:type,company|string|max:255',
+            'deed_number' => 'required_if:type,company|string|max:255',
+            'deed_date' => 'required_if:type,company|date',
+            'nib' => 'required_if:type,company|string|max:255',
+            'pic_name' => 'required_if:type,company|string|max:255',
+            'pic_position' => 'required_if:type,company|string|max:255',
+            'pic_phone' => 'required_if:type,company|string|max:20',
+            'pic_email' => 'required_if:type,company|email|max:255',
+
         ];
+
 
         $messages = [
             'fullname.required' => 'Nama lengkap wajib diisi.',

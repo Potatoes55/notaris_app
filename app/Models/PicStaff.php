@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PicStaff extends Model
 {
-
     use LogsActivityCustom, SoftDeletes;
 
     protected $table = 'pic_staff';

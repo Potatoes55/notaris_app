@@ -25,15 +25,15 @@ class ClientRequest extends FormRequest
         return [
             'fullname' => 'required|string|max:255',
             'nik' => [
-                'required',
+                'required_if:type,personal',
                 'string',
                 'max:20',
                 Rule::unique('clients', 'nik')->ignore($this->client),
             ],
-            'birth_place' => 'required',
-            'gender' => 'required',
-            'marital_status' => 'required',
-            'job' => 'required',
+            'birth_place' => 'required_if:type,personal',
+            'gender' => 'required_if:type,personal',
+            'marital_status' => 'required_if:type,personal',
+            'job' => 'required_if:type,personal',
             'address' => 'required',
             'city' => 'required',
             'province' => 'required',
@@ -45,6 +45,16 @@ class ClientRequest extends FormRequest
             'note' => 'nullable',
             'company_name' => 'nullable',
             'npwp' => 'nullable',
+            // 
+            'legal_status' => 'required_if:type,company|string|max:255',
+            'business_form' => 'required_if:type,company|string|max:255',
+            'deed_number' => 'required_if:type,company|string|max:255',
+            'deed_date' => 'required_if:type,company|date',
+            'nib' => 'required_if:type,company|string|max:255',
+            'pic_name' => 'required_if:type,company|string|max:255',
+            'pic_position' => 'required_if:type,company|string|max:255',
+            'pic_phone' => 'required_if:type,company|string|max:20',
+            'pic_email' => 'required_if:type,company|email|max:255',
         ];
     }
 

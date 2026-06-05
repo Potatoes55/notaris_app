@@ -33,6 +33,23 @@ class Client extends Model
         'company_name',
         'status',
         'note',
+        // Company
+        'legal_status',
+        'business_form',
+        'deed_number',
+        'deed_date',
+        'nib',
+        // 'npwp',
+        'pic_name',
+        'pic_position',
+        'pic_phone',
+        'pic_email',
+        // 'address',
+        // 'city',
+        // 'province',
+        // 'postal_code',
+        // 'company_phone',
+        // 'company_email',
     ];
 
     public function notaris()

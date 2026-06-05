@@ -97,12 +97,14 @@ class NotaryClientWarkahController extends Controller
         $validated = $request->validate([
             'client_code' => 'required',
             'warkah_code' => 'required',
+            'city'        => 'required|string|max:255',
             'warkah_link' => 'required|mimes:jpg,jpeg,png,pdf|max:15240',
             'note' => 'nullable',
             'uploaded_at' => 'required|date',
         ], [
             'client_code.required' => 'Klien harus dipilih.',
             'warkah_code.required' => 'Dokumen harus dipilih.',
+            'city.required'        => 'Kota/Kabupaten harus diisi.',
             'warkah_link.required' => 'File warkah harus diupload.',
             'warkah_link.max' => 'Ukuran file maksimal 15MB.',
             'warkah_link.mimes' => 'Format file harus JPG, JPEG, PNG, atau PDF.',
@@ -125,6 +127,7 @@ class NotaryClientWarkahController extends Controller
             'notaris_id' => $notarisId,
             'warkah_code' => $document->code,
             'warkah_name' => $document->name,
+            'city'        => $validated['city'],
             'warkah_link' => $path,
             'note' => $validated['note'],
             'status' => 'new',

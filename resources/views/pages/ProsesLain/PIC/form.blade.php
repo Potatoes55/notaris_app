@@ -1,11 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Pic')
+@section('title', 'Tambah Pic')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', [
-        'title' => isset($data) ? 'Edit Pic' : 'Tambah Pic',
-    ])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Tambah Pic'])
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
@@ -54,27 +52,24 @@
                                         {{ $client->pic->full_name }} - {{ $client->transaction_type }}
                                     </option>
                                 @endforeach
+                                @endif
                             </select>
-                            @error('client_code')
+                            @error('pic_id  ')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
 
-                        <div class="mt-4">
-                            <a href="{{ route('proses-lain-pic.index') }}" class="btn btn-secondary">
-                                Kembali
-                            </a>
-
-                            <button type="submit" class="btn btn-primary">
-                                {{ isset($data) ? 'Ubah' : 'Simpan' }}
-                            </button>
-                        </div>
-
-                    </form>
-
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('proses-lain-pic.index') }}" class="btn btn-secondary">Kembali</a>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+ 
 @endsection
