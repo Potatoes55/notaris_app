@@ -30,7 +30,7 @@
                             <label class="form-label text-sm">Klien <span class="text-danger">*</span></label>
                             <select name="client_code"
                                 class="form-select @error('client_code') is-invalid @enderror select2">
-                                <option value="" hidden>Pilih Klien</option>
+                                <option value="" disabled selected hidden>Pilih Klien</option>
                                 @foreach ($clients as $client)
                                     <option value="{{ $client->client_code }}"
                                         {{ old('client_code', $data->client_code ?? '') == $client->client_code ? 'selected' : '' }}>
@@ -47,7 +47,7 @@
                         <div class="mb-3">
                             <label class="form-label text-sm">PIC <span class="text-danger">*</span></label>
                             <select name="pic_id" class="form-select @error('pic_id') is-invalid @enderror">
-                                <option value="" disabled selected hidden>Pilih PIC</option>
+                                <option value="" hidden>Pilih PIC</option>
                                 @foreach ($picDocuments as $client)
                                     <option value="{{ $client->pic_id }}" class="text-capitalize"
                                         {{ old('pic_id', $data->pic_id ?? '') == $client->pic_id ? 'selected' : '' }}>
