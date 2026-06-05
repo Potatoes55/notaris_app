@@ -30,7 +30,7 @@
                             <label class="form-label text-sm">Klien <span class="text-danger">*</span></label>
                             <select name="client_code"
                                 class="form-select @error('client_code') is-invalid @enderror select2">
-                                <option value="" hidden>Pilih Klien</option>
+                                <option value="" disabled selected hidden>Pilih Klien</option>
                                 @foreach ($clients as $client)
                                     <option value="{{ $client->client_code }}"
                                         {{ old('client_code', $data->client_code ?? '') == $client->client_code ? 'selected' : '' }}>
