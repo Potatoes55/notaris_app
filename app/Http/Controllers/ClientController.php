@@ -47,8 +47,6 @@ class ClientController extends Controller
     public function store(Request $request)
     {
 
-        // dd($request->all());
-        // dd('masuk store');
 
         $this->clientService->create($request->all());
         notyf()->position('x', 'right')->position('y', 'top')->success('Klien berhasil ditambahkan');
@@ -143,9 +141,6 @@ class ClientController extends Controller
             'deed_number' => 'required_if:type,company|string|max:255',
             'deed_date' => 'required_if:type,company|date',
             'nib' => 'required_if:type,company|string|max:255',
-
-            // 'npwp' => 'required|string|max:255',
-
             'pic_name' => 'required_if:type,company|string|max:255',
             'pic_position' => 'required_if:type,company|string|max:255',
             'pic_phone' => 'required_if:type,company|string|max:20',
@@ -359,7 +354,6 @@ class ClientController extends Controller
             'deed_number' => 'nullable|string|max:255',
             'deed_date' => 'nullable|date',
             'nib' => 'nullable|string|max:255',
-            // 'npwp' => 'nullable|string|max:255',
             'pic_name' => 'nullable|string|max:255',
             'pic_position' => 'nullable|string|max:255',
             'pic_phone' => 'nullable|string|max:20',

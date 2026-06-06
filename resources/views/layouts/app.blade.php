@@ -9,19 +9,36 @@
 
     <title>@yield('title', 'Notaris App')</title>
     
-    {{-- Fonts & Icons --}}
+    {{-- Fonts & Icons
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
     
     {{-- CSS Dasar Argon --}}
-    <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    {{-- <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
+    
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> --}}
     
+    {{-- Fonts & Icons --}}
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+<link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
+<link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
+
+{{-- <link rel="stylesheet" href="{{ asset('vendor/css/fontawesome.min.css') }}"> --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> 
+
+{{-- CSS Dasar Argon --}}
+<link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
+
+{{-- <link rel="stylesheet" href="{{ asset('vendor/css/bootstrap-icons.min.css') }}"> --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="{{ asset('vendor/css/select2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('vendor/css/select2-bootstrap5.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('vendor/css/aos.css') }}">
+
     {{-- CSS UTAMA (Vite) - Berisi app.css yang lu kasih tadi --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
