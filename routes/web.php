@@ -130,6 +130,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 
     // Proses Lain
     Route::resource('proses-lain-transaksi', ProsesLainController::class);
+    Route::put('/proses-lain-transaksi/{id}/status/{status}', [ProsesLainController::class, 'updateStatus'])
+        ->name('proses-lain-transaksi.status');
     Route::get('proses-lain-pic', [ProsesLainController::class, 'indexPic'])->name('proses-lain-pic.index');
     Route::get('proses-lain-pic/create', [ProsesLainController::class, 'createPic'])->name('proses-lain-pic.create');
     Route::get('proses-lain-pic/{id}', [ProsesLainController::class, 'showPic'])->name('proses-lain-pic.show');

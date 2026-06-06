@@ -101,20 +101,19 @@
 
                         {{-- Proses Lain Section --}}
                         <div class="mb-3" id="proses_lain_section" style="display: none;">
-                            <label for="proses_lain_transaction_id" class="form-label text-sm">Transaksi Proses Lain</label>
+                            <label for="proses_lain_transaction_id" class="form-label text-sm">Transaksi Proses Lain <span class="text-danger">*</span></label>
+                            
                             <select id="proses_lain_transaction_id" name="proses_lain_transaction_id" class="form-select">
-                                <option value="" hidden>Pilih Transaksi Proses Lain</option>
-                                @if(isset($prosesLainTransaction))
+                                {{-- Tambahkan 'disabled' dan 'selected' agar opsi ini hanya menjadi petunjuk --}}
+                                <option value="" disabled selected hidden>Pilih Transaksi Proses Lain</option>
+
+                                @if(isset($prosesLainTransaction) && count($prosesLainTransaction) > 0)
                                     @foreach ($prosesLainTransaction as $proses)
                                         <option value="{{ $proses->id }}"
                                             {{ isset($picDocument) && $picDocument->transaction_type === 'proses_lain' && $picDocument->transaction_id == $proses->id ? 'selected' : '' }}>
-                                            
-                                            {{-- Nama Klien - Kode Transaksi - Proses Lain (Nama Transaksi) --}}
                                             {{ $proses->client->fullname ?? 'Klien Tanpa Nama' }} - 
                                             {{ $proses->transaction_code }} - 
-                                            Proses Lain 
-                                            ({{ $proses->name ?? 'Tidak ada nama transaksi' }})
-                                            
+                                            Proses Lain ({{ $proses->name ?? 'Tidak ada nama transaksi' }})
                                         </option>
                                     @endforeach
                                 @endif
@@ -172,34 +171,37 @@
             const ppat = document.getElementById('ppat_transaction_id');
             const prosesLain = document.getElementById('proses_lain_transaction_id');
             const transactionId = document.getElementById('transaction_id');
-
             const aktaSection = document.getElementById('akta_section');
             const relaasSection = document.getElementById('relaas_section');
             const prosesLainSection = document.getElementById('proses_lain_section');
-            const initialType = "{{ old('transaction_type', $picDocument->transaction_type ?? '') }}";
-            if (initialType) {
-                toggleSections(); 
-            }
 
             function toggleSections() {
                 const value = typeSelect.value;
                 aktaSection.style.display = value === 'akta' ? 'block' : 'none';
                 relaasSection.style.display = value === 'ppat' ? 'block' : 'none';
                 prosesLainSection.style.display = value === 'proses_lain' ? 'block' : 'none';
+                if (value === 'akta') transactionId.value = akta.value;
+                if (value === 'ppat') transactionId.value = ppat.value;
+                if (value === 'proses_lain') transactionId.value = prosesLain.value;
             }
 
-            toggleSections();
+            if (typeSelect.value) {
+                toggleSections();
+            }
+
             typeSelect.addEventListener('change', toggleSections);
+            [akta, ppat, prosesLain].forEach(el => {
+                el.addEventListener('change', function() {
+                    transactionId.value = this.value;
+                });
+            });
 
             const form = document.getElementById("picDocumentForm");
-
-            form.addEventListener("submit", function() {
-                if (typeSelect.value === 'akta') {
-                    transactionId.value = akta.value || "";
-                } else if (typeSelect.value === 'ppat') {
-                    transactionId.value = ppat.value || "";
-                } else if (typeSelect.value === 'proses_lain') {
-                    transactionId.value = prosesLain.value || "";
+            form.addEventListener("submit", function(e) {
+                if (typeSelect.value === 'proses_lain' && prosesLain.value === "") {
+                    e.preventDefault();
+                    alert("Harap pilih transaksi proses lain terlebih dahulu!");
+                    prosesLain.focus();
                 }
             });
         });

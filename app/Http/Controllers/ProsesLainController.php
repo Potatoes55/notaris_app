@@ -31,7 +31,6 @@ class ProsesLainController extends Controller
 
     public function create()
     {
-        // FIX: Hapus ->where('deleted_at', null)
         $clients = Client::where('notaris_id', auth()->user()->notaris_id)->get();
         return view('pages.ProsesLain.Transaksi.form', compact('clients'));
     }
@@ -44,21 +43,11 @@ class ProsesLainController extends Controller
             'time_estimation' => 'required|integer',
         ]);
 
-        $urutan = ['Baru', 'Proses', 'Selesai'];
+        $statusBaru = 'Baru';
 
-        $last = ProsesLain::where('client_code', $request->client_code)
-            ->where('notaris_id', auth()->user()->notaris_id)
-            ->latest('id')
-            ->first();
-
-        $statusBaru = !$last ? 'Baru' : (
-            (array_search($last->status, $urutan) === false || array_search($last->status, $urutan) == count($urutan) - 1) 
-            ? 'Selesai' : $urutan[array_search($last->status, $urutan) + 1]
-        );
-        
         $prefix = 'T-' . strtoupper(substr($request->client_code, 0, 3)) . '-';
 
-        $lastCode = ProsesLain::where('client_code', $request->client_code)
+        $lastCode = ProsesLain::where('notaris_id', auth()->user()->notaris_id)
             ->where('transaction_code', 'like', $prefix . '%')
             ->orderByDesc('id')
             ->value('transaction_code');
@@ -79,26 +68,26 @@ class ProsesLainController extends Controller
         return redirect()->route('proses-lain-transaksi.index');
     }
 
-public function edit($id)
-{
-    $data = ProsesLain::findOrFail($id);   
-    $notarisId = auth()->user()->notaris_id;
-    $clients = Client::where('notaris_id', $notarisId)->get();
-    $aktaTransactions = \App\Models\NotaryAktaTransaction::where('notaris_id', $notarisId)
-        ->with(['client', 'akta_type'])->get();        
-    $relaasTransactions = \App\Models\NotaryRelaasAkta::where('notaris_id', $notarisId)
-        ->with(['client', 'akta_type'])->get();      
-    $prosesLainTransactions = \App\Models\ProsesLain::where('notaris_id', $notarisId)
-        ->with('client')->get();
+    public function edit($id)
+    {
+        $data = ProsesLain::findOrFail($id);   
+        $notarisId = auth()->user()->notaris_id;
+        $clients = Client::where('notaris_id', $notarisId)->get();
+        $aktaTransactions = \App\Models\NotaryAktaTransaction::where('notaris_id', $notarisId)
+            ->with(['client', 'akta_type'])->get();        
+        $relaasTransactions = \App\Models\NotaryRelaasAkta::where('notaris_id', $notarisId)
+            ->with(['client', 'akta_type'])->get();      
+        $prosesLainTransactions = \App\Models\ProsesLain::where('notaris_id', $notarisId)
+            ->with('client')->get();
 
-    return view('pages.ProsesLain.Transaksi.form', compact(
-        'data', 
-        'clients', 
-        'aktaTransactions', 
-        'relaasTransactions', 
-        'prosesLainTransactions'
-    ));
-}
+        return view('pages.ProsesLain.Transaksi.form', compact(
+            'data', 
+            'clients', 
+            'aktaTransactions', 
+            'relaasTransactions', 
+            'prosesLainTransactions'
+        ));
+    }
 
     public function update(Request $request, $id)
     {
@@ -117,6 +106,22 @@ public function edit($id)
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Data berhasil diubah.');
         return redirect()->route('proses-lain-transaksi.index');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Baru,Proses,Selesai'
+        ]);
+
+        $data = ProsesLain::where('id', $id)
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->firstOrFail();
+
+        $data->update(['status' => $request->status]);
+
+        notyf()->position('x', 'right')->position('y', 'top')->success('Status berhasil diubah.');
+        return back();
     }
 
     public function destroy(Request $request, $id)
@@ -162,76 +167,76 @@ public function edit($id)
         return view('pages.ProsesLain.PIC.form', compact('clients', 'picDocuments'));
     }
 
-public function getPicByClient($client_code)
-{
-    $transaksi = ProsesLain::where('client_code', $client_code)
-        ->where('notaris_id', auth()->user()->notaris_id)
-        ->get();
-
-    $documents = PicDocuments::where('client_code', $client_code)
-        ->where('notaris_id', auth()->user()->notaris_id)
-        ->with('pic')
-        ->get();
-
-    $output = [];
-    foreach ($transaksi as $t) {
-        $doc = $documents->firstWhere('transaction_id', $t->id);
-
-        if ($doc && $doc->pic) {
-            $output[] = [
-                'proses_lain_id'   => $t->id, 
-                'pic_id'           => $doc->id,
-                'full_name'        => $doc->pic->full_name,
-                'transaction_type' => ucwords(str_replace('_', ' ', $doc->transaction_type)),
-                'transaction_name' => $t->name 
-            ];
-        }
-    }
-    return response()->json($output);
-}
-
-public function storePic(Request $request)
-{
-    $request->validate([
-        'client_code'    => 'required',
-        'proses_lain_id' => 'required',
-    ]);
-
-    $prosesLain = ProsesLain::where('id', $request->proses_lain_id)
-        ->where('notaris_id', auth()->user()->notaris_id)
-        ->first();
-
-    if (!$prosesLain) {
-        return back()->with('error', 'Data Transaksi tidak ditemukan.');
-    }
-
-    $doc = PicDocuments::where('transaction_id', $request->proses_lain_id)
-        ->where('notaris_id', auth()->user()->notaris_id)
-        ->first();
-
-    if ($doc) {
-        $prosesLain->update(['pic_id' => $doc->id]);
-        notyf()->position('x', 'right')->position('y', 'top')->success('PIC berhasil disimpan.');
-    } else {
-        notyf()->position('x', 'right')->position('y', 'top')->error('Data PIC tidak ditemukan untuk transaksi ini.');
-    }
-
-    return redirect()->route('proses-lain-pic.index');
-}
-
-public function indexProgress(Request $request)
-{
-    $prosesLain = collect(); 
-
-    if ($request->filled('search')) {
-        $prosesLain = ProsesLain::with('picDocument.pic')
+    public function getPicByClient($client_code)
+    {
+        $transaksi = ProsesLain::where('client_code', $client_code)
             ->where('notaris_id', auth()->user()->notaris_id)
-            ->where('transaction_code', 'like', '%' . $request->search . '%')
-            ->whereNotNull('pic_id')
-            ->latest()
-            ->paginate(10);
+            ->get();
+
+        $documents = PicDocuments::where('client_code', $client_code)
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->with('pic')
+            ->get();
+
+        $output = [];
+        foreach ($transaksi as $t) {
+            $doc = $documents->firstWhere('transaction_id', $t->id);
+
+            if ($doc && $doc->pic) {
+                $output[] = [
+                    'proses_lain_id'   => $t->id, 
+                    'pic_id'           => $doc->id,
+                    'full_name'        => $doc->pic->full_name,
+                    'transaction_type' => ucwords(str_replace('_', ' ', $doc->transaction_type)),
+                    'transaction_name' => $t->name 
+                ];
+            }
+        }
+        return response()->json($output);
     }
 
-    return view('pages.ProsesLain.Progress.index', compact('prosesLain'));
-}
+    public function storePic(Request $request)
+    {
+        $request->validate([
+            'client_code'    => 'required',
+            'proses_lain_id' => 'required',
+        ]);
+
+        $prosesLain = ProsesLain::where('id', $request->proses_lain_id)
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->first();
+
+        if (!$prosesLain) {
+            return back()->with('error', 'Data Transaksi tidak ditemukan.');
+        }
+
+        $doc = PicDocuments::where('transaction_id', $request->proses_lain_id)
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->first();
+
+        if ($doc) {
+            $prosesLain->update(['pic_id' => $doc->id]);
+            notyf()->position('x', 'right')->position('y', 'top')->success('PIC berhasil disimpan.');
+        } else {
+            notyf()->position('x', 'right')->position('y', 'top')->error('Data PIC tidak ditemukan untuk transaksi ini.');
+        }
+
+        return redirect()->route('proses-lain-pic.index');
+    }
+
+    public function indexProgress(Request $request)
+    {
+        $prosesLain = collect(); 
+
+        if ($request->filled('search')) {
+            $prosesLain = ProsesLain::with('picDocument.pic')
+                ->where('notaris_id', auth()->user()->notaris_id)
+                ->where('transaction_code', 'like', '%' . $request->search . '%')
+                ->whereNotNull('pic_id')
+                ->latest()
+                ->paginate(10);
+        }
+
+        return view('pages.ProsesLain.Progress.index', compact('prosesLain'));
+    }
 }
