@@ -4,31 +4,25 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Transaksi'])
+
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-0">
-                <div class="card-header pb-0 mb-0 ">
-                    <div class=" d-flex justify-content-between align-items">
+                <div class="card-header pb-0 mb-0">
+                    <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Transaksi</h5>
-
                         @if (!is_null(auth()->user()->access_code) && auth()->user()->access_code !== 'staff')
-                            <a href="{{ route('proses-lain-transaksi.create') }}" class="btn btn-primary btn-sm mb-0">
-                                + Tambah Transaksi
-                            </a>
+                            <a href="{{ route('proses-lain-transaksi.create') }}" class="btn btn-primary btn-sm mb-0">+ Tambah Transaksi</a>
                         @else
-                            <form method="GET" action="{{ route('proses-lain-transaksi.index') }}"
-                                class="d-flex gap-2 ms-auto " style="width:550px;">
-                                <input type="text" name="search" placeholder="Cari nama transaksi..."
-                                    value="{{ request('search') }}" class="form-control">
+                            <form method="GET" action="{{ route('proses-lain-transaksi.index') }}" class="d-flex gap-2 ms-auto" style="width:550px;">
+                                <input type="text" name="search" placeholder="Cari nama transaksi..." value="{{ request('search') }}" class="form-control">
                                 <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
                             </form>
                         @endif
                     </div>
                     @if (!is_null(auth()->user()->access_code) && auth()->user()->access_code !== 'staff')
-                        <form method="GET" action="{{ route('proses-lain-transaksi.index') }}"
-                            class="d-flex gap-2 ms-auto mt-3" style="max-width:550px;">
-                            <input type="text" name="search" placeholder="Cari nama transaksi..."
-                                value="{{ request('search') }}" class="form-control">
+                        <form method="GET" action="{{ route('proses-lain-transaksi.index') }}" class="d-flex gap-2 ms-auto mt-3" style="max-width:550px;">
+                            <input type="text" name="search" placeholder="Cari nama transaksi..." value="{{ request('search') }}" class="form-control">
                             <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
                         </form>
                     @endif
@@ -52,50 +46,44 @@
                             <tbody>
                                 @forelse ($prosesLain as $document)
                                     <tr class="text-center text-sm">
-                                        <td>
-                                            <p class="text-sm mb-0 text-center">
-                                                {{ $prosesLain->firstItem() + $loop->index }}
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0 text-center">{{ $document->notaris->display_name ?? '-' }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0 text-center">{{ $document->transaction_code }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0 text-center">{{ $document->client->fullname ?? '-' }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0 text-center">{{ $document->name }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0 text-center">{{ $document->time_estimation }} Hari</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0 text-center">{{ $document->status }}</p>
+                                        <td>{{ $prosesLain->firstItem() + $loop->index }}</td>
+                                        <td>{{ $document->notaris->display_name ?? '-' }}</td>
+                                        <td>{{ $document->transaction_code }}</td>
+                                        <td>{{ $document->client->fullname ?? '-' }}</td>
+                                        <td>{{ $document->name }}</td>
+                                        <td>{{ $document->time_estimation }} Hari</td>
+                                        <td style="min-width: 140px">
+                                            <form method="POST" class="status-form">
+                                                @csrf
+                                                @method('PUT')
+                                                
+                                                <select
+                                                    name="status"
+                                                    class="form-select form-select-sm text-white font-weight-bold"
+                                                    data-url="{{ route('proses-lain-transaksi.status', ['id' => $document->id, 'status' => 'PLACEHOLDER']) }}"
+                                                    onchange="changeStatus(this)"
+                                                    style="cursor: pointer; border: none; 
+                                                        background-color: {{ $document->status == 'Baru' ? '#17a2b8' : ($document->status == 'Proses' ? '#fb6340' : '#2dce89') }};">
+                                                    <option value="Baru" style="background-color: white; color: #333;" {{ $document->status == 'Baru' ? 'selected' : '' }}>Baru</option>
+                                                    <option value="Proses" style="background-color: white; color: #333;" {{ $document->status == 'Proses' ? 'selected' : '' }}>Proses</option>
+                                                    <option value="Selesai" style="background-color: white; color: #333;" {{ $document->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                                </select>
+                                            </form>
                                         </td>
                                         <td class="text-center align-middle">
                                             @if (auth()->user()->access_code !== 'staff')
-                                                <a href="{{ route('proses-lain-transaksi.edit', $document->id) }}"
-                                                    class="btn btn-info btn-sm mb-0">
-                                                    Edit
-                                                </a>
-                                                
-                                                <form id="delete-form-{{ $document->id }}" action="{{ route('proses-lain-transaksi.destroy', $document->id) }}"
-                                                    method="POST" class="d-inline">
+                                                <a href="{{ route('proses-lain-transaksi.edit', $document->id) }}" class="btn btn-info btn-sm mb-0">Edit</a>
+                                                <form id="delete-form-{{ $document->id }}" action="{{ route('proses-lain-transaksi.destroy', $document->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-danger btn-sm mb-0 btn-delete" data-id="{{ $document->id }}">
-                                                        Hapus
-                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-sm mb-0 btn-delete" data-id="{{ $document->id }}">Hapus</button>
                                                 </form>
                                             @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted text-sm py-4">Belum ada data transaksi.</td>
+                                        <td colspan="8" class="text-center text-muted py-4">Belum ada data transaksi.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -109,16 +97,12 @@
         </div>
     </div>
 
-    {{-- Script SweetAlert Komponen Konfirmasi Hapus Data --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const deleteButtons = document.querySelectorAll('.btn-delete');
-            
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function (e) {
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function () {
                     const id = this.getAttribute('data-id');
-                    
                     Swal.fire({
                         title: 'Apakah Anda yakin?',
                         text: "Data transaksi ini akan dihapus secara permanen!",
@@ -137,5 +121,13 @@
                 });
             });
         });
+
+        function changeStatus(select) {
+            let status = select.value;
+            let baseUrl = select.getAttribute('data-url');
+            let form = select.closest('form');
+            form.action = baseUrl.replace('PLACEHOLDER', status);
+            form.submit();
+        }
     </script>
 @endsection
