@@ -1,10 +1,8 @@
-<aside 
-    class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 d-flex flex-column"
-    id="sidenav-main" 
+<aside
+    class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start d-flex flex-column"
+    id="sidenav-main"
     style="height: 100vh; overflow: hidden;">
-
     <div class="sidenav-header flex-shrink-0 px-3 py-3">
-
     <div class="d-flex align-items-center gap-3">
 
         <!-- FOTO -->
@@ -72,7 +70,7 @@
                         </div>
                         <span class="nav-link-text ms-1">Setting</span>
                     </a>
-              
+
                 {{-- jenis warkah --}}
                     <a href="{{ route('documents.index') }}"
                         class="nav-link {{ request()->is('documents*') ? 'active' : '' }}">
@@ -351,7 +349,7 @@
                         </div>
                         <span class="nav-link-text ms-1">Setting</span>
                     </a>
-                 
+
                     <a href="{{ route('profile') }}" class="nav-link {{ request()->is('profile*') ? 'active' : '' }}">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

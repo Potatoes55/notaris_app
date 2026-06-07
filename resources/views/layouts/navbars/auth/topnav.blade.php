@@ -20,35 +20,30 @@
                     <input type="text" class="form-control" placeholder="Type here...">
                 </div> --}}
             </div>
-            <ul class="navbar-nav justify-content-end">
-                <li class="nav-item d-flex align-items-center">
-                    <form method="post" action="{{ route('logout') }}" id="logout-form">
-                        @csrf
-                        <button type="submit" class="btn btn-white text-primary mb-0 shadow">
-                            <i class="fa fa-user me-sm-1"></i>
-                            <span class="d-inline d-sm-inline d-md-inline">Keluar</span>
-                        </button>
-                    </form>
-                </li>
-            </ul>
         </div>
 
-        <!-- Toggle sidenav: hanya tampil <1200px -->
-        <ul class="navbar-nav ms-auto d-flex d-xl-none flex-row">
-            <li class="nav-item d-flex align-items-center">
+        <ul class="navbar-nav ms-auto d-flex d-xl-none flex-row align-items-center">
+
+            <li class="nav-item d-flex align-items-center me-3">
                 <form method="post" action="{{ route('logout') }}" id="logout-form">
                     @csrf
+                    <button type="submit" class="btn btn-white text-primary mb-0 shadow">
+                        <i class="fa fa-user me-sm-1"></i>
+                        <span class="d-inline d-sm-inline d-md-inline">Keluar</span>
+                    </button>
                 </form>
             </li>
-    <li class="nav-item ps-3 d-flex align-items-center">
-        <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
-            <div class="sidenav-toggler-inner">
-                <i class="sidenav-toggler-line bg-white"></i>
-                <i class="sidenav-toggler-line bg-white"></i>
-                <i class="sidenav-toggler-line bg-white"></i>
-            </div>
-        </a> 
-    </li>
+
+            <li class="nav-item d-flex align-items-center">
+                <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+                    <div class="sidenav-toggler-inner">
+                        <i class="sidenav-toggler-line bg-white"></i>
+                        <i class="sidenav-toggler-line bg-white"></i>
+                        <i class="sidenav-toggler-line bg-white"></i>
+                    </div>
+                </a>
+            </li>
+
         </ul>
     </div>
 </nav>
