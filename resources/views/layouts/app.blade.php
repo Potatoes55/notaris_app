@@ -9,7 +9,7 @@
 
     <title>@yield('title', 'Notaris App')</title>
     
-    {{-- Fonts & Icons
+    {{-- Fonts & Icons --}}
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
@@ -23,110 +23,126 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> --}}
     
     {{-- Fonts & Icons --}}
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-<link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
-<link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
 
-{{-- <link rel="stylesheet" href="{{ asset('vendor/css/fontawesome.min.css') }}"> --}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> 
+    {{-- <link rel="stylesheet" href="{{ asset('vendor/css/fontawesome.min.css') }}"> --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> 
 
-{{-- CSS Dasar Argon --}}
-<link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
+    {{-- CSS Dasar Argon --}}
+    <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
 
-{{-- <link rel="stylesheet" href="{{ asset('vendor/css/bootstrap-icons.min.css') }}"> --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="{{ asset('vendor/css/select2.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('vendor/css/select2-bootstrap5.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('vendor/css/aos.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('vendor/css/bootstrap-icons.min.css') }}"> --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/css/select2.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('vendor/css/select2-bootstrap5.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('vendor/css/aos.css') }}">
 
-    {{-- CSS UTAMA (Vite) - Berisi app.css yang lu kasih tadi --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<style>
-    .modal-backdrop { 
-        z-index: 10000 !important; 
-        background-color: #000 !important;
-        opacity: 0.5 !important;
-    }
-    .modal { 
-        z-index: 10001 !important; 
-    }
+    <style>
+        .modal-backdrop { 
+            z-index: 10000 !important; 
+            background-color: #000 !important;
+            opacity: 0.5 !important;
+        }
+        .modal { 
+            z-index: 10001 !important; 
+        }
 
-    body.modal-open #sidenav-main { 
-        z-index: 9999 !important;
-        opacity: 1 !important; 
-        visibility: visible !important;
-        pointer-events: none; 
-    }
+        body.modal-open #sidenav-main { 
+            z-index: 9999 !important;
+            opacity: 1 !important; 
+            visibility: visible !important;
+            pointer-events: none; 
+        }
 
-    body.modal-open .main-content {
-        z-index: auto !important;
-    }
-</style>
-
-<script>
-document.documentElement.classList.add("sidebar-preload");
-
-window.addEventListener("pageshow", function () {
-    requestAnimationFrame(() => {
-        document.documentElement.classList.remove("sidebar-preload");
-    });
-});
-</script>
-
-</head>
-
-<body class="g-sidenav-show bg-light">
-    @guest
-        @yield('content')
-    @endguest
-
-    @php $publicRoutes = ['akta.qr.show']; @endphp
-
-    @auth
-        @if (in_array(request()->route()->getName(), $publicRoutes))
-            @yield('content')
-        @else
-            {{-- Latar Oranye --}}
-            <div class="min-height-300 bg-primary position-absolute w-100"></div>
-            
-            {{-- SIDEBAR --}}
-            @include('layouts.navbars.auth.sidenav')
-
-            {{-- KONTEN UTAMA --}}
-            <main class="main-content border-radius-lg">
-                @yield('content')
-            </main>
-        @endif
-    @endauth
-
-    {{-- CORE JS --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
-    <!-- <script src="{{ asset('assets/js/plugins/smooth-scrollbar.min.js') }}"></script> -->
-    
-    {{-- PLUGIN & DASHBOARD --}}
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        body.modal-open .main-content {
+            z-index: auto !important;
+        }
+    </style>
 
     <script>
-        $(document).ready(function() {
-            // Fix: Bersihkan sisa modal saat ditutup agar tidak nge-hang
-            $(document).on('hidden.bs.modal', '.modal', function () {
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open').css('padding-right', '');
+        document.documentElement.classList.add("sidebar-preload");
+        window.addEventListener("pageshow", function () {
+            requestAnimationFrame(() => {
+                document.documentElement.classList.remove("sidebar-preload");
             });
         });
     </script>
 
-    @stack('js')
+</head>
 
-    {{-- TEMPAT MODAL (Slot Krusial untuk QR Code) --}}
-    @stack('modal_luar')
+    <body class="g-sidenav-show bg-light">
+        @guest
+            @yield('content')
+        @endguest
 
-</body>
+        @php $publicRoutes = ['akta.qr.show']; @endphp
+
+        @auth
+            @if (in_array(request()->route()->getName(), $publicRoutes))
+                @yield('content')
+            @else
+                {{-- Latar Oranye --}}
+                <div class="min-height-300 bg-primary position-absolute w-100"></div>
+                
+                {{-- SIDEBAR --}}
+                @include('layouts.navbars.auth.sidenav')
+
+                {{-- KONTEN UTAMA --}}
+                <main class="main-content border-radius-lg">
+                    @yield('content')
+                </main>
+            @endif
+        @endauth
+
+        {{-- CORE JS --}}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
+        <!-- <script src="{{ asset('assets/js/plugins/smooth-scrollbar.min.js') }}"></script> -->
+        
+        {{-- PLUGIN & DASHBOARD --}}
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
+        <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $(document).on('hidden.bs.modal', '.modal', function () {
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open').css('padding-right', '');
+                });
+            });
+        </script>
+
+        @stack('js')
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('iconNavbarSidenav');
+            function handleResize() {
+                if (window.innerWidth <= 900) {
+                    document.body.classList.remove('g-sidenav-show');
+                } else {
+                    document.body.classList.add('g-sidenav-show');
+                }
+            }
+            handleResize();
+            btn?.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.body.classList.toggle('g-sidenav-show');
+            });
+            window.addEventListener('resize', handleResize);
+        });
+        </script>
+
+        @stack('modal_luar')
+        
+
+    </body>
 </html>
