@@ -6,7 +6,6 @@ use App\Models\Client;
 use App\Models\PicDocuments;
 use App\Models\ProsesLain;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 class ProsesLainController extends Controller
 {
@@ -34,38 +33,39 @@ class ProsesLainController extends Controller
         return view('pages.ProsesLain.Transaksi.form', compact('clients'));
     }
 
-public function store(Request $request)
-{
-    $request->validate([
-        'client_code'     => 'required',
-        'name'            => 'required',
-        'time_estimation' => 'required|integer',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'client_code' => 'required',
+            'name' => 'required',
+            'time_estimation' => 'required|integer',
+        ]);
 
-    $statusBaru = 'Baru';
+        $statusBaru = 'Baru';
 
-    $prefix = 'T-' . strtoupper(substr($request->client_code, 0, 3)) . '-';
+        $prefix = 'T-'.strtoupper(substr($request->client_code, 0, 3)).'-';
 
-    $lastCode = ProsesLain::where('notaris_id', auth()->user()->notaris_id)
-        ->where('transaction_code', 'like', $prefix . '%')
-        ->orderByDesc('id')
-        ->value('transaction_code');
+        $lastCode = ProsesLain::where('notaris_id', auth()->user()->notaris_id)
+            ->where('transaction_code', 'like', $prefix.'%')
+            ->orderByDesc('id')
+            ->value('transaction_code');
 
-    $nextNumber = $lastCode ? (int) substr($lastCode, -4) + 1 : 1;
-    $paymentCode = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $nextNumber = $lastCode ? (int) substr($lastCode, -4) + 1 : 1;
+        $paymentCode = $prefix.str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-    ProsesLain::create([
-        'client_code'      => $request->client_code,
-        'notaris_id'       => auth()->user()->notaris_id,
-        'name'             => $request->name,
-        'time_estimation'  => $request->time_estimation,
-        'status'           => $statusBaru,
-        'transaction_code' => $paymentCode,
-    ]);
+        ProsesLain::create([
+            'client_code' => $request->client_code,
+            'notaris_id' => auth()->user()->notaris_id,
+            'name' => $request->name,
+            'time_estimation' => $request->time_estimation,
+            'status' => $statusBaru,
+            'transaction_code' => $paymentCode,
+        ]);
 
-    notyf()->position('x', 'right')->position('y', 'top')->success('Data berhasil disimpan.');
-    return redirect()->route('proses-lain-transaksi.index');
-}
+        notyf()->position('x', 'right')->position('y', 'top')->success('Data berhasil disimpan.');
+
+        return redirect()->route('proses-lain-transaksi.index');
+    }
 
     public function edit($id)
     {
@@ -98,7 +98,7 @@ public function store(Request $request)
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:Baru,Proses,Selesai'
+            'status' => 'required|in:Baru,Proses,Selesai',
         ]);
 
         $data = ProsesLain::where('id', $id)
@@ -108,6 +108,7 @@ public function store(Request $request)
         $data->update(['status' => $request->status]);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Status berhasil diubah.');
+
         return back();
     }
 
@@ -159,6 +160,7 @@ public function store(Request $request)
 
     public function storePic(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'client_code' => 'required',
             'proses_lain_id' => 'required',
