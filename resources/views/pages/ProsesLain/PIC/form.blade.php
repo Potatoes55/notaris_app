@@ -53,7 +53,7 @@
                                     @foreach ($picDocuments as $item)
                                         <option value="{{ $item->pic_id }}" 
                                                 data-client="{{ $item->client_code }}"
-                                                data-proses="{{ $item->transaction_id }}" {{-- SESUAIKAN DI SINI: pakai transaction_id --}}
+                                                data-proses="{{ $item->transaction_id }}" 
                                                 class="text-capitalize pic-option"
                                             {{ old('pic_id', $data->pic_id ?? '') == $item->pic_id ? 'selected' : '' }}>
                                             {{ $item->pic->full_name }} - {{ $item->transaction_type }} - {{ $item->prosesLain->name ?? '-' }}
