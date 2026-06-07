@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\NotaryClientDocument;
 use App\Models\User;
 use App\Observers\UserObserver;
 use App\Repositories\ClientRepository;
@@ -53,9 +52,9 @@ use App\Repositories\PicStaffRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\RelaasPartiesRepository;
 use App\Repositories\WaarmerkingRepository;
-use App\Services\NotaryConsultationService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Email;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -99,5 +98,9 @@ class AppServiceProvider extends ServiceProvider
         //
         User::observe(UserObserver::class);
         Paginator::useBootstrapFive();
+
+        Email::defaults(function () {
+            return Email::strict();
+        });
     }
 }
