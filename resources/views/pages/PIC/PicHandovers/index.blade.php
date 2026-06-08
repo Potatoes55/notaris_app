@@ -42,7 +42,7 @@
                                 @forelse ($handovers as $handover)
                                     <tr class="text-center text-sm">
                                         <td>{{ $handovers->firstItem() + $loop->index }}</td>
-                                        <td>{{ $handover->picDocument?->pic_document_code ?? 'Dokumen Tidak Ditemukan' }}</td>
+                                        <td>{{ $handover->picDocument->pic_document_code }}</td>
                                         <td>{{ $handover->handover_date }}</td>
                                         <td>{{ $handover->recipient_name }}</td>
                                         <td>{{ $handover->recipient_contact }}</td>
@@ -101,7 +101,7 @@
                                                         </div>
                                                         <div class="modal-body text-start">
                                                             Apakah Anda yakin ingin menghapus data serah terima ini?<br>
-                                                            <strong>Kode Dokumen: {{ $handover->picDocument?->pic_document_code ?? 'Data Terhapus' }}</strong>
+                                                            <strong>Kode Dokumen: {{ $handover->picDocument->pic_document_code }}</strong>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
