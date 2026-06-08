@@ -34,6 +34,11 @@
                             value="{{ old('client_code', $transaction->client_code) }}">
                         {{-- hidden notaris --}}
                         <input type="hidden" name="notaris_id" value="{{ old('notaris_id', $transaction->notaris_id) }}">
+                        {{-- Hidden untuk navigasi redirect --}}
+                        <input type="hidden" name="transaction_code" 
+                            value="{{ old('transaction_code', $transaction->transaction_code) }}">
+                        <input type="hidden" name="akta_number" 
+                            value="{{ old('akta_number', $transaction->akta_number) }}">
 
                         {{-- <div class="mb-3">
                             <label for="client_code" class="form-label text-sm">Klien</label>
@@ -106,7 +111,9 @@
 
                         <div class="mt-3">
 
-                            <a href="{{ route('akta-parties.index') }}" class="btn btn-secondary">Batal</a>
+                            <a href="{{ route('akta-parties.index', ['transaction_code' => $transaction->transaction_code, 'akta_number' => $transaction->akta_number]) }}" class="btn btn-secondary">
+                                Batal
+                            </a>
                             <button type="submit" class="btn btn-primary">
                                 {{ isset($aktaParty) ? 'Ubah' : 'Simpan' }}
                             </button>

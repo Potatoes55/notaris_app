@@ -196,7 +196,10 @@
                                                                     <div class="col-12 text-center mt-3">
                                                                         <label class="form-label d-block fw-bold">QR Code Notaris</label>
                                                                         <div class="p-2 d-inline-block border rounded bg-light">
-                                                                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(130)->margin(1)->generate($cost->notaris->notaris_code ?? 'DATA-TIDAK-DITEMUKAN') !!}
+                                                                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+                                                                                ->size(130)
+                                                                                ->margin(1)
+                                                                                ->generate(route('profileNotaris', \Illuminate\Support\Facades\Crypt::encryptString($cost->notaris->id))) !!}
                                                                         </div>
                                                                         <small class="text-muted d-block mt-1 fw-bold">{{ $cost->notaris->display_name ?? '-' }}</small>
                                                                     </div>
