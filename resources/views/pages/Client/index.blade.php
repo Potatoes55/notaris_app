@@ -334,13 +334,13 @@
                                                     data-bs-placement="top" title="Mengubah data">
                                                     Edit
                                                 </a>
-                                                <button type="button" class="btn btn-danger btn-xs mb-0"
+                                                {{-- <button type="button" class="btn btn-danger btn-xs mb-0"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal{{ $client->id }}"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     title="Menghapus data">
                                                     Hapus
-                                                </button>
+                                                </button> --}}
                                                 @include('pages.Client.modal.index')
                                             </td>
                                         </tr>
