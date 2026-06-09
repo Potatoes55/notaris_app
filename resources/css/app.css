@@ -19,6 +19,9 @@ body.g-sidenav-show {
 /* SIDEBAR */
 
 #sidenav-main {
+    touch-action: pan-y !important;
+    overscroll-behavior-x: none !important;
+
     width: 260px !important;
     min-width: 260px !important;
     max-width: 260px !important;
@@ -177,11 +180,23 @@ body.g-sidenav-show {
 .sidenav .collapse,
 .sidenav .collapsing {
     width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
 }
 
 .sidenav .collapse .nav,
 .sidenav .collapsing .nav {
-    padding-left: 12px !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.sidenav .collapse .nav-link,
+.sidenav .collapsing .nav-link {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .sidenav .collapsing {
