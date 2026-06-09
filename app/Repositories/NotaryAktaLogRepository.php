@@ -26,7 +26,9 @@ class NotaryAktaLogRepository implements NotaryAktaLogRepositoryInterface
 
     public function getById($id)
     {
-        return NotaryAktaLogs::findOrFail($id);
+        return NotaryAktaLogs::where('id', $id)
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->firstOrFail();
     }
 
     public function create(array $data)

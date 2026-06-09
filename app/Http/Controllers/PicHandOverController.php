@@ -30,7 +30,8 @@ class PicHandoverController extends Controller
 
     public function create()
     {
-        $picDocuments = PicDocuments::whereNull('deleted_at')
+        $picDocuments = PicDocuments::where('notaris_id', auth()->user()->notaris_id)
+            ->whereNull('deleted_at')
             ->whereHas('client', function ($q) {
                 $q->whereNull('deleted_at');
             })
@@ -38,11 +39,13 @@ class PicHandoverController extends Controller
             ->get();
         $clients = Client::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->get();
         $picStaffList = PicStaff::where('deleted_at', null)->where('notaris_id', auth()->user()->notaris_id)->get();
-        $aktaDocuments = PicDocuments::where('transaction_type', 'akta')
+        $aktaDocuments = PicDocuments::where('notaris_id', auth()->user()->notaris_id)
+            ->where('transaction_type', 'akta')
             ->whereHas('client', fn($q) => $q->whereNull('deleted_at'))
             ->get();
 
-        $ppatDocuments = PicDocuments::where('transaction_type', 'ppat')
+        $ppatDocuments = PicDocuments::where('notaris_id', auth()->user()->notaris_id)
+            ->where('transaction_type', 'ppat')
             ->whereHas('client', fn($q) => $q->whereNull('deleted_at'))
             ->get();
 

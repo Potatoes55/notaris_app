@@ -24,7 +24,8 @@ class NotaryAktaLogs extends Model
 
     public function client()
     {
-        return $this->belongsTo(Client::class, 'client_code', 'client_code');
+        return $this->belongsTo(Client::class, 'client_code', 'client_code')
+            ->withTrashed();
     }
 
     public function akta_transaction()

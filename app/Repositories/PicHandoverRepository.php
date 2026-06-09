@@ -25,7 +25,10 @@ class PicHandoverRepository implements PicHandoverRepositoryInterface
 
     public function find($id)
     {
-        return PicHandover::with(['picDocument'])->findOrFail($id);
+        return PicHandover::with(['picDocument'])
+            ->where('id', $id)
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->firstOrFail();
     }
 
     public function create(array $data)
@@ -35,6 +38,8 @@ class PicHandoverRepository implements PicHandoverRepositoryInterface
 
     public function delete($id)
     {
-        return PicHandover::destroy($id);
+        return PicHandover::where('id', $id)
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->delete();
     }
 }
