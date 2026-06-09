@@ -221,7 +221,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="status" class="form-label text-sm">Status</label>
-                                    <select name="status" class="form-select">
+                                    <select name="status" class="form-select" required>
                                         <option value="" hidden>Pilih status klien</option>
                                         <option value="pending"
                                             {{ old('status', $client->status ?? '') == 'pending' ? 'selected' : '' }}>
