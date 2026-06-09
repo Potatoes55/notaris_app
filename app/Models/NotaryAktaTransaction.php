@@ -40,7 +40,8 @@ class NotaryAktaTransaction extends Model
 
     public function client()
     {
-        return $this->belongsTo(Client::class, 'client_code', 'client_code');
+        return $this->belongsTo(Client::class, 'client_code', 'client_code')
+            ->withTrashed();
     }
 
     protected $casts = [
