@@ -41,12 +41,29 @@ class PicDocumentsController extends Controller
     public function create()
     {
         $notarisId = $this->getNotarisId();
-        $clients = Client::where('notaris_id', $notarisId)->get();
+        $clients = Client::where('notaris_id', $notarisId)
+            ->whereNull('deleted_at')
+            ->get();
         $picStaffList = PicStaff::where('notaris_id', $notarisId)->get();
         
-        $aktaTransaction = NotaryAktaTransaction::where('notaris_id', $notarisId)->with('client')->get();
-        $relaasTransaction = NotaryRelaasAkta::where('notaris_id', $notarisId)->with('client')->get();
-        $prosesLainTransaction = ProsesLain::where('notaris_id', $notarisId)->with('client')->get();
+        $aktaTransaction = NotaryAktaTransaction::where('notaris_id', $notarisId)
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
+        $relaasTransaction = NotaryRelaasAkta::where('notaris_id', $notarisId)
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
+        $prosesLainTransaction = ProsesLain::where('notaris_id', $notarisId)
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
 
         return view('pages.PIC.PicDocuments.form', compact('clients', 'picStaffList', 'aktaTransaction', 'relaasTransaction', 'prosesLainTransaction'));
     }
@@ -90,9 +107,26 @@ class PicDocumentsController extends Controller
         $clients = Client::where('notaris_id', $this->getNotarisId())->get();
         $picStaffList = PicStaff::where('notaris_id', $this->getNotarisId())->get();
         $picDocument = $this->service->getDocumentById($id);
-        $aktaTransaction = NotaryAktaTransaction::where('notaris_id', $this->getNotarisId())->get();
-        $relaasTransaction = NotaryRelaasAkta::where('notaris_id', $this->getNotarisId())->get();
-        $prosesLainTransaction = ProsesLain::where('notaris_id', $this->getNotarisId())->get();
+        $aktaTransaction = NotaryAktaTransaction::where('notaris_id', $this->getNotarisId())
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
+
+        $relaasTransaction = NotaryRelaasAkta::where('notaris_id', $this->getNotarisId())
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
+
+        $prosesLainTransaction = ProsesLain::where('notaris_id', $this->getNotarisId())
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
 
         return view('pages.PIC.PicDocuments.form', compact('picDocument', 'clients', 'picStaffList', 'aktaTransaction', 'relaasTransaction', 'prosesLainTransaction'));
     }

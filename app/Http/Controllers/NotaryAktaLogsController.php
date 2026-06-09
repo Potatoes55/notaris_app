@@ -33,9 +33,16 @@ class NotaryAktaLogsController extends Controller
 
         $notaris = Notaris::where('id', $notarisId)->get();
 
-        $clients = Client::where('notaris_id', $notarisId)->get();
+        $clients = Client::where('notaris_id', $notarisId)
+            ->whereNull('deleted_at')
+            ->get();
 
-        $transactions = NotaryAktaTransaction::where('notaris_id', $notarisId)->get();
+        $transactions = NotaryAktaTransaction::where('notaris_id', $notarisId)
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
 
         return view('pages.BackOffice.AktaLogs.form', compact('notaris', 'clients', 'transactions'));
     }
@@ -89,9 +96,16 @@ class NotaryAktaLogsController extends Controller
 
         $notaris = Notaris::where('id', $notarisId)->get();
 
-        $clients = Client::where('notaris_id', $notarisId)->get();
+        $clients = Client::where('notaris_id', $notarisId)
+            ->whereNull('deleted_at')
+            ->get();
 
-        $transactions = NotaryAktaTransaction::where('notaris_id', $notarisId)->get();
+        $transactions = NotaryAktaTransaction::where('notaris_id', $notarisId)
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+                })
+            ->with('client')
+            ->get();
 
         return view('pages.BackOffice.AktaLogs.form', compact('log', 'notaris', 'clients', 'transactions'));
     }
