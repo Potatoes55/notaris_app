@@ -29,11 +29,13 @@ class NotaryAktaLogsController extends Controller
 
     public function create()
     {
-        $notaris = Notaris::all();
-        $clients = Client::all();
-        $transactions = NotaryAktaTransaction::all();
+        $notarisId = auth()->user()->notaris_id;
 
-        // dd($notaris, $clients, $transactions);
+        $notaris = Notaris::where('id', $notarisId)->get();
+
+        $clients = Client::where('notaris_id', $notarisId)->get();
+
+        $transactions = NotaryAktaTransaction::where('notaris_id', $notarisId)->get();
 
         return view('pages.BackOffice.AktaLogs.form', compact('notaris', 'clients', 'transactions'));
     }
@@ -79,10 +81,17 @@ class NotaryAktaLogsController extends Controller
 
     public function edit($id)
     {
-        $log = $this->service->get($id);
-        $notaris = Notaris::all();
-        $clients = Client::all();
-        $transactions = NotaryAktaTransaction::all();
+        $notarisId = auth()->user()->notaris_id;
+
+        $log = NotaryAktaLogs::where('id', $id)
+            ->where('notaris_id', $notarisId)
+            ->firstOrFail();
+
+        $notaris = Notaris::where('id', $notarisId)->get();
+
+        $clients = Client::where('notaris_id', $notarisId)->get();
+
+        $transactions = NotaryAktaTransaction::where('notaris_id', $notarisId)->get();
 
         return view('pages.BackOffice.AktaLogs.form', compact('log', 'notaris', 'clients', 'transactions'));
     }
@@ -110,7 +119,9 @@ class NotaryAktaLogsController extends Controller
 
     public function destroy($id)
     {
-        $this->service->delete($id);
+        NotaryAktaLogs::where('id', $id)
+                ->where('notaris_id', auth()->user()->notaris_id)
+                ->delete();
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil menghapus log.');
 
