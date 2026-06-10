@@ -14,11 +14,11 @@ class DocumentsController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $status = $request->input('status', '');
-        $userId = auth()->id();
+        $userId = auth()->user()->notaris_id;
+        $data['notaris_id'] = auth()->user()->notaris_id;
 
-        $documents = $this->documentService->getAll($userId, $request->query('status'));
-
+        $status = $request->has('status') ? $request->query('status') : null;
+        $documents = $this->documentService->getAll($userId, $status);
         $documents->appends($request->query());
 
         return view('pages.Documents.index', compact('documents'));

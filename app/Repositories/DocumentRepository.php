@@ -19,9 +19,9 @@ class DocumentRepository implements DocumentRepositoryInterface
 
     //     return $query->paginate(10)->appends(request()->query());
     // }
-    public function all(int $userId, ?string $status = null)
+    public function all(string $userId, ?string $status = null)
     {
-        $query = Documents::query()->where('user_id', $userId);
+        $query = Documents::query()->where('notaris_id', $userId);
 
         if ($status === '1') {
             $query->where('status', 1);

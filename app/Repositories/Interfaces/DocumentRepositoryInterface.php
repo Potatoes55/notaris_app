@@ -6,7 +6,7 @@ use App\Models\Documents;
 
 interface DocumentRepositoryInterface
 {
-    public function all(int $userId, ?string $status = null);
+    public function all(string $userId, ?string $status = null);
 
     public function search(string $keyword, ?string $status = null);
 
