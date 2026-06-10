@@ -256,12 +256,11 @@ class NotaryRelaasAktaController extends Controller
     {
         $request->validate(
             [
-                'relaas_number' => 'required|integer',
+                'relaas_number' => 'required',
                 'year' => 'required',
             ],
             [
                 'relaas_number.required' => 'Nomor akta harus diisi.',
-                'relaas_number.integer' => 'Nomor akta harus berupa angka.',
                 'year.required' => 'Tahun harus diisi.',
             ]
         );
