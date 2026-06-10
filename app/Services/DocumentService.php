@@ -9,13 +9,13 @@ class DocumentService
 {
     public function __construct(protected DocumentRepositoryInterface $documentRepo) {}
 
-    public function getAll(?string $search = null, ?string $status = null)
+    public function getAll(string $userId, ?string $search = null, ?string $status = null)
     {
         if ($search) {
-            return $this->documentRepo->search($search, $status);
+            return $this->documentRepo->search($userId, $search, $status);
         }
 
-        return $this->documentRepo->all($status);
+        return $this->documentRepo->all($userId, $status);
     }
 
     public function searchDocuments(string $keyword, string $status = '1')
@@ -37,7 +37,7 @@ class DocumentService
     {
         $document = $this->documentRepo->find($id);
 
-        if (!$document) {
+        if (! $document) {
             throw new \Exception('Dokumen tidak ditemukan.');
         }
 
@@ -48,13 +48,12 @@ class DocumentService
     {
         $document = $this->documentRepo->find($id);
 
-        if (!$document) {
+        if (! $document) {
             throw new \Exception('Dokumen tidak ditemukan.');
         }
 
         return $this->documentRepo->activeDocument($document);
     }
-
 
     public function findProduct(int $id): ?Documents
     {
