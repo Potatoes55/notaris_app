@@ -6,19 +6,19 @@ use App\Http\Requests\DocumentRequest;
 use App\Models\Documents;
 use App\Services\DocumentService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class DocumentsController extends Controller
 {
-
     public function __construct(protected DocumentService $documentService) {}
 
     public function index(Request $request)
     {
         $search = $request->input('search');
         $status = $request->input('status', '');
+        $userId = auth()->id();
 
-        $documents = $this->documentService->getAll($search, $status);
+        $documents = $this->documentService->getAll($userId, $request->query('status'));
+
         $documents->appends($request->query());
 
         return view('pages.Documents.index', compact('documents'));
@@ -29,12 +29,9 @@ class DocumentsController extends Controller
         return view('pages.Documents.form');
     }
 
-
-
     public function store(DocumentRequest $request)
     {
         $validated = $request->validated();
-
 
         try {
             // if ($request->hasFile('image')) {
@@ -43,11 +40,12 @@ class DocumentsController extends Controller
             $validated['notaris_id'] = auth()->user()->notaris_id;
             $result = $this->documentService->createDocument($validated);
 
-
             notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil menambahkan data jenis warkah');
+
             return redirect()->route('documents.index');
         } catch (\Exception $e) {
             notyf()->position('x', 'right')->position('y', 'top')->error('Gagal menambahkan data jenis warkah');
+
             return redirect()->back()->withInput();
             dd($e->getMessage());
         }
@@ -56,6 +54,7 @@ class DocumentsController extends Controller
     public function edit($id)
     {
         $document = $this->documentService->findProduct($id);
+
         return view('pages.Documents.form', compact('document'));
     }
 
@@ -70,6 +69,7 @@ class DocumentsController extends Controller
         $document->update($validated);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil mengubah data jenis warkah');
+
         return redirect()->route('documents.index');
     }
 
@@ -78,6 +78,7 @@ class DocumentsController extends Controller
         try {
             $this->documentService->deactivate($id);
             notyf()->position('x', 'right')->position('y', 'top')->success('Jenis Warkah berhasil dinonaktifkan.');
+
             return redirect()->route('documents.index');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

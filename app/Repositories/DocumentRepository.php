@@ -2,13 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Interfaces\DocumentRepositoryInterface;
 use App\Models\Documents;
-
+use App\Repositories\Interfaces\DocumentRepositoryInterface;
 
 class DocumentRepository implements DocumentRepositoryInterface
 {
-
     // public function all(string $status = '1')
     // {
     //     $query = Documents::query();
@@ -21,9 +19,9 @@ class DocumentRepository implements DocumentRepositoryInterface
 
     //     return $query->paginate(10)->appends(request()->query());
     // }
-    public function all(?string $status = null)
+    public function all(int $userId, ?string $status = null)
     {
-        $query = Documents::query();
+        $query = Documents::query()->where('user_id', $userId);
 
         if ($status === '1') {
             $query->where('status', 1);
@@ -59,18 +57,21 @@ class DocumentRepository implements DocumentRepositoryInterface
     public function update(Documents $document, array $data): Documents
     {
         $document->update($data);
+
         return $document;
     }
 
     public function deactivate(Documents $document): bool
     {
         $document->status = false;
+
         return $document->save();
     }
 
     public function activeDocument(Documents $document): bool
     {
         $document->status = true;
+
         return $document->save();
     }
 
