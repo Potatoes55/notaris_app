@@ -35,8 +35,15 @@ class NotaryCostController extends Controller
 
     public function create()
     {
-        $clients = Client::where('notaris_id', $this->getNotarisId())->get();
-        $picDocuments = PicDocuments::where('notaris_id', $this->getNotarisId())->get();
+        $clients = Client::where('notaris_id', $this->getNotarisId())
+            ->whereNull('deleted_at')
+            ->get();
+
+        $picDocuments = PicDocuments::where('notaris_id', $this->getNotarisId())
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->get();
         $cost = null;
 
         return view('pages.Biaya.TotalBiaya.form', compact('clients', 'picDocuments', 'cost'));
@@ -92,10 +99,31 @@ class NotaryCostController extends Controller
     public function edit($id)
     {
         $cost = $this->service->detail($id);
-        $clients = Client::where('notaris_id', $this->getNotarisId())->get();
-        $picDocuments = PicDocuments::where('notaris_id', $this->getNotarisId())->get();
-        $aktaTransaction = NotaryAktaTransaction::where('notaris_id', $this->getNotarisId())->where('status', 'draft')->get();
-        $relaasTransaction = NotaryRelaasAkta::where('notaris_id', $this->getNotarisId())->where('status', 'draft')->get();
+        $clients = Client::where('notaris_id', $this->getNotarisId())
+            ->whereNull('deleted_at')
+            ->get();
+
+        $picDocuments = PicDocuments::where('notaris_id', $this->getNotarisId())
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->get();
+
+        $aktaTransaction = NotaryAktaTransaction::where('notaris_id', $this->getNotarisId())
+            ->where('status', 'draft')
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
+
+        $relaasTransaction = NotaryRelaasAkta::where('notaris_id', $this->getNotarisId())
+            ->where('status', 'draft')
+            ->whereHas('client', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('client')
+            ->get();
 
         return view('pages.Biaya.TotalBiaya.form', compact('cost', 'clients', 'picDocuments', 'aktaTransaction', 'relaasTransaction'));
     }
