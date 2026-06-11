@@ -80,8 +80,7 @@
                                                 Hapus
                                             </button>
                                             @include(
-                                                'pages.BackOffice.RelaasAkta.AktaTransaction.Modal.index',
-                                                ['akta' => $akta]
+                                                'pages.BackOffice.RelaasAkta.AktaTransaction.Modal.index'
                                             )
                                         </td>
                                         @php
