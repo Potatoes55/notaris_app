@@ -71,7 +71,7 @@
                         <span class="nav-link-text ms-1">Setting</span>
                     </a>
 
-                {{-- jenis warkah --}}
+                <!-- {{-- jenis warkah --}}
                     <a href="{{ route('documents.index') }}"
                         class="nav-link {{ request()->is('documents*') ? 'active' : '' }}">
                         <div
@@ -80,7 +80,7 @@
                         </div>
                         <span class="nav-link-text ms-1 mt-2">Jenis Warkah</span>
                     </a>
-                </li>
+                </li> -->
                 {{-- menu cs --}}
                 <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
@@ -505,7 +505,7 @@
                                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                         <i class="fa-solid fa-clock-rotate-left text-dark text-sm opacity-10 pb-0"></i>
                                     </div>
-                                    <span class="nav-link-text ms-1 mt-2">Logs Akta</span>
+                                    <span class="nav-link-text ms-1 mt-2">Log Akta</span>
                                 </a>
                             </li>
                         </ul>

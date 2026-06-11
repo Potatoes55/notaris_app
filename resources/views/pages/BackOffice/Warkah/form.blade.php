@@ -26,22 +26,32 @@
                         <div class="row">
                             <input type="hidden" name="client_code" value="{{ $client->client_code }}">
 
-                            {{-- JENIS WARKAH --}}
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label text-sm">Jenis Warkah <span class="text-danger">*</span></label>
-                                <select name="warkah_code" class="form-select @error('warkah_code') is-invalid @enderror">
-                                    <option value="" hidden>Pilih Dokumen</option>
-                                    @foreach ($documents as $doc)
-                                        <option value="{{ $doc->code }}"
-                                            {{ old('warkah_code', $document->warkah_code ?? '') == $doc->code ? 'selected' : '' }}>
-                                            {{ $doc->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('warkah_code')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+{{-- JENIS WARKAH --}}
+<div class="col-md-12 mb-3">
+    <label for="warkah_code" class="form-label text-sm">Jenis Warkah <span class="text-danger">*</span></label>
+    <select name="warkah_code" id="warkah_code" class="form-select @error('warkah_code') is-invalid @enderror">
+        <option value="" hidden>Pilih Dokumen</option>
+        
+        @php
+            $daftarWarkah = [
+                'KTP', 'KK', 'Akta Nikah', 'Akta Kematian', 'Akta Kelahiran', 
+                'NPWP Perorangan', 'NPWP Badan', 'Bukti Kepemilikan Hak', 
+                'SPPT PBB', 'Keterangan Domisili', 'Keterangan Beda Nama'
+            ];
+        @endphp
+
+        @foreach ($daftarWarkah as $item)
+            <option value="{{ $item }}" 
+                {{ old('warkah_code', $document->warkah_code ?? '') == $item ? 'selected' : '' }}>
+                {{ $item }}
+            </option>
+        @endforeach
+    </select>
+
+    @error('warkah_code')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
 
                             {{-- KOTA / KABUPATEN --}}
                             <div class="col-md-12 mb-3">

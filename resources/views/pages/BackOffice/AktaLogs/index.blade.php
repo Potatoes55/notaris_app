@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Logs Akta')
+@section('title', 'Log Akta')
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Akta Notaris / Log Akta'])
@@ -10,7 +10,7 @@
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center pb-0">
                     <h5>Log Akta</h5>
-                    <a href="{{ route('akta-logs.create') }}" class="btn btn-primary btn-sm">+ Tambah Logs Akta</a>
+                    <a href="{{ route('akta-logs.create') }}" class="btn btn-primary btn-sm">+ Tambah Log Akta</a>
                 </div>
                 <form method="GET" action="{{ route('akta-logs.index') }}" class="d-flex gap-2  justify-content-end me-4"
                     style="max-width: 500px; margin-left: auto;" class="no-spinner">

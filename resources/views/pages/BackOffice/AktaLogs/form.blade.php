@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Logs Akta')
+@section('title', 'Log Akta')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Akta Notaris / Logs Akta'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Akta Notaris / Log Akta'])
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-header pb-0">
-                    <h6>{{ isset($log) ? 'Edit Logs Akta' : 'Tambah Logs Akta' }}</h6>
+                    <h6>{{ isset($log) ? 'Edit Logs Akta' : 'Tambah Log Akta' }}</h6>
                 </div>
                 <hr>
                 <div class="card-body px-4 pt-1 pb-2">
@@ -46,21 +46,24 @@
                         </div> --}}
                             <x-log-akta :clients="$clients" :transactions="$transactions" />
 
-
-
-
                         {{-- <div class="mb-3">
                         <label for="client_code" class="form-label">Registration Code</label>
                         <input type="text" name="client_code" id="client_code" class="form-control"
                             value="{{ $log->client_code ?? old('client_code') }}">
-                    </div> --}}
+                        </div> --}}
 
                         <div class="mb-3">
                             <label for="step" class="form-label text-sm">Step</label>
-                            <input type="text" name="step" id="step" class="form-control"
-                                value="{{ $log->step ?? old('step') }}">
+                            <select name="step" id="step" class="form-select" required>
+                                <option value="" hidden>Pilih Step</option>
+                                @foreach (['Draft', 'Pending', 'Proses', 'Selesai'] as $step)
+                                    <option value="{{ $step }}" 
+                                        {{ (isset($log) && $log->step == $step) || old('step') == $step ? 'selected' : '' }}>
+                                        {{ $step }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
-
                         <div class="mb-3">
                             <label for="note" class="form-label text-sm ">Catatan</label>
                             <textarea name="note" id="note" class="form-control">{{ $log->note ?? old('note') }}</textarea>
