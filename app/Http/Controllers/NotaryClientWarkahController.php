@@ -99,42 +99,36 @@ class NotaryClientWarkahController extends Controller
             'warkah_code' => 'required',
             'city'        => 'required|string|max:255',
             'warkah_link' => 'required|mimes:jpg,jpeg,png,pdf|max:15240',
-            'note' => 'nullable',
+            'note'        => 'nullable',
             'uploaded_at' => 'required|date',
-        ], [
-            'client_code.required' => 'Klien harus dipilih.',
-            'warkah_code.required' => 'Dokumen harus dipilih.',
-            'city.required'        => 'Kota/Kabupaten harus diisi.',
-            'warkah_link.required' => 'File warkah harus diupload.',
-            'warkah_link.max' => 'Ukuran file maksimal 15MB.',
-            'warkah_link.mimes' => 'Format file harus JPG, JPEG, PNG, atau PDF.',
         ]);
 
-        $document = Documents::where('code', $validated['warkah_code'])
-            ->where('notaris_id', $notarisId)
-            ->firstOrFail();
-
         $path = null;
+
         if ($request->hasFile('warkah_link')) {
             $path = $request->file('warkah_link')
-                ->storeAs('documents', $request->file('warkah_link')->getClientOriginalName());
+                ->storeAs(
+                    'documents',
+                    time() . '_' . $request->file('warkah_link')->getClientOriginalName()
+                );
         }
 
         $client = Client::where('client_code', $request->client_code)->firstOrFail();
 
         NotaryClientWarkah::create([
             'client_code' => $validated['client_code'],
-            'notaris_id' => $notarisId,
-            'warkah_code' => $document->code,
-            'warkah_name' => $document->name,
+            'notaris_id'  => $notarisId,
+            'warkah_code' => $validated['warkah_code'],
+            'warkah_name' => $validated['warkah_code'],
             'city'        => $validated['city'],
             'warkah_link' => $path,
-            'note' => $validated['note'],
-            'status' => 'new',
+            'note'        => $validated['note'] ?? null,
+            'status'      => 'new',
             'uploaded_at' => $validated['uploaded_at'],
         ]);
 
-        notyf()->position('x', 'right')->position('y', 'top')->success('Warkah berhasil ditambahkan');
+        notyf()->position('x', 'right')->position('y', 'top')
+            ->success('Warkah berhasil ditambahkan');
 
         return redirect()->route('warkah.index', ['id' => $client->id]);
     }
