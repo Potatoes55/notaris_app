@@ -2,65 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+
 class WilayahController extends Controller
 {
     public function provinsi()
     {
-        $data = json_decode(
-            file_get_contents(
-                public_path('wilayah/provinces.json')
-            ),
-            true
+        return response()->json(
+            Cache::remember(
+                'wilayah_provinsi',
+                now()->addMonth(),
+                fn () => Http::timeout(10)
+                    ->connectTimeout(5)
+                    ->get(
+                        'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json'
+                    )
+                    ->json()
+            )
         );
-
-        return response()->json($data);
     }
 
     public function kota(int $provinsi_id)
     {
-        $data = json_decode(
-            file_get_contents(
-                public_path('wilayah/regencies.json')
-            ),
-            true
+        return response()->json(
+            Cache::remember(
+                "wilayah_kota_{$provinsi_id}",
+                now()->addMonth(),
+                fn () => Http::timeout(10)
+                    ->connectTimeout(5)
+                    ->get(
+                        "https://www.emsifa.com/api-wilayah-indonesia/api/regencies/{$provinsi_id}.json"
+                    )
+                    ->json()
+            )
         );
-
-        $result = collect($data)
-            ->where('province_id', $provinsi_id)
-            ->values();
-
-        return response()->json($result);
     }
 
     public function kecamatan(int $kota_id)
     {
-        $data = json_decode(
-            file_get_contents(
-                public_path('wilayah/districts.json')
-            ),
-            true
+        return response()->json(
+            Cache::remember(
+                "wilayah_kecamatan_{$kota_id}",
+                now()->addMonth(),
+                fn () => Http::timeout(10)
+                    ->connectTimeout(5)
+                    ->get(
+                        "https://www.emsifa.com/api-wilayah-indonesia/api/districts/{$kota_id}.json"
+                    )
+                    ->json()
+            )
         );
-
-        $result = collect($data)
-            ->where('regency_id', $kota_id)
-            ->values();
-
-        return response()->json($result);
     }
 
     public function kelurahan(int $kecamatan_id)
     {
-        $data = json_decode(
-            file_get_contents(
-                public_path('wilayah/villages.json')
-            ),
-            true
+        return response()->json(
+            Cache::remember(
+                "wilayah_kelurahan_{$kecamatan_id}",
+                now()->addMonth(),
+                fn () => Http::timeout(10)
+                    ->connectTimeout(5)
+                    ->get(
+                        "https://www.emsifa.com/api-wilayah-indonesia/api/villages/{$kecamatan_id}.json"
+                    )
+                    ->json()
+            )
         );
-
-        $result = collect($data)
-            ->where('district_id', $kecamatan_id)
-            ->values();
-
-        return response()->json($result);
     }
 }
