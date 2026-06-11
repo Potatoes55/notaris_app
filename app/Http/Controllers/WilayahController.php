@@ -2,43 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
-
 class WilayahController extends Controller
 {
     public function provinsi()
     {
-        $response = Http::get(
-            'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json'
+        $data = json_decode(
+            file_get_contents(
+                public_path('wilayah/provinces.json')
+            ),
+            true
         );
 
-        return response()->json($response->json());
+        return response()->json($data);
     }
 
-    public function kota($provinsi_id)
+    public function kota(int $provinsi_id)
     {
-        $response = Http::get(
-            "https://www.emsifa.com/api-wilayah-indonesia/api/regencies/{$provinsi_id}.json"
+        $data = json_decode(
+            file_get_contents(
+                public_path('wilayah/regencies.json')
+            ),
+            true
         );
 
-        return response()->json($response->json());
+        $result = collect($data)
+            ->where('province_id', $provinsi_id)
+            ->values();
+
+        return response()->json($result);
     }
 
-    public function kecamatan($kota_id)
+    public function kecamatan(int $kota_id)
     {
-        $response = Http::get(
-            "https://www.emsifa.com/api-wilayah-indonesia/api/districts/{$kota_id}.json"
+        $data = json_decode(
+            file_get_contents(
+                public_path('wilayah/districts.json')
+            ),
+            true
         );
 
-        return response()->json($response->json());
+        $result = collect($data)
+            ->where('regency_id', $kota_id)
+            ->values();
+
+        return response()->json($result);
     }
 
-    public function kelurahan($kecamatan_id)
+    public function kelurahan(int $kecamatan_id)
     {
-        $response = Http::get(
-            "https://www.emsifa.com/api-wilayah-indonesia/api/villages/{$kecamatan_id}.json"
+        $data = json_decode(
+            file_get_contents(
+                public_path('wilayah/villages.json')
+            ),
+            true
         );
 
-        return response()->json($response->json());
+        $result = collect($data)
+            ->where('district_id', $kecamatan_id)
+            ->values();
+
+        return response()->json($result);
     }
 }
