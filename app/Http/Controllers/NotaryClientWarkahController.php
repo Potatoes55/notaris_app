@@ -96,7 +96,7 @@ class NotaryClientWarkahController extends Controller
 
         $validated = $request->validate([
             'client_code' => 'required',
-            'warkah_code' => 'required',
+            'warkah_name' => 'required',
             'city'        => 'required|string|max:255',
             'warkah_link' => 'required|mimes:jpg,jpeg,png,pdf|max:15240',
             'note'        => 'nullable',
@@ -118,8 +118,7 @@ class NotaryClientWarkahController extends Controller
         NotaryClientWarkah::create([
             'client_code' => $validated['client_code'],
             'notaris_id'  => $notarisId,
-            'warkah_code' => $validated['warkah_code'],
-            'warkah_name' => $validated['warkah_code'],
+            'warkah_name' => $validated['warkah_name'],
             'city'        => $validated['city'],
             'warkah_link' => $path,
             'note'        => $validated['note'] ?? null,
