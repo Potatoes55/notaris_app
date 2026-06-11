@@ -12,8 +12,10 @@
         }
     }
 
+    if(!function_exists('d')) {
     function d($date)
-    {
+        {
+    
         if (empty($date) || $date === '-') {
             return '-';
         }
@@ -23,6 +25,7 @@
         } catch (\Exception $e) {
             return '-';
         }
+    }
     }
 @endphp
 @php
