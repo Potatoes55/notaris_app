@@ -49,7 +49,7 @@ class UserProfileController extends Controller
 
             notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil membuka akses');
 
-            return back();
+            return redirect()->intended(route('dashboard'));
         }
         notyf()->position('x', 'right')->position('y', 'top')->error('Kode akses salah.');
 
