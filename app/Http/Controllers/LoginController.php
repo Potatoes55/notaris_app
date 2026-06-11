@@ -51,7 +51,13 @@ class LoginController extends Controller
             notyf()
                 ->position('x', 'right')
                 ->position('y', 'top')
-                ->success('Selamat datang, '.$user->username.'!');
+                ->success('Anda Login Sebagai PIC, '.$user->username.'!');
+            if (! session('access_all_menu')) {
+                session()->flash(
+                    'access_code_warning',
+                    'Masukan Access Code untuk mengakses fitur Notaris/PPAT.'
+                );
+            }
 
             // return redirect()->route('dashboard');
             return redirect()->intended(route('dashboard'));
@@ -80,7 +86,7 @@ class LoginController extends Controller
         $nomorAdmin = '6287775790060';
 
         // Pesan otomatis yang akan terisi di kolom chat WhatsApp
-        $pesan = 'Halo Admin, saya ingin mengatur ulang kata sandi (reset password) akun Notaris App saya. Mohon bantuannya.';
+        $pesan = 'Halo Admin, saya membutuhkan bantuan pada akun Notaris App saya.';
 
         // Membuat link WhatsApp yang aman dengan urlencode agar spasi/karakter unik tidak rusak
         $whatsappUrl = "https://wa.me/{$nomorAdmin}?text=".urlencode($pesan);
