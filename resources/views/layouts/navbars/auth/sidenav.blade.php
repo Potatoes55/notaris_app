@@ -367,14 +367,14 @@
                         <span class="nav-link-text ms-1 mt-2">Subscriptions</span>
                     </a>
 
-                    <a href="{{ route('documents.index') }}"
+                    <!-- <a href="{{ route('documents.index') }}"
                         class="nav-link {{ request()->is('documents*') ? 'active' : '' }}">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="bi bi-folder-fill text-dark text-sm opacity-10 pb-0"></i>
                         </div>
                         <span class="nav-link-text ms-1 mt-2">Jenis Warkah</span>
-                    </a>
+                    </a> -->
                 </>
                 <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
