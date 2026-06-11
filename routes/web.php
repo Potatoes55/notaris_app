@@ -4,6 +4,7 @@ use App\Http\Controllers\AktaQrController;
 use App\Http\Controllers\BackupRestoreController;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CovernoteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -42,7 +43,6 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\UserProfileController;
-use App\Http\Controllers\CovernoteController;
 use App\Models\Notaris;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +64,7 @@ Route::middleware('guest', 'nocache')->group(function () {
 
             return view('pages.profile-notaris', compact('notaris'));
         })->name('profileNotaris');
+
     });
 
     // RegisterController routes
@@ -86,6 +87,7 @@ Route::middleware('guest', 'nocache')->group(function () {
         // Halaman isi password baru
         Route::get('password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
         Route::post('password/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
+
     });
     // ChangePassword routes
     // Route::controller(ChangePassword::class)->group(function () {
@@ -118,13 +120,15 @@ Route::middleware('guest', 'nocache')->group(function () {
     // Route::post('/client/search', [ClientController::class, 'searchByRegistrationCode'])->name('client.search');
     Route::post('/client/{uuid}/upload-document', [ClientController::class, 'uploadDocument'])
         ->name('client.uploadDocument');
+    Route::get('/akta/{transaction_code}', [AktaQrController::class, 'show'])
+        ->name('akta.qr.show');
 });
 
 Route::middleware(['auth'])->group(function () {
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])->name('profile.unlock');
-    
+
     Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
     Route::resource('covernotes', CovernoteController::class);
 
@@ -223,8 +227,6 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
     Route::post('/backup', [BackupRestoreController::class, 'backup'])->name('backup');
     Route::post('/restore', [BackupRestoreController::class, 'restore'])->name('restore');
-    Route::get('/akta/{transaction_code}', [AktaQrController::class, 'show'])
-        ->name('akta.qr.show');
 
     // UserProfileController routes
 
