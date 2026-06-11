@@ -41,6 +41,13 @@
 
         <ul class="navbar-nav">
 
+
+
+            @php
+                $user = auth()->user();
+            @endphp
+            @if ($user->access_code !== null && !session('access_all_menu'))
+            
             <li class="nav-item">
                 <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -49,10 +56,16 @@
                     <span class="nav-link-text ms-1">Dashboard</span>
                 </a>
             </li>
-            @php
-                $user = auth()->user();
-            @endphp
-            @if ($user->access_code !== null && !session('access_all_menu'))
+
+            @if(!session('access_all_menu'))
+                    <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-lock me-1 text-dark text-sm opacity-10"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Fitur Notaris/PPAT</span>
+                    </a>
+            @endif
             {{-- menu --}}
                 <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
@@ -63,13 +76,13 @@
 
                 {{-- menu settings --}}
                 <li class="nav-item">
-                    <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
+                    {{-- <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                         </div>
                         <span class="nav-link-text ms-1">Setting</span>
-                    </a>
+                    </a> --}}
 
                 <!-- {{-- jenis warkah --}}
                     <a href="{{ route('documents.index') }}"
@@ -333,6 +346,15 @@
                     </a>
                 </li>
             @elseif (session('access_all_menu'))
+
+                <li class="nav-item">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Dashboard</span>
+                    </a>
+                </li>
                 <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
                         <i class="fa-solid fa-bars" style="color: #f4645f;"></i>
@@ -342,13 +364,13 @@
 
                 {{-- menu settings --}}
                 <li class="nav-item">
-                    <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
+                    {{-- <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                         </div>
                         <span class="nav-link-text ms-1">Setting</span>
-                    </a>
+                    </a> --}}
 
                     <a href="{{ route('profile') }}" class="nav-link {{ request()->is('profile*') ? 'active' : '' }}">
                         <div
