@@ -154,7 +154,7 @@
                                     <!-- Pembayaran Penuh Awal -->
                                     <li class="nav-item" role="presentation">
                                         <button
-                                            class="nav-link active d-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-primary text-white"
+                                            class="nav-link active d-flex align-items-center gap-2 px-3 py-2 shadow-sm"
                                             id="pills-full-tab" data-bs-toggle="pill" data-bs-target="#pills-full"
                                             type="button" role="tab">
                                             <i class="fa-solid fa-sack-dollar"></i>
@@ -362,6 +362,23 @@
             </div>
         </div>
     </div>
+    <style>
+        #pills-tab .nav-link {
+            background: #fff;
+            color: #344767;
+            border-radius: 12px;
+            transition: all .3s ease;
+        }
+
+        #pills-tab .nav-link.active {
+            background: #fb6340 !important;
+            color: #fff !important;
+        }
+
+        #pills-tab .nav-link i {
+            color: inherit;
+        }
+    </style>
 @endsection
 
 @push('js')

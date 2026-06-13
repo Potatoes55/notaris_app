@@ -39,15 +39,15 @@ class ClientController extends Controller
     }
 
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('pages.Client.form');
+        $type = $request->get('type', 'personal');
+
+        return view('pages.Client.form', compact('type'));
     }
 
     public function store(Request $request)
     {
-
-
         $this->clientService->create($request->all());
         notyf()->position('x', 'right')->position('y', 'top')->success('Klien berhasil ditambahkan');
         return redirect()->route('clients.index');
@@ -56,6 +56,7 @@ class ClientController extends Controller
     public function edit($id)
     {
         $client = $this->clientService->getById($id);
+
         return view('pages.Client.form', compact('client'));
     }
 
@@ -84,27 +85,51 @@ class ClientController extends Controller
         if ($request->has('mode') && $request->mode === 'revision') {
             $client = Client::findOrFail($decrypted);
 
-            return view('pages.Public.client-form', [
-                'encryptedId' => $encryptedId,
-                'mode' => 'revision',
-                'client' => $client,
-            ]);
+            if ($client->type == 'company') {
+                return view('pages.Public.company', compact(
+                    'client',
+                    'encryptedId'
+                ));
+            }
+
+            return view('pages.Public.personal', compact(
+                'client',
+                'encryptedId'
+            ));
         }
 
         $notaris_id = $decrypted;
+        $type = $request->get('type', 'personal');
 
-        return view('pages.Public.client-form', [
-            'encryptedId' => $encryptedId,
-            'mode' => 'new',
-            'notaris_id' => $notaris_id,
-        ]);
+        if ($type == 'company') {
+            return view('pages.Public.company', compact(
+                'encryptedId',
+                'notaris_id'
+            ));
+        }
+
+        return view('pages.Public.personal', compact(
+            'encryptedId',
+            'notaris_id'
+        ));
     }
 
     public function editClient($encryptedClientId)
     {
         $clientId = Crypt::decrypt($encryptedClientId);
         $client = Client::findOrFail($clientId);
-        return view('pages.Public.client-form', compact('client', 'encryptedClientId'));
+
+        if ($client->type == 'company') {
+            return view('pages.Public.company', compact(
+                'client',
+                'encryptedClientId'
+            ));
+        }
+
+        return view('pages.Public.personal', compact(
+            'client',
+            'encryptedClientId'
+        ));
     }
 
     public function updateClient(Request $request, $encryptedClientId)
@@ -156,20 +181,32 @@ class ClientController extends Controller
 
     public function storeClient(ClientRequest $request, $encryptedNotarisId)
     {
-
         try {
             $notaris_id = Crypt::decrypt($encryptedNotarisId);
         } catch (DecryptException $e) {
             abort(403, 'Invalid Notaris ID.');
         }
+
         $validated = $request->validated();
 
         $validated['notaris_id'] = $notaris_id;
         $validated['status'] = 'pending';
 
-        Client::create($validated);
+        $countToday = Client::where('notaris_id', $notaris_id)
+            ->whereDate('created_at', now()->toDateString())
+            ->count();
 
-        notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil mengirim data klien. Silakan tunggu konfirmasi dari notaris.');
+        $sequence = $countToday + 1;
+
+        $client = Client::create($validated);
+
+        $client->update([
+            'client_code' => 'N' . now()->format('ymd') . '-' . $notaris_id . '-' . $client->id . '-' . $sequence
+        ]);
+
+        notyf()->position('x', 'right')->position('y', 'top')
+            ->success('Berhasil mengirim data klien. Silakan konfirmasi ke notaris.');
+
         return redirect()->back();
     }
 
@@ -320,10 +357,17 @@ class ClientController extends Controller
 
         $client = Client::findOrFail($clientId);
 
-        return view('pages.Public.client-form', [
-            'client' => $client,
-            'encryptedClientId' => $encryptedClientId
-        ]);
+        if ($client->type == 'company') {
+            return view('pages.Public.company', compact(
+                'client',
+                'encryptedClientId'
+            ));
+        }
+
+        return view('pages.Public.personal', compact(
+            'client',
+            'encryptedClientId'
+        ));
     }
 
     public function submitRevision(Request $request, $encryptedClientId)
@@ -368,4 +412,5 @@ class ClientController extends Controller
         return redirect()->route('clients.index')
             ->with('success', 'Data revisi berhasil dikirim kembali.');
     }
+    
 }

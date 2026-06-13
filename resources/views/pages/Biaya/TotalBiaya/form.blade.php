@@ -48,8 +48,8 @@
                                 <option value="" hidden>Pilih Dokumen</option>
                                 @foreach ($picDocuments as $doc)
                                     <option value="{{ $doc->id }}"
-                                        {{ old('pic_document_id', $cost->pic_document_id ?? '') == $doc->id ? 'selected' : '' }}
-                                        class="text-capitalize">
+                                        data-client="{{ $doc->client_code }}"
+                                        {{ old('pic_document_id', $cost->pic_document_id ?? '') == $doc->id ? 'selected' : '' }}>
                                         {{ $doc->client->fullname }} - {{ $doc->pic_document_code }} - {{ $doc->transaction_type }}
                                     </option>
                                 @endforeach
@@ -186,37 +186,27 @@
     @push('js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Format rupiah
             const currencyInputs = document.querySelectorAll('input.currency');
-
             const formatRupiah = (value) => {
                 if (!value) return '';
-                // ambil digit angka
                 const digits = value.toString().replace(/\D/g, '');
                 if (digits === '') return '';
-                // tambahkan titik pemisah ribuan
                 return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
             };
-
             const unformat = (value) => {
                 if (!value) return '';
                 return value.toString().replace(/\./g, '').replace(/\D/g, '');
             };
-
-            // Format nilai yang sudah ada saat load
             currencyInputs.forEach(input => {
                 input.value = formatRupiah(input.value);
-
-                // setiap user mengetik → format ulang
                 input.addEventListener('input', (e) => {
-                    const cursorPos = e.target.selectionStart; // posisi kursor
-                    const cleaned = unformat(e.target.value); // angka polos
+                    const cleaned = unformat(e.target.value);
                     e.target.value = formatRupiah(cleaned);
-                    // taruh kursor di akhir (lebih simpel)
                     e.target.setSelectionRange(e.target.value.length, e.target.value.length);
                 });
             });
-
-            // sebelum submit → kirim angka polos ke server
+            // Kirim angka asli saat submit
             const form = document.querySelector('form');
             if (form) {
                 form.addEventListener('submit', () => {
@@ -225,10 +215,26 @@
                     });
                 });
             }
+            // Filter dokumen berdasarkan klien
+            const clientSelect = document.getElementById('client_code');
+            const documentSelect = document.getElementById('pic_document_id');
+            if (clientSelect && documentSelect) {
+                const allOptions = Array.from(documentSelect.querySelectorAll('option'));
+                function filterDocuments() {
+                    const selectedClient = clientSelect.value;
+                    documentSelect.innerHTML = '<option value="" hidden>Pilih Dokumen</option>';
+                    allOptions.forEach(option => {
+                        if (!option.value) return;
+                        if (option.dataset.client == selectedClient) {
+                            documentSelect.appendChild(option.cloneNode(true));
+                        }
+                    });
+                }
+                clientSelect.addEventListener('change', filterDocuments);
+                filterDocuments();
+            }
         });
     </script>
-@endpush
+    @endpush
 
 @endsection
-
-

@@ -40,7 +40,7 @@ class ClientRequest extends FormRequest
             'postcode' => 'nullable',
             'phone' => 'required',
             'email' => 'nullable|email',
-            'type' => 'nullable|in:personal,company',
+            'type' => 'required|in:personal,company',
             'status' => 'nullable|in:pending,valid,revisi',
             'note' => 'nullable',
             'company_name' => 'nullable',
