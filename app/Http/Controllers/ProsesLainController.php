@@ -153,7 +153,10 @@ class ProsesLainController extends Controller
     public function createPic()
     {
         $clients = Client::where('notaris_id', auth()->user()->notaris_id)->where('deleted_at', null)->get();
-        $picDocuments = PicDocuments::where('notaris_id', auth()->user()->notaris_id)->where('deleted_at', null)->get();
+        $picDocuments = PicDocuments::where('notaris_id', auth()->user()->notaris_id)
+            ->whereNull('deleted_at')
+            ->where('transaction_type', 'Proses_lain')
+            ->get();
 
         return view('pages.ProsesLain.PIC.form', compact('clients', 'picDocuments'));
     }

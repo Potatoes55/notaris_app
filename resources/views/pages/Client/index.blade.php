@@ -13,12 +13,22 @@
                     <div class="d-flex gap-2 flex-wrap">
                         @php
                             $encryptedId = Crypt::encrypt(auth()->user()->notaris_id);
-                            $shareUrl = route('client.public.create', ['encryptedNotarisId' => $encryptedId]);
+
+                            $personalUrl = route('client.public.create', [
+                                'encryptedNotarisId' => $encryptedId,
+                                'type' => 'personal'
+                            ]);
+
+                            $companyUrl = route('client.public.create', [
+                                'encryptedNotarisId' => $encryptedId,
+                                'type' => 'company'
+                            ]);
                         @endphp
                         <button class="btn btn-outline-primary btn-sm mb-0" data-bs-toggle="modal"
                             data-bs-target="#shareLinkModal">
                             <i class="fas fa-link"></i> Salin Link Form Klien
                         </button>
+
                         <div class="modal fade" id="shareLinkModal" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content p-3 text-center">
@@ -26,23 +36,42 @@
                                     <p class="text-muted mb-2 px-3">
                                         Bagikan link berikut kepada klien agar mereka dapat mengisi form secara langsung.
                                     </p>
+
                                     <button type="button"
                                         class="btn-close btn-close-white position-absolute end-0 me-4 p-2"
                                         style="background-color: var(--bs-primary); border-radius: 50%;"
                                         data-bs-dismiss="modal" aria-label="Close">
                                     </button>
 
-                                    <div class="input-group my-4 shadow-sm rounded" style="max-width: 600px; margin:auto;">
-                                        <input type="text" class="form-control" id="shareUrlInput"
-                                            value="{{ $shareUrl }}" readonly onclick="this.select()">
-                                        <button class="btn btn-primary mb-0 d-flex gap-2 align-items-center"
-                                            onclick="copyToClipboard('{{ $shareUrl }}')">
-                                            <i class="fa-regular fa-clipboard"></i> Salin
-                                        </button>
+                                    <div class="text-start mt-3">
+                                        <label class="form-label fw-bold">Form Personal</label>
+
+                                        <div class="input-group shadow-sm rounded mb-3">
+                                            <input type="text" class="form-control"
+                                                value="{{ $personalUrl }}" readonly onclick="this.select()">
+
+                                            <button class="btn btn-primary mb-0 d-flex gap-2 align-items-center"
+                                                onclick="copyToClipboard('{{ $personalUrl }}')">
+                                                <i class="fa-regular fa-clipboard"></i> Salin
+                                            </button>
+                                        </div>
+
+                                        <label class="form-label fw-bold">Form Badan Usaha</label>
+
+                                        <div class="input-group shadow-sm rounded">
+                                            <input type="text" class="form-control"
+                                                value="{{ $companyUrl }}" readonly onclick="this.select()">
+
+                                            <button class="btn btn-primary mb-0 d-flex gap-2 align-items-center"
+                                                onclick="copyToClipboard('{{ $companyUrl }}')">
+                                                <i class="fa-regular fa-clipboard"></i> Salin
+                                            </button>
+                                        </div>
                                     </div>
 
-                                    <small class="text-muted">Klik tombol <strong>Salin</strong> untuk menyalin link ke
-                                        clipboard.</small>
+                                    <small class="text-muted mt-3 d-block">
+                                        Klik tombol <strong>Salin</strong> untuk menyalin link ke clipboard.
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -162,7 +191,7 @@
                                                 {{ $client->npwp ?? '-' }}
                                             </td>
                                             <td>
-                                                {{ $client->type ?? '-' }}
+                                                {{ $client->type == 'company' ? 'Badan Usaha' : 'Personal' }}
                                             </td>
                                             <td title="{{ $client->address }}">
                                                 {{ \Illuminate\Support\Str::limit($client->address, 50, '...') }}
