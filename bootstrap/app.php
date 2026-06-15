@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.token' => AuthMiddleware::class,
             'check.full.access' => CheckFullAccess::class,
             'nocache' => NoCache::class, // tambahkan ini
+            'restrict.by.email' => \App\Http\Middleware\RestrictByEmail::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
