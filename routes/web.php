@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AktaQrController;
 use App\Http\Controllers\BackupRestoreController;
 use App\Http\Controllers\ChangePassword;
@@ -123,8 +124,14 @@ Route::middleware('guest', 'nocache')->group(function () {
     Route::get('/akta/{transaction_code}', [AktaQrController::class, 'show'])
         ->name('akta.qr.show');
 });
+Route::middleware(['auth', 'restrict.by.email'])->group(function () {
+    Route::get('/admin/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
+    Route::get('/admin/activity-logs/print', [ActivityLogController::class, 'print'])->name('activity_logs.print');
+
+});
 
 Route::middleware(['auth'])->group(function () {
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])->name('profile.unlock');
