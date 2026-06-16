@@ -57,7 +57,7 @@
                 </a>
             </li>
 
-            @if(!session('access_all_menu'))
+            {{-- @if(!session('access_all_menu'))
                     <a href="{{ route('settings') }}" class="nav-link {{ request()->is('settings*') ? 'active' : '' }}">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -65,14 +65,14 @@
                         </div>
                         <span class="nav-link-text ms-1">Fitur Notaris/PPAT</span>
                     </a>
-            @endif
+            @endif --}}
             {{-- menu --}}
-                <li class="nav-item mt-3 d-flex align-items-center">
+                {{-- <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
                         <i class="fa-solid fa-bars" style="color: #f4645f;"></i>
                     </div>
                     <h6 class=" ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-1">Menu</h6>
-                </li>
+                </li> --}}
 
                 {{-- menu settings --}}
                 <li class="nav-item">

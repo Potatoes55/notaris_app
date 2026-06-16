@@ -3,13 +3,24 @@
 @section('title', 'Settings')
 
 @section('content')
+<style>
+        /* Sembunyikan sidebar vertical */
+        .sidenav, aside, .navbar-vertical {
+            display: none !important;
+        }
+        /* Paksa konten utama mengambil ruang penuh (menghapus margin-left bawaan sidebar) */
+        .main-content, #main-content {
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+        }
+    </style>
     @include('layouts.navbars.auth.topnav', ['title' => 'Settings'])
     <div class="card shadow-lg  mt-5 border-0 w-75 w-lg-50 mx-auto ">
         <div class="card-body p-4">
             <div class=" mb-4">
-                <h5 class="fw-bold mb-1">🔐 Unlock Akses Penuh</h5>
+                <h5 class="fw-bold mb-1">🔐 Buka Akses Penuh Menu Notaris/PPAT</h5>
                 <p class="text-muted text-sm mb-0">
-                    Masukkan kode akses untuk membuka seluruh menu sistem.
+                    Masukkan kode akses untuk membuka seluruh menu Notaris/PPAT.
                 </p>
             </div>
 
