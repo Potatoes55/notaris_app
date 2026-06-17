@@ -148,6 +148,9 @@
 <body>
     <table class="header-top">
         <tr>
+            <td style="width: 25%; text-align: left; vertical-align: middle;">
+            <img src="data:image/svg+xml;base64,{{ $qrCode }}" style="width: 90px; height: 90px;" alt="QR Code">
+        </td>
             <td class="logo">
                 <img src="file://{{ public_path('img/logo-ct-dark.png') }}" alt="Logo Notaris"
                     style="width:40px; height:auto;">
@@ -242,16 +245,16 @@
             <p>Mengetahui,</p>
             <p class="signature-space">_________________________<br>Klien</p>
         </div>
-        <div style="text-align: center; margin-top: 30px;">
+        {{-- <div style="text-align: center; margin-top: 30px;">
             <div style="margin-bottom: 5px;">QR Code Notaris</div>
             
             <div style="border: 1px solid #ccc; padding: 5px; display: inline-block; background-color: #f8f9fa;">
                 <img src="data:image/svg+xml;base64,{{ $qrCode }}" alt="QR Code Notaris" style="width: 100px; height: 100px;">
-            </div>
+            </div> --}}
             
-            <div style="font-size: 10px; margin-top: 5px;">
+            {{-- <div style="font-size: 10px; margin-top: 5px;">
                 {{ $costs->notaris->display_name ?? '-' }}
-            </div>
+            </div> --}}
         </div>
     </div>
     </div>
