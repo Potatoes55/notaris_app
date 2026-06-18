@@ -2,9 +2,17 @@
 
 @section('title', 'Pembayaran')
 
-
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Pembayaran'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Pembayaran'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
@@ -15,7 +23,7 @@
 
                 {{-- Cari PIC Document --}}
                 <div class="card-body">
-                    <form method="GET" action="{{ route('notary_payments.index') }}">
+                    <form method="GET" action="{{ url()->current() }}">
                         <div class="input-group">
                             <input type="text" name="payment_code" class="form-control"
                                 placeholder="Masukkan Kode Pembayaran" value="{{ request('payment_code') }}">

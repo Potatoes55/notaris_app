@@ -3,7 +3,17 @@
 @section('title', 'Surat Keluar')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Surat Keluar'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Surat Keluar'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
+
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">

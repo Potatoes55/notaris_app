@@ -3,7 +3,16 @@
 @section('title', 'Serah Terima Dokumen')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Serah Terima Dokumen'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Serah Terima Dokumen'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
 
     <div class="row mt-4 mx-4">
         <div class="col-md-12">

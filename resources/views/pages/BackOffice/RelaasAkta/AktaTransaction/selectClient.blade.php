@@ -1,17 +1,18 @@
 @extends('layouts.app')
 
-
 @section('title', 'Transaksi Akta')
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'PPAT / Transaksi Akta'])
 
-    <<div class="row mt-4 mx-4 ">
+    @include('components.ppat-menu')
+
+    <div class="row mt-4 mx-4 ">
         <div class="col-md-12">
-            <div class="card mb-0  shadow-lg pb-0">
-                <div class="card-header pb-0 d-flex justify-content-between align-items-center  p-3 flex-wrap ">
+            <div class="card mb-0 shadow-lg pb-0">
+                <div class="card-header pb-0 d-flex justify-content-between align-items-center p-3 flex-wrap">
                     <h5 class="mb-lg-1 fw-bold">Klien</h5>
-                    {{-- search --}}
+
                     <div class="w-lg-25">
                         <form method="GET" action="{{ route('relaas-aktas.selectClient') }}" class="no-spinner">
                             <div class="input-group">
@@ -22,7 +23,9 @@
                         </form>
                     </div>
                 </div>
+
                 <hr>
+
                 <div class="card-body pb-0 px-0 pt-0">
                     @if ($clients->count())
                         <div class="table-responsive">

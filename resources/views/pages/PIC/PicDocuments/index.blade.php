@@ -1,9 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Pic Dokumen')
+@section('title', 'PIC Dokumen')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'PIC / PIC Dokumen'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / PIC Dokumen'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
 
     <div class="container-fluid py-4">
         <div class="row">

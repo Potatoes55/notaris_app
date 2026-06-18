@@ -2,9 +2,17 @@
 
 @section('title', 'Laporan Akta')
 
-
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Laporan Akta'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Laporan Akta'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
 
     <div class="row mt-4 mx-4">
         <div class="col md-12">

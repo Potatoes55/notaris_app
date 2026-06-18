@@ -30,7 +30,9 @@ class NotaryCostController extends Controller
         $search = $request->get('search');
         $costs = $this->service->list(['search' => $search]);
 
-        return view('pages.Biaya.TotalBiaya.index', compact('costs', 'search'));
+        $module = request()->segment(1) === 'ppat' ? 'PPAT' : 'Notaris';
+
+        return view('pages.Biaya.TotalBiaya.index', compact('costs', 'search', 'module'));
     }
 
     public function create()
@@ -173,5 +175,15 @@ class NotaryCostController extends Controller
         
         $mpdf->WriteHTML($html);
         $mpdf->Output("notary_cost_$id.pdf", 'I');
+    }
+
+    public function payments(Request $request)
+    {
+        $search = $request->get('search');
+        $costs = $this->service->list(['search' => $search]);
+
+        $module = request()->segment(1) === 'ppat' ? 'PPAT' : 'Notaris';
+
+        return view('pages.Biaya.Pembayaran.index', compact('costs', 'search', 'module'));
     }
 }

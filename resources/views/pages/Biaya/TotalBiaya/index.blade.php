@@ -3,7 +3,16 @@
 @section('title', 'Total Biaya')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Total Biaya'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Total Biaya'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
