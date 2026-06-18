@@ -18,12 +18,21 @@ class ActivityLog extends Model
         'data_type',
         'data_id',
         'ip_address',
-        'description'
+        'description',
     ];
-
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function causer()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function subject()
+    {
+        return $this->morphTo();
     }
 }

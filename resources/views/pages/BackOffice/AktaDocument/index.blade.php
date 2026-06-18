@@ -146,25 +146,14 @@
 
                                                                     <div class="modal-body text-center">
 
-                                                                        {{-- Jika FILE IMAGE --}}
-                                                                        @if ($doc->file_type === 'svg' || $doc->file_type === 'png' || $doc->file_type === 'jpg' || $doc->file_type === 'jpeg')
-                                                                            <div class="d-flex justify-content-center align-items-center"
-                                                                                style="min-height: 400px;">
-                                                                                <img src="{{ asset('storage/' . $doc->file_url) }}"
-                                                                                    alt="Dokumen"
-                                                                                    class="img-fluid rounded shadow-sm"
-                                                                                    style="max-height: 90vh; object-fit: contain;">
-                                                                            </div>
-
-                                                                            {{-- Jika FILE PDF --}}
-                                                                        @elseif ($doc->file_type === 'pdf')
+                                                                       @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg']))
                                                                             <embed
-                                                                                src="{{ asset('storage/' . $doc->file_url) }}"
-                                                                                type="application/pdf" width="100%"
+                                                                                src="{{ route('akta-documents.view-pdf', ['id' => $doc->id]) }}"
+                                                                                type="application/pdf" 
+                                                                                width="100%"
                                                                                 height="700px" />
                                                                         @else
-                                                                            <p class="text-muted">File tidak dapat
-                                                                                ditampilkan.</p>
+                                                                            <p class="text-muted">File tidak dapat ditampilkan.</p>
                                                                         @endif
 
                                                                     </div>

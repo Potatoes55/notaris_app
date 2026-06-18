@@ -9,6 +9,7 @@ use App\Models\NotaryRelaasAkta;
 use App\Models\PicDocuments;
 use App\Services\NotaryCostService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class NotaryCostController extends Controller
@@ -82,6 +83,7 @@ class NotaryCostController extends Controller
 
         if ($amountPaid > $totalCost) {
             notyf()->position('x', 'right')->position('y', 'top')->error('Jumlah Pembayaran melebihi dari total biaya.');
+
             return back()->withInput();
         }
 
@@ -143,8 +145,9 @@ class NotaryCostController extends Controller
 
         $validated['notaris_id'] = $this->getNotarisId();
         $this->service->update($id, $validated);
-        
+
         notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil diubah.');
+
         return redirect()->route('notary_costs.index');
     }
 
@@ -152,6 +155,7 @@ class NotaryCostController extends Controller
     {
         $this->service->delete($id);
         notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil dihapus.');
+
         return back();
     }
 
@@ -159,8 +163,10 @@ class NotaryCostController extends Controller
     {
         $costs = $this->service->detail($id);
 
-        $notarisData = $costs->notaris->notaris_code ?? 'DATA-TIDAK-DITEMUKAN';
-        $qrCode = base64_encode(QrCode::format('svg')->size(130)->margin(1)->generate($notarisData));
+        $hash = Crypt::encryptString($costs->notaris->id);
+
+        $notarisData = route('profileNotaris', ['hash' => $hash]);
+        $qrCode = base64_encode(QrCode::format('svg')->size(175)->margin(1)->generate($notarisData));
 
         $mpdf = new \Mpdf\Mpdf([
             'format' => 'A4',
@@ -172,7 +178,7 @@ class NotaryCostController extends Controller
         ]);
 
         $html = view('pages.Biaya.TotalBiaya.print', compact('costs', 'qrCode'))->render();
-        
+
         $mpdf->WriteHTML($html);
         $mpdf->Output("notary_cost_$id.pdf", 'I');
     }

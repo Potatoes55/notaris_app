@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AktaQrController;
 use App\Http\Controllers\BackupRestoreController;
 use App\Http\Controllers\ChangePassword;
@@ -43,6 +44,7 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Whoami;
 use App\Models\Notaris;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
@@ -123,8 +125,17 @@ Route::middleware('guest', 'nocache')->group(function () {
     Route::get('/akta/{transaction_code}', [AktaQrController::class, 'show'])
         ->name('akta.qr.show');
 });
+Route::middleware(['auth', 'restrict.by.email'])->group(function () {
+    Route::get('/admin/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
+    Route::get('/admin/activity-logs/print', [ActivityLogController::class, 'print'])->name('activity_logs.print');
+
+});
 
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/whoami', [Whoami::class, 'index'])->name('whoami');
+    Route::post('/whoami/select', [Whoami::class, 'select'])->name('whoami.select');
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])->name('profile.unlock');
@@ -303,6 +314,9 @@ Route::prefix('ppat')->name('ppat.')->group(function () {
     Route::get('akta-transactions/select-client', [NotaryAktaTransactionController::class, 'selectClient'])
         ->name('akta-transactions.selectClient');
     Route::resource('akta-transactions', NotaryAktaTransactionController::class);
+
+    // Route::get('akta-documents/{id}/view-pdf', [NotaryAktaDocumentsController::class, 'viewPdf'])
+    //     ->name('akta-documents.view-pdf');
     Route::resource('akta-documents', NotaryAktaDocumentsController::class);
 
     Route::get('/akta-documents/create/{akta_transaction_id}', [NotaryAktaDocumentsController::class, 'createData'])
@@ -310,6 +324,7 @@ Route::prefix('ppat')->name('ppat.')->group(function () {
 
     Route::post('/akta-documents/store/{akta_transaction_id}', [NotaryAktaDocumentsController::class, 'storeData'])
         ->name('akta-documents.storeData');
+
     Route::resource('akta-parties', NotaryAktaPartiesController::class)->except('create', 'store', 'show');
     Route::get('akta-parties/createData/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'createData'])
         ->name('akta-parties.createData');
@@ -357,3 +372,5 @@ Route::prefix('ppat')->name('ppat.')->group(function () {
 
 // Logout route
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('cetak-akta-pdf/{id}', [NotaryAktaDocumentsController::class, 'viewPdf'])
+    ->name('akta-documents.view-pdf');

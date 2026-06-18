@@ -170,11 +170,7 @@
                                         </div>
                                     </div>
 
-                                    <a href="{{ route('dashboard') }}"
-                                        class="btn btn-primary d-inline-flex align-items-center gap-2">
-                                        <i class="bi bi-arrow-left-circle"></i>
-                                        Kembali ke Dashboard
-                                    </a>
+                                  
 
                                 </div>
                             </div>
