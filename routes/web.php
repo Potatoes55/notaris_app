@@ -263,6 +263,9 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::get('akta-transactions/select-client', [NotaryAktaTransactionController::class, 'selectClient'])
         ->name('akta-transactions.selectClient');
     Route::resource('akta-transactions', NotaryAktaTransactionController::class);
+
+    // Route::get('akta-documents/{id}/view-pdf', [NotaryAktaDocumentsController::class, 'viewPdf'])
+    //     ->name('akta-documents.view-pdf');
     Route::resource('akta-documents', NotaryAktaDocumentsController::class);
 
     Route::get('/akta-documents/create/{akta_transaction_id}', [NotaryAktaDocumentsController::class, 'createData'])
@@ -270,6 +273,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
     Route::post('/akta-documents/store/{akta_transaction_id}', [NotaryAktaDocumentsController::class, 'storeData'])
         ->name('akta-documents.storeData');
+
     Route::resource('akta-parties', NotaryAktaPartiesController::class)->except('create', 'store', 'show');
     Route::get('akta-parties/createData/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'createData'])
         ->name('akta-parties.createData');
@@ -317,3 +321,5 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
 // Logout route
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('cetak-akta-pdf/{id}', [NotaryAktaDocumentsController::class, 'viewPdf'])
+    ->name('akta-documents.view-pdf');
