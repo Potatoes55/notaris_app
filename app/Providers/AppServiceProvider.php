@@ -55,6 +55,8 @@ use App\Repositories\WaarmerkingRepository;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Email;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Request;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -102,5 +104,9 @@ class AppServiceProvider extends ServiceProvider
         Email::defaults(function () {
             return Email::strict();
         });
+        View::composer('*', function ($view) {
+        $module = Request::is('ppat*') ? 'PPAT' : 'Notaris';
+        $view->with('module', $module);
+    });
     }
 }

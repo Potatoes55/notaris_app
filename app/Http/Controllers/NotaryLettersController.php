@@ -19,9 +19,17 @@ class NotaryLettersController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
+
         $notaryLetters = $this->service->getAll($search);
 
-        return view('pages.BackOffice.Letters.index', compact('notaryLetters'));
+        $module = request()->segment(1) === 'ppat'
+            ? 'PPAT'
+            : 'Notaris';
+
+        return view('pages.BackOffice.Letters.index', compact(
+            'notaryLetters',
+            'module'
+        ));
     }
 
     public function create()

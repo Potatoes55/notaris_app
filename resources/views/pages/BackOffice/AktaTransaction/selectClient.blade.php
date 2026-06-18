@@ -1,15 +1,16 @@
 @extends('layouts.app')
 
-
 @section('title', 'Transaksi Akta')
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Akta Notaris / Transaksi Akta'])
 
+    @include('components.notaris-menu')
+
     <div class="row mt-4 mx-4 ">
         <div class="col-md-12">
-            <div class="card mb-0  shadow-lg pb-0">
-                <div class="card-header pb-0 d-flex justify-content-between align-items-center  p-3 flex-wrap ">
+            <div class="card mb-0 shadow-lg pb-0">
+                <div class="card-header pb-0 d-flex justify-content-between align-items-center p-3 flex-wrap">
                     <h5 class="mb-lg-1 fw-bold">Klien</h5>
                     <div class="w-lg-25">
                         <form method="GET" action="{{ route('akta-transactions.selectClient') }}" class="no-spinner">

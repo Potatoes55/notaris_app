@@ -11,7 +11,7 @@ use Mpdf\Mpdf;
 
 class NotaryPaymenttController extends Controller
 {
-    public function index(Request $request)
+public function index(Request $request)
     {
         $cost = null;
 
@@ -30,7 +30,14 @@ class NotaryPaymenttController extends Controller
             }
         }
 
-        return view('pages.Biaya.Pembayaran.index', compact('cost'));
+        $module = request()->segment(1) === 'ppat'
+            ? 'PPAT'
+            : 'Notaris';
+
+        return view(
+            'pages.Biaya.Pembayaran.index',
+            compact('cost', 'module')
+        );
     }
 
     // public function store(Request $request)
@@ -197,11 +204,9 @@ class NotaryPaymenttController extends Controller
 
         $notaris = auth()->user()->notaris;
 
-        // Link publik pembayaran
         $token = Crypt::encryptString($cost->payment_code);
         $paymentLink = route('public.payment.show', $token);
 
-        // Generate QR Code (base64)
         $dns2d = new DNS2D;
         $qrCode = $dns2d->getBarcodePNG(
             $paymentLink,
@@ -212,7 +217,6 @@ class NotaryPaymenttController extends Controller
             true
         );
 
-        // Render blade
         $html = view(
             'pages.Biaya.Pembayaran.print',
             compact('cost', 'notaris', 'qrCode', 'paymentLink')
@@ -244,22 +248,19 @@ class NotaryPaymenttController extends Controller
     //     return back();
     // }
 
-    public function valid($id)
+public function valid($id)
     {
         $payment = NotaryPayment::findOrFail($id);
         $cost = NotaryCost::where('payment_code', $payment->payment_code)->firstOrFail();
 
-        // Jika sudah valid jangan proses lagi
         if ($payment->is_valid) {
             notyf()->info('Pembayaran sudah divalidasi.');
 
             return back();
         }
 
-        // Tambahkan amount ke amount_paid
         $cost->amount_paid += $payment->amount;
 
-        // Update status pembayaran
         if ($cost->amount_paid >= $cost->total_cost) {
             $cost->payment_status = 'paid';
         } elseif ($cost->amount_paid > 0) {
@@ -270,7 +271,6 @@ class NotaryPaymenttController extends Controller
 
         $cost->save();
 
-        // Update payment
         $payment->is_valid = true;
         $payment->save();
 

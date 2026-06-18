@@ -3,7 +3,16 @@
 @section('title', 'PIC Staff')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'PIC / PIC Staff'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / PIC Staff'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">

@@ -36,7 +36,6 @@
                                     <th>Kode Klien</th>
                                     <th>Nama Klien </th>
                                     <th>Nama Warkah</th>
-                                    <th>Kode Warkah</th>
                                     <th>Kota / Kabupaten</th>
                                     <th>Tanggal Upload</th>
                                     <th>Status</th>
@@ -52,7 +51,6 @@
                                         <td>{{ $product->client_code }}</td>
                                         <td>{{ $product->client->fullname ?? '-' }}</td>
                                         <td>{{ $product->warkah_name ?? '-' }}</td>
-                                        <td>{{ $product->warkah_code ?? '-' }}</td>
                                         <td>{{ $product->city ?? '-' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($product->uploaded_at)->format('d-m-Y') }}</td>
                                         <td>

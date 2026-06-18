@@ -4,6 +4,7 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'PPAT / Penomoran akta'])
+    @include('components.ppat-menu')
 
     <div class="row mt-4 mx-4">
         <div class="col-12">

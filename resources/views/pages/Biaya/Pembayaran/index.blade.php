@@ -2,9 +2,17 @@
 
 @section('title', 'Pembayaran')
 
-
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Pembayaran'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Pembayaran'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
@@ -15,7 +23,7 @@
 
                 {{-- Cari PIC Document --}}
                 <div class="card-body">
-                    <form method="GET" action="{{ route('notary_payments.index') }}">
+                    <form method="GET" action="{{ url()->current() }}">
                         <div class="input-group">
                             <input type="text" name="payment_code" class="form-control"
                                 placeholder="Masukkan Kode Pembayaran" value="{{ request('payment_code') }}">
@@ -154,7 +162,7 @@
                                     <!-- Pembayaran Penuh Awal -->
                                     <li class="nav-item" role="presentation">
                                         <button
-                                            class="nav-link active d-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-primary text-white"
+                                            class="nav-link active d-flex align-items-center gap-2 px-3 py-2 shadow-sm"
                                             id="pills-full-tab" data-bs-toggle="pill" data-bs-target="#pills-full"
                                             type="button" role="tab">
                                             <i class="fa-solid fa-sack-dollar"></i>
@@ -362,6 +370,23 @@
             </div>
         </div>
     </div>
+    <style>
+        #pills-tab .nav-link {
+            background: #fff;
+            color: #344767;
+            border-radius: 12px;
+            transition: all .3s ease;
+        }
+
+        #pills-tab .nav-link.active {
+            background: #fb6340 !important;
+            color: #fff !important;
+        }
+
+        #pills-tab .nav-link i {
+            color: inherit;
+        }
+    </style>
 @endsection
 
 @push('js')
