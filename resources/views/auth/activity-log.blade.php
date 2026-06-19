@@ -10,13 +10,23 @@
             <div class="col-12">
                 <div class="card mb-4">
                     
-                    <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-4">
+                    {{-- <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-4">
                         <h5 class="mb-0">User Activity Log</h5>
                         <p class="text-xs text-muted mb-0">Memantau rekam jejak aksi user pada sistem aplikasi</p>
                         <a href="{{ route('activity_logs.print') }}" class="btn btn-sm btn-danger mb-0" target="_blank">
                         <i class="bi bi-filetype-pdf"></i> Cetak PDF
                     </a>
+                    </div> --}}
+
+                    <form action="{{ route('activity_logs.print') }}" method="GET" target="_blank" class="form-inline mb-3">
+                    <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-4">
+                        <label for="date" class="mr-2">Pilih Tanggal Cetak:</label>
+                        <input type="date" name="date" id="date" class="form-control" value="{{ request('date', date('Y-m-d')) }}">
                     </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-print"></i> Cetak PDF Hari Ini/Terpilih
+                    </button>
+                </form>
                     
                     <hr class="horizontal dark my-0">
                     

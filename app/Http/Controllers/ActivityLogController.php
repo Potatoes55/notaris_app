@@ -12,7 +12,7 @@ class ActivityLogController extends Controller
      */
     public function index()
     {
-        $excludedEmails = ['ojomang9@gmail.com', 'mitrageka@gmail.com', 'pangesturidho565@gmail.com'];
+        $excludedEmails = ['ojomang9@gmail.com', 'mitrageka@gmail.com', 'pangesturidho565@gmail.com', 'gadabuat18@gmail.com'];
 
         $activities = ActivityLog::with('causer')
             ->whereHas('causer', function ($query) use ($excludedEmails) {
@@ -24,16 +24,18 @@ class ActivityLogController extends Controller
         return view('auth.activity-log', compact('activities'));
     }
 
-    public function print()
+    public function print(Request $request)
     {
-        $excludedEmails = ['ojomang9@gmail.com', 'mitrageka@gmail.com', 'pangesturidho565@gmail.com'];
+        $excludedEmails = ['ojomang9@gmail.com', 'mitrageka@gmail.com', 'pangesturidho565@gmail.com', 'gadabuat18@gmail.com'];
+
+        $date = $request->input('date', date('Y-m-d'));
 
         $activities = ActivityLog::with('causer')
             ->whereHas('causer', function ($query) use ($excludedEmails) {
                 $query->whereNotIn('email', $excludedEmails);
             })
+            ->whereDate('created_at', $date)
             ->latest()
-            ->limit(100)
             ->get();
 
         $pdf = new \Mpdf\Mpdf([
@@ -41,10 +43,11 @@ class ActivityLogController extends Controller
             'format' => 'A4-L',
             'tempDir' => storage_path('app/mpdf/temp'),
         ]);
-        $html = view('auth.activity-log-pdf', compact('activities'))->render();
+
+        $html = view('auth.activity-log-pdf', compact('activities', 'date'))->render();
         $pdf->WriteHTML($html);
 
-        return $pdf->Output('activity_log_'.date('Ymd_His').'.pdf', 'I');
+        return $pdf->Output('activity_log_'.$date.'.pdf', 'I');
     }
 
     /**
