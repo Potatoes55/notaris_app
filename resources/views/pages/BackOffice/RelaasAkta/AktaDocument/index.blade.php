@@ -16,13 +16,14 @@
 
                     {{-- Form Pencarian --}}
                     <form method="GET" action="{{ route('relaas-documents.index') }}"
-                        class="mb-3 no-spinner d-flex
-                        gap-2  justify-content-end">
-
+                        class="d-flex gap-2 mb-3 justify-content-end" class="no-spinner">
                         <input type="text" name="transaction_code" class="form-control"
-                            placeholder="Masukkan Kode Transaksi" value="{{ request('transaction_code') }}">
-                        <input type="text" name="relaas_number" class="form-control" placeholder="Masukkan Nomor Akta"
-                            value="{{ request('relaas_number') }}">
+                            placeholder="Cari Kode transaksi..." value="{{ $filters['transaction_code'] ?? '' }}">
+                        <input type="text" name="akta_number" class="form-control" placeholder="Cari nomor akta..."
+                            value="{{ $filters['akta_number'] ?? '' }}">
+                        <input type="number" name="year" class="form-control" 
+                            placeholder="Tahun..." min="1900" max="{{ date('Y') }}"
+                            value="{{ $filters['year'] ?? '' }}" style="width: 120px;">
                         <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
                     </form>
 
@@ -151,25 +152,14 @@
 
                                                                     <div class="modal-body text-center">
 
-                                                                        {{-- Jika FILE IMAGE --}}
-                                                                        @if ($doc->file_type === 'svg' || $doc->file_type === 'png' || $doc->file_type === 'jpg' || $doc->file_type === 'jpeg')
-                                                                            <div class="d-flex justify-content-center align-items-center"
-                                                                                style="min-height: 400px;">
-                                                                                <img src="{{ asset('storage/' . $doc->file_url) }}"
-                                                                                    alt="Dokumen"
-                                                                                    class="img-fluid rounded shadow-sm"
-                                                                                    style="max-height: 90vh; object-fit: contain;">
-                                                                            </div>
-
-                                                                            {{-- Jika FILE PDF --}}
-                                                                        @elseif ($doc->file_type === 'pdf')
+                                                                  @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg']))
                                                                             <embed
-                                                                                src="{{ asset('storage/' . $doc->file_url) }}"
-                                                                                type="application/pdf" width="100%"
+                                                                                src="{{ route('ppat-documents.view-pdf', ['id' => $doc->id]) }}"
+                                                                                type="application/pdf" 
+                                                                                width="100%"
                                                                                 height="700px" />
                                                                         @else
-                                                                            <p class="text-muted">File tidak dapat
-                                                                                ditampilkan.</p>
+                                                                            <p class="text-muted">File tidak dapat ditampilkan.</p>
                                                                         @endif
 
                                                                     </div>

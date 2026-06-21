@@ -232,53 +232,53 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
         Route::put('/profile', 'update')->name('profile.update');
     });
 
-/*  NOTARIS */
-Route::prefix('notaris')->name('notaris.')->group(function () {
+    /*  NOTARIS */
+    Route::prefix('notaris')->name('notaris.')->group(function () {
 
-    Route::get('/', function () {
-        return view('pages.notaris.index');
-    })->name('index');
+        Route::get('/', function () {
+            return view('pages.notaris.index');
+        })->name('index');
 
-    Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
-    Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
-    Route::get('/laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan');
+        Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
+        Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
+        Route::get('/laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan');
 
-    /* PIC */
-    Route::get('/pic/staff', [PicStaffController::class, 'index'])->name('pic.staff');
-    Route::get('/pic/dokumen', [PicDocumentsController::class, 'index'])->name('pic.documents');
-    Route::get('/pic/proses', [PicProcessController::class, 'index'])->name('pic.process');
-    Route::get('/pic/handover', [PicHandoverController::class, 'index'])->name('pic.handovers');
+        /* PIC */
+        Route::get('/pic/staff', [PicStaffController::class, 'index'])->name('pic.staff');
+        Route::get('/pic/dokumen', [PicDocumentsController::class, 'index'])->name('pic.documents');
+        Route::get('/pic/proses', [PicProcessController::class, 'index'])->name('pic.process');
+        Route::get('/pic/handover', [PicHandoverController::class, 'index'])->name('pic.handovers');
 
-    /* BIAYA */
-    Route::get('/biaya/total', [NotaryCostController::class, 'index'])->name('costs');
-    Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])
-        ->name('payments');
-});
+        /* BIAYA */
+        Route::get('/biaya/total', [NotaryCostController::class, 'index'])->name('costs');
+        Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])
+            ->name('payments');
+    });
 
-/*  PPAT */
-Route::prefix('ppat')->name('ppat.')->group(function () {
+    /*  PPAT */
+    Route::prefix('ppat')->name('ppat.')->group(function () {
 
-    Route::get('/', function () {
-        return view('pages.ppat.index');
-    })->name('index');
+        Route::get('/', function () {
+            return view('pages.ppat.index');
+        })->name('index');
 
-    Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
-    Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
-    Route::get('/laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan');
+        Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
+        Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
+        Route::get('/laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan');
 
-    /* PIC */
-    Route::get('/pic/staff', [PicStaffController::class, 'index'])->name('pic.staff');
-    Route::get('/pic/dokumen', [PicDocumentsController::class, 'index'])->name('pic.documents');
-    Route::get('/pic/proses', [PicProcessController::class, 'index'])->name('pic.process');
-    Route::get('/pic/handover', [PicHandoverController::class, 'index'])->name('pic.handovers');
+        /* PIC */
+        Route::get('/pic/staff', [PicStaffController::class, 'index'])->name('pic.staff');
+        Route::get('/pic/dokumen', [PicDocumentsController::class, 'index'])->name('pic.documents');
+        Route::get('/pic/proses', [PicProcessController::class, 'index'])->name('pic.process');
+        Route::get('/pic/handover', [PicHandoverController::class, 'index'])->name('pic.handovers');
 
-    /* BIAYA */
-    Route::get('/biaya/total', [NotaryCostController::class, 'index'])
-        ->name('costs');
+        /* BIAYA */
+        Route::get('/biaya/total', [NotaryCostController::class, 'index'])
+            ->name('costs');
 
-    Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])
-        ->name('payments');
-});
+        Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])
+            ->name('payments');
+    });
 
     /* BACKUP & RESTORE */
     Route::get('/backup-restore', [BackupRestoreController::class, 'index'])
@@ -374,3 +374,5 @@ Route::prefix('ppat')->name('ppat.')->group(function () {
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('cetak-akta-pdf/{id}', [NotaryAktaDocumentsController::class, 'viewPdf'])
     ->name('akta-documents.view-pdf');
+Route::get('cetak-akta-ppat-pdf/{id}', [NotaryRelaasDocumentController::class, 'viewPdf'])
+    ->name('ppat-documents.view-pdf');

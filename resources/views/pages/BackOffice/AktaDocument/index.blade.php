@@ -21,6 +21,9 @@
                             placeholder="Cari Kode transaksi..." value="{{ $filters['transaction_code'] ?? '' }}">
                         <input type="text" name="akta_number" class="form-control" placeholder="Cari nomor akta..."
                             value="{{ $filters['akta_number'] ?? '' }}">
+                        <input type="number" name="year" class="form-control" 
+                            placeholder="Tahun..." min="1900" max="{{ date('Y') }}"
+                            value="{{ $filters['year'] ?? '' }}" style="width: 120px;">
                         <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
                     </form>
 
