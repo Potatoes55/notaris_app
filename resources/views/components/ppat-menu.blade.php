@@ -22,8 +22,8 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('relaas-documents.index') }}">
-                            <i class="fa-solid fa-file-contract me-2"></i> Dokumen
+                        <a class="dropdown-item" href="{{ route('relaas_akta.indexNumber') }}">
+                            <i class="fa-solid fa-hashtag me-2"></i> Penomoran
                         </a>
                     </li>
                     <li>
@@ -32,8 +32,8 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('relaas_akta.indexNumber') }}">
-                            <i class="fa-solid fa-hashtag me-2"></i> Penomoran
+                        <a class="dropdown-item" href="{{ route('relaas-documents.index') }}">
+                            <i class="fa-solid fa-file-contract me-2"></i> Dokumen
                         </a>
                     </li>
                     <li>
