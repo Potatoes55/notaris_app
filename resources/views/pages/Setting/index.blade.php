@@ -8,7 +8,7 @@
         .sidenav, aside, .navbar-vertical {
             display: none !important;
         }
-        /* Paksa konten utama mengambil ruang penuh (menghapus margin-left bawaan sidebar) */
+       
         .main-content, #main-content {
             margin-left: 0 !important;
             padding-left: 0 !important;
@@ -52,6 +52,15 @@
                 </div>
 
             </form>
+            @if(auth()->user()->pin)
+                <a href="{{ route('settings.pin') }}" class="text-sm fw-bold text-primary">
+                    <i class="fas fa-key me-1"></i> Gunakan PIN
+                </a>
+            @else
+                <a href="{{ route('pin.create') }}" class="text-sm fw-bold text-warning">
+                    <i class="fas fa-plus-circle me-1"></i> Belum punya PIN? Buat PIN Baru
+                </a>
+            @endif
         </div>
     </div>
 @endsection

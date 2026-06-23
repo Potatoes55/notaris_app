@@ -33,6 +33,7 @@ use App\Http\Controllers\PicDocumentsController;
 use App\Http\Controllers\PicHandOverController;
 use App\Http\Controllers\PicProcessController;
 use App\Http\Controllers\PicStaffController;
+use App\Http\Controllers\PinController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProsesLainController;
 use App\Http\Controllers\PublicPaymentController;
@@ -133,11 +134,15 @@ Route::middleware(['auth', 'restrict.by.email'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
+    Route::get('/create-pin', [PinController::class, 'showCreateForm'])->name('pin.create');
+    Route::post('/create-pin', [PinController::class, 'store'])->name('pin.store');
+
     Route::get('/whoami', [Whoami::class, 'index'])->name('whoami');
     Route::post('/whoami/select', [Whoami::class, 'select'])->name('whoami.select');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+    Route::get('/settings/pin', [SettingController::class, 'indexPIN'])->name('settings.pin');
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])->name('profile.unlock');
 
     Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
