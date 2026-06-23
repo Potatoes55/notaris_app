@@ -50,18 +50,6 @@
                 <i class="fa-solid fa-chart-column me-2"></i> Laporan
             </a>
 
-            {{-- Surat Keluar --}}
-            <a href="{{ route('notaris.letters') }}"
-               class="btn {{ request()->routeIs('notaris.letters') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
-                <i class="fa-solid fa-envelope-open-text me-2"></i> Surat Keluar
-            </a>
-
-            {{-- Covernote --}}
-            <a href="{{ route('notaris.covernotes') }}"
-               class="btn {{ request()->routeIs('notaris.covernotes') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
-                <i class="fa-solid fa-file-signature me-2"></i> Covernote
-            </a>
-
             {{-- PIC (PERBAIKAN KONDISI ACTIVE & HREF ROUTE) --}}
             <div class="dropdown">
                 <button class="btn {{ request()->routeIs('notaris.pic.*') ? 'btn-primary active-menu' : 'btn-outline-secondary' }} dropdown-toggle"
@@ -87,6 +75,25 @@
                     <li><a class="dropdown-item" href="{{ route('notaris.payments') }}"><i class="fa-solid fa-credit-card me-2"></i> Pembayaran</a></li>
                 </ul>
             </div>
+            
+            {{-- Surat Keluar --}}
+            <a href="{{ route('notaris.letters') }}"
+               class="btn {{ request()->routeIs('notaris.letters') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
+                <i class="fa-solid fa-envelope-open-text me-2"></i> Surat Keluar
+            </a>
+
+            {{-- Covernote --}}
+            <a href="{{ route('notaris.covernotes') }}"
+               class="btn {{ request()->routeIs('notaris.covernotes') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
+                <i class="fa-solid fa-file-signature me-2"></i> Covernote
+            </a>
+
+            <a href="{{ route('notary-legalisasi.index') }}" class="btn {{ request()->routeIs('notary-legalisasi.*') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
+                <i class="fa-solid fa-stamp me-2"></i> Legalisasi
+            </a>
+            <a href="{{ route('notary-waarmerking.index') }}" class="btn {{ request()->routeIs('notary-waarmerking.*') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
+                <i class="fa-solid fa-file-contract me-2"></i> Waarmerking
+            </a>
 
         </div>
     </div>

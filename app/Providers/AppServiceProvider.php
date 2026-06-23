@@ -97,7 +97,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
         User::observe(UserObserver::class);
         Paginator::useBootstrapFive();
 
@@ -105,8 +104,18 @@ class AppServiceProvider extends ServiceProvider
             return Email::strict();
         });
         View::composer('*', function ($view) {
-        $module = Request::is('ppat*') ? 'PPAT' : 'Notaris';
-        $view->with('module', $module);
-    });
+
+            if (Request::is('ppat*')) {
+                $module = 'PPAT';
+            } elseif (Request::is('proses-lain*')) {
+                $module = 'Proses Lain';
+            } elseif (Request::is('konsultasi*')) {
+                $module = 'Konsultasi';
+            } else {
+                $module = 'Notaris';
+            }
+
+            $view->with('module', $module);
+        });
     }
 }
