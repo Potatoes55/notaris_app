@@ -608,3 +608,32 @@ main .nav-container h6,
     color: #ffffff !important;
     opacity: 1 !important;
 }
+
+#sidenav-main {
+    overflow: hidden !important;
+}
+
+#sidenav-collapse-main {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+#collapsePic,
+#collapsePic .nav,
+#collapsePic li,
+#collapsePic a {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+}
+
+#collapsePic .nav-link {
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    padding-left: 14px !important;
+}
+
+.navbar-nav {
+    overflow-x: hidden !important;
+}

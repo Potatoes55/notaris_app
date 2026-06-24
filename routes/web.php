@@ -158,6 +158,26 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('proses-lain-progress/{id}', [ProsesLainController::class, 'destroyProgress'])->name('proses-lain-progress.destroy');
     Route::get('/proses-lain-pic/get-pic/{client_code}', [ProsesLainController::class, 'getPicByClient'])->name('proses-lain-pic.get-pic');
     Route::delete('proses-lain-pic/{id}', [ProsesLainController::class, 'destroy'])->name('proses-lain-pic.destroy');
+
+    /* PROSES LAIN */
+    Route::prefix('proses-lain')->name('proses-lain.')->group(function () {
+        Route::get('/', function () { return view('pages.ProsesLain.index'); })->name('index');
+        Route::get('/transaksi', [ProsesLainController::class, 'index'])->name('transaksi');
+        Route::get('/progress', [ProsesLainController::class, 'indexProgress'])->name('progress');
+
+        Route::prefix('pic')->name('pic.')->group(function () {
+            Route::get('/staff', [PicStaffController::class, 'index'])->name('staff');
+            Route::get('/dokumen', [PicDocumentsController::class, 'index'])->name('documents');
+            Route::get('/proses', [PicProcessController::class, 'index'])->name('process');
+            Route::get('/handover', [PicHandOverController::class, 'index'])->name('handovers');
+        });
+
+        Route::prefix('biaya')->name('biaya.')->group(function () {
+            Route::get('/total', [NotaryCostController::class, 'index'])->name('total');
+            Route::get('/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
+        });
+    });
+
     // cliet
     Route::resource('clients', ClientController::class)->except('show');
     Route::put('/clients/{id}/valid', [ClientController::class, 'markAsValid'])->name('clients.markAsValid');
@@ -280,24 +300,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
             ->name('payments');
     });
 
-    /* PROSES LAIN */
-    Route::prefix('proses-lain')->name('proses-lain.')->group(function () {
-        Route::get('/', function () { return view('pages.ProsesLain.index'); })->name('index');
-        Route::get('/transaksi', [ProsesLainController::class, 'index'])->name('transaksi');
-        Route::get('/progress', [ProsesLainController::class, 'indexProgress'])->name('progress');
 
-        Route::prefix('pic')->name('pic.')->group(function () {
-            Route::get('/staff', [PicStaffController::class, 'index'])->name('staff');
-            Route::get('/dokumen', [PicDocumentsController::class, 'index'])->name('documents');
-            Route::get('/proses', [PicProcessController::class, 'index'])->name('process');
-            Route::get('/handover', [PicHandOverController::class, 'index'])->name('handovers');
-        });
-
-        Route::prefix('biaya')->name('biaya.')->group(function () {
-            Route::get('/total', [NotaryCostController::class, 'index'])->name('total');
-            Route::get('/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
-        });
-    });
 
     /* KONSULTASI */
     Route::prefix('konsultasi')->name('konsultasi.')->group(function () {

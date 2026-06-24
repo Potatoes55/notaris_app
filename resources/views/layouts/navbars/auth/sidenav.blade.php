@@ -93,6 +93,7 @@
                     request()->is('client-progress*');
 
                 $user = auth()->user();
+                $isPicUser = $user->access_code !== null && !session('access_all_menu');
             @endphp
 
             {{-- CONDITION 1: USER HAS ACCESS CODE & NOT ACCESS ALL MENU --}}
@@ -125,7 +126,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('konsultasi.index') }}"
+                    <a href="{{ $isPicUser ? route('consultation.index') : route('konsultasi.index') }}"
                         class="nav-link {{ $isKonsultasi ? 'active' : '' }}">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-headset text-dark text-sm opacity-10"></i>
@@ -183,7 +184,7 @@
                 </a>
 
                     <div class="collapse {{ request()->is('pic_staff*') || request()->is('pic_documents*') || request()->is('pic_process*') || request()->is('pic_handovers*') ? 'show' : '' }}" id="collapsePic">
-                        <ul class="nav nav-collapse mb-0 pb-0 d-flex flex-column px-3">
+                        <ul class="nav nav-collapse mb-0 pb-0 d-flex flex-column">
                             <li class="w-100">
                                 <a href="{{ route('pic_staff.index') }}" class="nav-link {{ request()->is('pic_staff*') ? 'active' : '' }}">
                                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -229,9 +230,11 @@
                     </a>
                 </li>
 
-                <!-- HEADER SUB-MENU: PROSES LAIN -->
+                <!-- HEADER SUB-MENU: PROSES LAIN -->     
                 <li class="nav-item">
-                    <a href="{{ route('proses-lain.index') }}"
+                    <a href="{{ $isPicUser
+                        ? route('proses-lain.transaksi')
+                        : route('proses-lain.index') }}"
                     class="nav-link {{ $isProsesLain ? 'active' : '' }}">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-gears text-dark text-sm opacity-10"></i>
