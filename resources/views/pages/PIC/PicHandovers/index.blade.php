@@ -21,9 +21,17 @@
             <div class="card">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                     <h5>Serah Terima Dokumen</h5>
-                    <a href="{{ route('pic_handovers.create') }}" class="btn btn-primary btn-sm mb-0">
-                        + Tambah Serah Terima
-                    </a>
+                    @if ($module == 'PPAT')
+                        <a href="{{ route('ppat.pic.handovers.create') }}"
+                            class="btn btn-primary btn-sm mb-0">
+                            + Tambah Serah Terima
+                        </a>
+                    @else
+                        <a href="{{ route('notaris.pic.handovers.create') }}"
+                            class="btn btn-primary btn-sm mb-0">
+                            + Tambah Serah Terima
+                        </a>
+                    @endif
                 </div>
                 <form method="GET" action="{{ route('pic_handovers.index') }}"
                     class="d-flex justify-content-end gap-2 mb-0 mx-3 mt-3">

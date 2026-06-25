@@ -14,8 +14,21 @@
                 </div>
                 <hr>
                 <div class="card-body pt-0">
-                    <form id="picHandoverForm" method="POST" action="{{ route('pic_handovers.store') }}" enctype="multipart/form-data">
+                    <form id="picHandoverForm"
+                        method="POST"
+                        action="{{ isset($pic_handover)
+                            ? (request()->routeIs('ppat.*')
+                                ? route('ppat.pic.handovers.update', $pic_handover->id)
+                                : route('notaris.pic.handovers.update', $pic_handover->id))
+                            : (request()->routeIs('ppat.*')
+                                ? route('ppat.pic.handovers.store')
+                                : route('notaris.pic.handovers.store')) }}"
+                        enctype="multipart/form-data">
                         @csrf
+
+                        @if(isset($pic_handover))
+                            @method('PUT')
+                        @endif
                         {{-- Tipe Transaksi --}}
                         <div class="mb-3">
                             <label for="transaction_type" class="form-label text-sm">Tipe Transaksi <span
@@ -129,7 +142,12 @@
                             <textarea name="note" class="form-control">{{ old('note') }}</textarea>
                         </div>
 
-                        <a href="{{ route('pic_handovers.index') }}" class="btn btn-secondary">Kembali</a>
+                        <a href="{{ request()->routeIs('ppat.*')
+                            ? route('ppat.pic.handovers')
+                            : route('notaris.pic.handovers') }}"
+                            class="btn btn-secondary">
+                            Kembali
+                        </a>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </form>
                 </div>

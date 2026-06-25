@@ -30,14 +30,41 @@
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <h6 class="mb-1"><strong>Kode Klien</strong></h6>
-                                        <p class="text-muted text-sm">{{ $aktaInfo->first()->client_code }}</p>
+                                <div class="col-md-6">
+                                    <h6 class="mb-1"><strong>Kode Klien</strong></h6>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <p class="text-muted text-sm mb-0">
+                                            {{ $aktaInfo->first()->client_code }}
+                                        </p>
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-link p-0 text-primary"
+                                            onclick="copyValue(this, '{{ $aktaInfo->first()->client_code }}')">
+                                            <i class="fa-solid fa-copy"></i>
+                                        </button>
                                     </div>
-                                    <div class="col-md-6">
-                                        <h6 class="mb-1"><strong>Nomor Akta</strong></h6>
-                                        <p class="text-muted text-sm">{{ $aktaInfo->first()->akta_number ?? '-' }}</p>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 class="mb-1"><strong>Nomor Akta</strong></h6>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <p class="text-muted text-sm mb-0">
+                                            {{ $aktaInfo->first()->akta_number ?? '-' }}
+                                        </p>
+
+                                        @if($aktaInfo->first()->akta_number)
+                                            <button
+                                                type="button"
+                                                class="btn btn-link p-0 text-primary"
+                                                onclick="copyValue(this, '{{ $aktaInfo->first()->akta_number }}')">
+                                                <i class="fa-solid fa-copy"></i>
+                                            </button>
+                                        @endif
                                     </div>
+                                </div>
                                     {{-- <div class="col-md-6">
                                         <h6 class="mb-1"><strong>Jenis Akta</strong></h6>
                                         <p class="text-muted text-sm">{{ $aktaInfo->first()->akta_type->type ?? '-' }}</p>
@@ -142,4 +169,24 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

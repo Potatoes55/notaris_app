@@ -23,7 +23,11 @@
                 <div class="card mb-4">
                     <div class="card-header pb-0 d-flex justify-content-between align-items-center ">
                         <h5 class="mb-0">PIC Proses Pengurusan</h5>
-                        <form method="GET" action="{{ route('pic_process.index') }}" class="d-flex gap-2">
+                        <form method="GET"
+                                action="{{ $module == 'PPAT'
+                                    ? route('ppat.pic.process')
+                                    : route('notaris.pic.process') }}"
+                                class="d-flex gap-2">
                             <input type="text" name="pic_document_code" class="form-control form-control-sm"
                                 style="max-width: 350px; width: 350px" placeholder="Cari Kode Dokumen"
                                 value="{{ request('pic_document_code') }}">
@@ -43,8 +47,22 @@
                                 <div class="card-body">
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <h6 class="mb-1">Kode Dokumen</h6>
-                                            <p class="text-muted text-sm">{{ $doc->pic_document_code }}</p>
+                                            <h6 class="mb-1"><strong>Kode Dokumen</strong></h6>
+
+                                            <div class="d-flex align-items-center gap-2">
+                                                <p class="text-muted text-sm mb-0">
+                                                    {{ $doc->pic_document_code ?? '-' }}
+                                                </p>
+
+                                                @if($doc->pic_document_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $doc->pic_document_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
                                             <h6 class="mb-1">PIC</h6>
@@ -98,7 +116,9 @@
                                 @if (request('pic_document_code'))
                                     <div class="d-flex justify-content-between  align-items-center">
                                         <h5>Proses Pengurusan</h5>
-                                        <a href="{{ route('pic_process.create', ['pic_document_code' => request('pic_document_code')]) }}"
+                                        <a href="{{ $module == 'PPAT'
+                                                ? route('ppat.pic.process.create', ['pic_document_code' => request('pic_document_code')])
+                                                : route('notaris.pic.process.create', ['pic_document_code' => request('pic_document_code')]) }}"
                                             class="btn btn-sm btn-primary mb-3">
                                             + Tambah Proses
                                         </a>
@@ -183,4 +203,23 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

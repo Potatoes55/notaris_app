@@ -49,7 +49,18 @@
                                     <th class="text-capitalize">File Pembayaran</th>
                                 </thead>
                                 <tbody class="text-center">
-                                    <td class="text-sm">{{ $cost->payment_code }}</td>
+                                    <td class="text-sm">
+                                        <div class="d-flex justify-content-center align-items-center gap-2">
+                                            <span>{{ $cost->payment_code }}</span>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-link p-0 text-primary"
+                                                onclick="copyValue(this, '{{ $cost->payment_code }}')">
+                                                <i class="fa-solid fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </td>
                                     <td class="text-sm">{{ $cost->client->fullname }}</td>
                                     <td class="text-sm">Rp {{ number_format($cost->total_cost, 0, ',', '.') }}</td>
                                     <td class="text-sm">Rp {{ number_format($cost->amount_paid, 0, ',', '.') }}</td>
@@ -389,6 +400,25 @@
             color: inherit;
         }
     </style>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            window.notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection
 
 @push('js')

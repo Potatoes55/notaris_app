@@ -45,8 +45,33 @@
                                         <td>{{ $logs->firstItem() + $loop->index }}</td>
                                         <td>{{ $log->notaris->display_name ?? '-' }}</td>
                                         <td>{{ $log->client->fullname ?? '-' }}</td>
-                                        <td>{{ $log->akta_transaction->client_code ?? '-' }}</td>
-                                        <td>{{ $log->client_code }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $log->akta_transaction->client_code ?? '-' }}</span>
+
+                                                @if($log->akta_transaction?->client_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $log->akta_transaction->client_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $log->client_code }}</span>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary"
+                                                    onclick="copyValue(this, '{{ $log->client_code }}')">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
                                         <td>{{ $log->step }}</td>
                                         <td>{{ $log->note }}</td>
                                         <td class="text-center">
@@ -101,4 +126,23 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

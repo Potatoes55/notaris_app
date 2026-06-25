@@ -54,12 +54,52 @@
                                         <tr class="text-center text-sm">
                                             <td>{{ $data->firstItem() + $loop->index }}</td>
                                             <td>{{ $item->client->fullname }}</td>
-                                            <td>{{ $item->client_code }}</td>
-                                            <td>{{ $item->waarmerking_number }}</td>
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $item->client_code ?? '-' }}</span>
+
+                                                    @if($item->client_code)
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-link p-0 text-primary"
+                                                            onclick="copyValue(this, '{{ $item->client_code }}')">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $item->waarmerking_number ?? '-' }}</span>
+
+                                                    @if($item->waarmerking_number)
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-link p-0 text-primary"
+                                                            onclick="copyValue(this, '{{ $item->waarmerking_number }}')">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
                                             <td>{{ $item->applicant_name }}</td>
                                             <td>{{ $item->officer_name }}</td>
                                             <td>{{ $item->document_type }}</td>
-                                            <td>{{ $item->document_number }}</td>
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $item->document_number ?? '-' }}</span>
+
+                                                    @if($item->document_number)
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-link p-0 text-primary"
+                                                            onclick="copyValue(this, '{{ $item->document_number }}')">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
                                             <td>{{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d-m-Y') : '-' }}
                                             </td>
                                             <td>{{ $item->release_date ? \Carbon\Carbon::parse($item->release_date)->format('d-m-Y') : '-' }}
@@ -173,4 +213,23 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

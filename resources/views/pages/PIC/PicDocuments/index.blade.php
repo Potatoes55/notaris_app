@@ -22,7 +22,10 @@
                 <div class="card mb-4">
                     <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-4">
                         <h5 class="mb-0">PIC Dokumen</h5>
-                        <a href="{{ route('pic_documents.create') }}" class="btn btn-sm btn-primary mb-0">
+                        <a href="{{ $module == 'PPAT'
+                            ? route('ppat.pic.documents.create')
+                            : route('notaris.pic.documents.create') }}"
+                            class="btn btn-sm btn-primary mb-0">
                             + Tambah PIC Dokumen
                         </a>
                     </div>
@@ -64,7 +67,22 @@
                                     @forelse ($picDocuments as $doc)
                                         <tr class="text-center text-sm">
                                             <td>{{ $picDocuments->firstItem() + $loop->index }}</td>
-                                            <td>{{ $doc->pic_document_code }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                                    <span class="text-sm text-muted">
+                                                        {{ $doc->pic_document_code ?? '-' }}
+                                                    </span>
+
+                                                    @if($doc->pic_document_code)
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-link p-0 text-primary"
+                                                            onclick="copyValue(this, '{{ $doc->pic_document_code }}')">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
                                             <td>{{ $doc->pic->full_name ?? '-' }}</td>
                                             <td>{{ $doc->client->fullname ?? '-' }}</td>
                                             <td class="text-capitalize">{{ $doc->transaction_type }}</td>
@@ -159,4 +177,23 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

@@ -21,15 +21,19 @@ class PicHandoverController extends Controller
 
     public function index(Request $request)
     {
+        $module = request()->routeIs('ppat.*') ? 'PPAT' : 'Notaris';
+
         $handovers = $this->service->listHandovers([
             'search' => $request->get('search'),
         ]);
 
-        return view('pages.PIC.PicHandovers.index', compact('handovers'));
+        return view('pages.PIC.PicHandovers.index', compact('handovers', 'module'));
     }
 
     public function create()
     {
+        $module = request()->routeIs('ppat.*') ? 'PPAT' : 'Notaris';
+
         $picDocuments = PicDocuments::where('notaris_id', auth()->user()->notaris_id)
             ->whereNull('deleted_at')
             ->whereHas('client', function ($q) {
