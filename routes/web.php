@@ -285,6 +285,31 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
             ->name('payments');
     });
 
+    /* PROSES LAIN */
+    Route::prefix('proses-lain')->name('proses-lain.')->group(function () {
+        Route::get('/', function () { return view('pages.ProsesLain.index'); })->name('index');
+        Route::get('/transaksi', [ProsesLainController::class, 'index'])->name('transaksi');
+        Route::get('/progress', [ProsesLainController::class, 'indexProgress'])->name('progress');
+
+        Route::prefix('pic')->name('pic.')->group(function () {
+            Route::get('/staff', [PicStaffController::class, 'index'])->name('staff');
+            Route::get('/dokumen', [PicDocumentsController::class, 'index'])->name('documents');
+            Route::get('/proses', [PicProcessController::class, 'index'])->name('process');
+            Route::get('/handover', [PicHandOverController::class, 'index'])->name('handovers');
+        });
+
+        Route::prefix('biaya')->name('biaya.')->group(function () {
+            Route::get('/total', [NotaryCostController::class, 'index'])->name('total');
+            Route::get('/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
+        });
+    });
+
+    /* KONSULTASI */
+    Route::prefix('konsultasi')->name('konsultasi.')->group(function () {
+        Route::get('/', function () { return view('pages.konsultasi.index'); })->name('index');
+        Route::get('/klien', [ClientController::class, 'index'])->name('clients');
+    });
+
     /* BACKUP & RESTORE */
     Route::get('/backup-restore', [BackupRestoreController::class, 'index'])
         ->name('backup-restore.index');
