@@ -49,6 +49,11 @@ class NotaryAktaTransaction extends Model
         return $this->hasMany(NotaryAktaDocuments::class, 'akta_transaction_id', 'id');
     }
 
+    public function parties()
+    {
+        return $this->hasMany(NotaryAktaParties::class, 'akta_transaction_id', 'id');
+    }
+
     protected $casts = [
         'akta_number_created_at' => 'datetime',
         // 'akta_number' => 'encrypted',

@@ -15,22 +15,22 @@ class NotaryAktaPartyService
         $this->repo = $repo;
     }
 
-public function searchAkta(array $filters)
-{
-    return NotaryAktaTransaction::query()
-        ->where('notaris_id', auth()->user()->notaris_id)
-        ->where(function ($query) use ($filters) {
-            
-            if (!empty($filters['transaction_code'])) {
-                $query->where('transaction_code', $filters['transaction_code']);
-            }
+    public function searchAkta(array $filters)
+    {
+        return NotaryAktaTransaction::query()
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->where(function ($query) use ($filters) {
 
-            if (!empty($filters['akta_number'])) {
-                $query->orWhere('akta_number', $filters['akta_number']);
-            }
-        })
-        ->get();
-}
+                if (! empty($filters['transaction_code'])) {
+                    $query->where('transaction_code', $filters['transaction_code']);
+                }
+
+                if (! empty($filters['akta_number'])) {
+                    $query->orWhere('akta_number', $filters['akta_number']);
+                }
+            })
+            ->get();
+    }
 
     public function findParty(int $id)
     {
@@ -55,7 +55,7 @@ public function searchAkta(array $filters)
     public function store(array $data)
     {
         // Cari akta transaksi berdasarkan client_code
-        $akta = NotaryAktaTransaction::where('client_code', $data['client_code'])->firstOrFail();
+        $akta = NotaryAktaTransaction::findOrFail($data['akta_transaction_id']);
 
         $data['akta_transaction_id'] = $akta->id;
         $data['notaris_id'] = $akta->notaris_id;

@@ -45,7 +45,7 @@ class NotaryRelaasAkta extends Model
 
     public function parties()
     {
-        return $this->hasMany(NotaryRelaasParties::class, 'notary_relaas_akta_id');
+        return $this->hasMany(NotaryRelaasParties::class, 'relaas_id', 'id');
     }
 
     public function documents()
