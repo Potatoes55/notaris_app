@@ -48,7 +48,21 @@
                                     <tr class="text-center text-sm">
                                         <td>{{ $prosesLain->firstItem() + $loop->index }}</td>
                                         <td>{{ $document->notaris->display_name ?? '-' }}</td>
-                                        <td>{{ $document->transaction_code }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <span>{{ $document->transaction_code ?? '-' }}</span>
+
+                                                @if($document->transaction_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary copy-btn"
+                                                        onclick="copyValue(this, '{{ $document->transaction_code }}')"
+                                                        title="Salin Kode Transaksi">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td>{{ $document->client->fullname ?? '-' }}</td>
                                         <td>{{ $document->name }}</td>
                                         <td>{{ $document->time_estimation }} Hari</td>
@@ -129,5 +143,22 @@
             form.action = baseUrl.replace('PLACEHOLDER', status);
             form.submit();
         }
+    </script>
+    <script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
+
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
     </script>
 @endsection

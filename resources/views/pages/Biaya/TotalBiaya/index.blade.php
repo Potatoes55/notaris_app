@@ -53,10 +53,46 @@
                                 @forelse ($costs as $cost)
                                     <tr class="text-center text-sm">
                                         <td>{{ $costs->firstItem() + $loop->index }}</td>
-                                        <td>{{ $cost->payment_code }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $cost->payment_code }}</span>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary"
+                                                    onclick="copyValue(this, '{{ $cost->payment_code }}')">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
                                         <td>{{ $cost->client->fullname }}</td>
-                                        <td>{{ $cost->client->client_code }}</td>
-                                        <td>{{ $cost->picDocument?->pic_document_code ?? '-' }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $cost->client->client_code }}</span>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary"
+                                                    onclick="copyValue(this, '{{ $cost->client->client_code }}')">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $cost->picDocument?->pic_document_code ?? '-' }}</span>
+
+                                                @if($cost->picDocument?->pic_document_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $cost->picDocument->pic_document_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         @php
                                             $totalPaid = $cost->payments->where('is_valid', true)->sum('amount');
                                             $remaining = max(0, $cost->total_cost - $totalPaid);
@@ -282,4 +318,23 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

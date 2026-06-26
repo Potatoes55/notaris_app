@@ -17,7 +17,13 @@
                     <hr>
                     <div class="card-body px-4 pt-0 pb-2">
                         <form
-                            action="{{ isset($process) ? route('pic_process.update', $process->id) : route('pic_process.store') }}"
+                            action="{{ isset($process)
+                                ? ($module == 'PPAT'
+                                    ? route('ppat.pic.process.update', $process->id)
+                                    : route('notaris.pic.process.update', $process->id))
+                                : ($module == 'PPAT'
+                                    ? route('ppat.pic.process.store')
+                                    : route('notaris.pic.process.store')) }}"
                             method="POST">
                             @csrf
                             @if (isset($process))
@@ -84,7 +90,19 @@
                             </div>
 
                             <div class="mt-4">
-                                <a href="{{ route('pic_process.index', ['pic_document_code' => request('pic_document_code')]) }}"
+                                <a href="{{ $module == 'PPAT'
+                                        ? route('ppat.pic.process', [
+                                            'pic_document_code' => old(
+                                                'pic_document_code',
+                                                $process->pic_document->pic_document_code ?? request('pic_document_code')
+                                            )
+                                        ])
+                                        : route('notaris.pic.process', [
+                                            'pic_document_code' => old(
+                                                'pic_document_code',
+                                                $process->pic_document->pic_document_code ?? request('pic_document_code')
+                                            )
+                                        ]) }}"
                                     class="btn btn-secondary">
                                     Kembali
                                 </a>

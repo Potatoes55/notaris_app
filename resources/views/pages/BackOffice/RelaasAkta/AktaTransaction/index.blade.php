@@ -54,11 +54,54 @@
                                     <tr>
                                         <td>{{ $data->firstItem() + $loop->index }}</td>
                                         <td>{{ $akta->client->fullname ?? '-' }}</td>
-                                        <td>{{ $akta->client_code ?? '-' }}</td>
-                                        <td>{{ $akta->transaction_code ?? '-' }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <span>{{ $akta->client_code ?? '-' }}</span>
+
+                                                @if($akta->client_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary copy-btn"
+                                                        onclick="copyValue(this, '{{ $akta->client_code }}')"
+                                                        title="Salin Kode Klien">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <span>{{ $akta->transaction_code ?? '-' }}</span>
+
+                                                @if($akta->transaction_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary copy-btn"
+                                                        onclick="copyValue(this, '{{ $akta->transaction_code }}')"
+                                                        title="Salin Kode Transaksi">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td>{{ ucfirst($akta->akta_type->type) ?? '-' }}</td>
                                         <td>{{ $akta->year ?? '-' }}</td>
-                                        <td>{{ $akta->relaas_number ?? '-' }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <span>{{ $akta->relaas_number ?? '-' }}</span>
+
+                                                @if($akta->relaas_number)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary copy-btn"
+                                                        onclick="copyValue(this, '{{ $akta->relaas_number }}')"
+                                                        title="Salin Nomor Relaas">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td>{{ $akta->relaas_number_created_at ? \Carbon\Carbon::parse
                                         ($akta->relaas_number_created_at)->format('d-m-y H:i:s') : '-' }}
                                         </td>
@@ -158,4 +201,23 @@
                 </div>
             </div>
         </div>
-    @endsection
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
+@endsection

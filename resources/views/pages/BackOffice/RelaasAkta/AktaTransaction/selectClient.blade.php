@@ -45,7 +45,21 @@
                                         <tr class="text-sm text-center">
                                             <td>{{ $clients->firstItem() + $loop->index }}</td>
                                             <td class="text-capitalize">{{ $client->fullname }}</td>
-                                            <td class="text-capitalize">{{ $client->client_code }}</td>
+                                            <td class="text-capitalize">
+                                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                                    <span>{{ $client->client_code ?? '-' }}</span>
+
+                                                    @if($client->client_code)
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-link p-0 text-primary copy-btn"
+                                                            onclick="copyValue(this, '{{ $client->client_code }}')"
+                                                            title="Salin Kode Klien">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
                                             <td class="text-capitalize">{{ $client->company_name ?? '-' }}</td>
                                             <td>{{ $client->akta_transactions_relaas_count }}</td>
                                             <td>
@@ -73,5 +87,21 @@
             </div>
         </div>
         </div>
+    <script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
 
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
+    </script>
     @endsection

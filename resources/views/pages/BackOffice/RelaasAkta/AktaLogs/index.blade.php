@@ -44,7 +44,21 @@
                                     <tr>
                                         <td>{{ $logs->firstItem() + $loop->index }}</td>
                                         <td>{{ $log->clients->fullname ?? '-' }}</td>
-                                        <td>{{ $log->client_code ?? '-' }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <span>{{ $log->client_code ?? '-' }}</span>
+
+                                                @if($log->client_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary copy-btn"
+                                                        onclick="copyValue(this, '{{ $log->client_code }}')"
+                                                        title="Salin Kode Klien">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td>{{ $log->step ?? '-' }}</td>
                                         <td>{{ $log->note ?? '-' }}</td>
                                         <td>
@@ -80,4 +94,21 @@
             </div>
         </div>
     </div>
+    <script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
+
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
+    </script>
 @endsection
