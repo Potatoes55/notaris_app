@@ -123,8 +123,16 @@ Route::middleware('guest', 'nocache')->group(function () {
     // Route::post('/client/search', [ClientController::class, 'searchByRegistrationCode'])->name('client.search');
     Route::post('/client/{uuid}/upload-document', [ClientController::class, 'uploadDocument'])
         ->name('client.uploadDocument');
+
     Route::get('/akta/{transaction_code}', [AktaQrController::class, 'show'])
+        ->middleware('ensure.pin')
         ->name('akta.qr.show');
+
+    Route::get('/akta/{transaction_code}/verify-pin', [AktaQrController::class, 'showPinForm'])
+        ->name('akta.qr.pin.form');
+
+    Route::post('/akta/{transaction_code}/verify-pin', [AktaQrController::class, 'checkPin'])
+        ->name('akta.qr.pin.check');
 });
 Route::middleware(['auth', 'restrict.by.email'])->group(function () {
     Route::get('/admin/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
@@ -280,7 +288,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     /* NOTARIS */
     Route::prefix('notaris')->name('notaris.')->group(function () {
 
-        Route::get('/', fn() => view('pages.notaris.index'))->name('index');
+        Route::get('/', fn () => view('pages.notaris.index'))->name('index');
 
         Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
         Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
@@ -323,11 +331,10 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
         Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
     });
 
-
     /* PPAT */
     Route::prefix('ppat')->name('ppat.')->group(function () {
 
-        Route::get('/', fn() => view('pages.ppat.index'))->name('index');
+        Route::get('/', fn () => view('pages.ppat.index'))->name('index');
 
         Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
         Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
@@ -372,7 +379,9 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
     /* KONSULTASI */
     Route::prefix('konsultasi')->name('konsultasi.')->group(function () {
-        Route::get('/', function () { return view('pages.konsultasi.index'); })->name('index');
+        Route::get('/', function () {
+            return view('pages.konsultasi.index');
+        })->name('index');
         Route::get('/klien', [ClientController::class, 'index'])->name('clients');
     });
 
