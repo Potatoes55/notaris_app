@@ -8,12 +8,14 @@
     'title' => $module . ' / PIC Staff'
 ])
 
-@if ($module == 'PPAT')
-    @include('components.ppat-menu')
-@elseif ($module == 'Proses Lain')
-    @include('components.proseslain-menu')
-@else
-    @include('components.notaris-menu')
+@if(session('login_role') != 'staff')
+    @if ($module == 'PPAT')
+        @include('components.ppat-menu')
+    @elseif ($module == 'Proses Lain')
+        @include('components.proseslain-menu')
+    @else
+        @include('components.notaris-menu')
+    @endif
 @endif
     <div class="row mt-4 mx-4">
         <div class="col-12">
