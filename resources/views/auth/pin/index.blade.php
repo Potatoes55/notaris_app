@@ -51,6 +51,9 @@
                     <button type="submit" class="btn btn-primary">Buka Akses</button>
                 </div>
             </form>
+            <a href="{{ route('pin.request') }}" class="text-sm fw-bold text-primary">
+            <i class="fas fa-key me-1"></i> Lupa PIN
+                </a>
         </div>
     </div>
 </div>

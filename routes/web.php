@@ -133,6 +133,9 @@ Route::middleware('guest', 'nocache')->group(function () {
 
     Route::post('/akta/{transaction_code}/verify-pin', [AktaQrController::class, 'checkPin'])
         ->name('akta.qr.pin.check');
+    Route::get('reset-pin/{token}', [ForgotPasswordController::class, 'showResetPinForm'])->name('pin.reset');
+    Route::post('reset-pin', [ForgotPasswordController::class, 'resetPin'])->name('pin.update');
+
 });
 Route::middleware(['auth', 'restrict.by.email'])->group(function () {
     Route::get('/admin/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
@@ -141,6 +144,8 @@ Route::middleware(['auth', 'restrict.by.email'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('forgot-pin', [ForgotPasswordController::class, 'showPinRequestForm'])->name('pin.request');
+    Route::post('forgot-pin', [ForgotPasswordController::class, 'sendResetPinEmail'])->name('pin.email');
 
     Route::get('/create-pin', [PinController::class, 'showCreateForm'])->name('pin.create');
     Route::post('/create-pin', [PinController::class, 'store'])->name('pin.store');
