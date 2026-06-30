@@ -2,7 +2,9 @@
 
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CheckFullAccess;
+use App\Http\Middleware\EnsurePinVerified;
 use App\Http\Middleware\NoCache;
+use App\Http\Middleware\RestrictByEmail;
 use App\Listeners\LogAuthenticationActivity;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -26,7 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.token' => AuthMiddleware::class,
             'check.full.access' => CheckFullAccess::class,
             'nocache' => NoCache::class, // tambahkan ini
-            'restrict.by.email' => \App\Http\Middleware\RestrictByEmail::class,
+            'restrict.by.email' => RestrictByEmail::class,
+            'ensure.pin' => EnsurePinVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

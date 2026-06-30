@@ -16,18 +16,36 @@
 
                     {{-- Form Pencarian --}}
                     <form method="GET" action="{{ route('relaas-documents.index') }}"
-                        class="d-flex gap-2 mb-3 justify-content-end" class="no-spinner">
-                        <input type="text" name="transaction_code" class="form-control"
-                            placeholder="Cari Kode transaksi..." value="{{ $filters['transaction_code'] ?? '' }}">
-                        <input type="text"
-                            name="relaas_number"
-                            class="form-control"
-                            placeholder="Cari nomor akta..."
-                            value="{{ $filters['relaas_number'] ?? '' }}">
-                        <input type="number" name="year" class="form-control" 
-                            placeholder="Tahun..." min="1900" max="{{ date('Y') }}"
-                            value="{{ $filters['year'] ?? '' }}" style="width: 120px;">
-                        <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
+                        class="d-flex flex-wrap gap-2 mb-3 justify-content-end align-items-end no-spinner">
+                        @csrf
+                        
+                        <div style="flex: 1; min-width: 200px;">
+                            <label for="transaction_code" class="form-label text-xs mb-1 font-weight-bold text-secondary">Kode Transaksi</label>
+                            <input type="text" name="transaction_code" id="transaction_code" class="form-control form-control-sm"
+                                placeholder="Cari Kode transaksi...">
+                        </div>
+
+                        <div style="flex: 1; min-width: 200px;">
+                            <label for="relaas_number" class="form-label text-xs mb-1 font-weight-bold text-secondary">Nomor Relaas</label>
+                            <input type="text" name="relaas_number" id="relaas_number" class="form-control form-control-sm" 
+                                placeholder="Cari nomor relaas...">
+                        </div>
+
+                        <div style="width: 160px;">
+                            <label for="start_date" class="form-label text-xs mb-1 font-weight-bold text-secondary">Tanggal Mulai</label>
+                            <input type="date" class="form-control form-control-sm" name="start_date" id="start_date"
+                                value="{{ request('start_date') }}">
+                        </div>
+
+                        <div style="width: 160px;">
+                            <label for="end_date" class="form-label text-xs mb-1 font-weight-bold text-secondary">Tanggal Selesai</label>
+                            <input type="date" class="form-control form-control-sm" name="end_date" id="end_date"
+                                value="{{ request('end_date') }}">
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm mb-0" style="height: 36px;">Cari</button>
+                        </div>
                     </form>
 
                     @if ($relaasInfo)

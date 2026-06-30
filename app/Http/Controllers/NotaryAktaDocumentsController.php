@@ -6,6 +6,7 @@ use App\Models\NotaryAktaDocuments;
 use App\Models\NotaryAktaTransaction;
 use App\Services\NotaryAktaDocumentService;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class NotaryAktaDocumentsController extends Controller
 {
@@ -18,39 +19,56 @@ class NotaryAktaDocumentsController extends Controller
 
     public function index(Request $request)
     {
-        // 1. Tambahkan 'year' ke dalam array only()
-        $filters = $request->only(['transaction_code', 'akta_number', 'year']);
+        // 1. Ambil request input filter
+        $filters = $request->only(['transaction_code', 'akta_number', 'start_date', 'end_date']);
         $transaction = null;
-        $documents = collect();
+        $documents = new LengthAwarePaginator([], 0, 10); // Default pagination kosong berupa LengthAwarePaginator aman untuk Blade
 
-        // 2. Cek apakah ada salah satu filter yang diisi (termasuk year)
-        if (! empty($filters['transaction_code']) || ! empty($filters['akta_number']) || ! empty($filters['year'])) {
+        $hasDateFilter = ! empty($filters['start_date']) && ! empty($filters['end_date']);
 
-            $transaction = NotaryAktaTransaction::with('akta_type')
+        // 2. Validasi: Jalankan proses hanya jika ada salah satu filter yang diisi
+        if (! empty($filters['transaction_code']) || ! empty($filters['akta_number']) || $hasDateFilter) {
+
+            // KONDISI KHUSUS: Jika user melakukan search TANGGAL SAJA (Tanpa kode transaksi / nomor akta)
+            if ($hasDateFilter && empty($filters['transaction_code']) && empty($filters['akta_number'])) {
+
+                // Ubah query ke NotaryAktaTransaction agar hasilnya unik per transaksi
+                $transactions = NotaryAktaTransaction::with(['client'])
+                    ->withCount('documents')
+                    ->where('notaris_id', auth()->user()->notaris_id)
+                    ->whereBetween('date_submission', [$filters['start_date'].' 00:00:00', $filters['end_date'].' 23:59:59'])
+                    ->orderBy('date_submission', 'desc')
+                    ->paginate(10)
+                    ->withQueryString();
+
+                if ($transactions->isEmpty()) {
+                    notyf()
+                        ->position('x', 'right')
+                        ->position('y', 'top')
+                        ->warning('Tidak ada transaksi akta yang ditemukan pada rentang tanggal tersebut.');
+                }
+                // dd($transactions);
+
+                return view('pages.BackOffice.AktaDocument.index_date', compact('transactions', 'filters', 'transaction'));
+            }
+
+            $transaction = NotaryAktaTransaction::with('akta_type', 'notaris', 'client')
                 ->where('notaris_id', auth()->user()->notaris_id)
                 ->where(function ($q) use ($filters) {
-
                     if (! empty($filters['transaction_code'])) {
                         $q->where('transaction_code', $filters['transaction_code']);
                     }
-
                     if (! empty($filters['akta_number'])) {
-                        // Menggunakan orWhere jika sebelumnya ada filter transaction_code,
-                        // atau where biasa jika ini adalah filter pertama yang aktif
-                        $q->orWhere('akta_number', $filters['akta_number']);
-                    }
 
-                    if (! empty($filters['year'])) {
-                        // CATATAN: Ganti 'created_at' dengan kolom tanggal transaksi Anda yang sesuai (misal: 'tanggal_akta' jika ada)
-                        if (! empty($filters['transaction_code']) || ! empty($filters['akta_number'])) {
-                            $q->orWhereYear('created_at', $filters['year']);
+                        if (! empty($filters['transaction_code'])) {
+                            $q->orWhere('akta_number', $filters['akta_number']);
                         } else {
-                            $q->whereYear('created_at', $filters['year']);
+                            $q->where('akta_number', $filters['akta_number']);
                         }
                     }
-
                 })->first();
 
+            // Jika transaksi spesifik ditemukan, ambil dokumennya
             if ($transaction) {
                 $documents = NotaryAktaDocuments::where('akta_transaction_id', $transaction->id)
                     ->where('notaris_id', auth()->user()->notaris_id)
@@ -58,13 +76,20 @@ class NotaryAktaDocumentsController extends Controller
                     ->paginate(10)
                     ->withQueryString();
             } else {
+                // Jika transaksi TIDAK ditemukan, set documents menjadi kosong agar pagination tidak error
+                $documents = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+
                 notyf()
                     ->position('x', 'right')
                     ->position('y', 'top')
-                    ->warning('Data transaksi dengan kriteria pencarian tersebut tidak ditemukan.');
+                    ->warning('Data transaksi tidak ditemukan.');
             }
+        } else {
+            // Jika halaman pertama kali dibuka tanpa menekan tombol cari apa-apa
+            $documents = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
         }
 
+        // Return ke blade utama pencarian single transaksi
         return view('pages.BackOffice.AktaDocument.index', compact('transaction', 'documents', 'filters'));
     }
 

@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NotaryAktaTransaction extends Model
 {
+    use LogsActivityCustom, SoftDeletes;
 
-    use SoftDeletes, LogsActivityCustom;
     protected $table = 'notary_akta_transactions';
 
     protected $fillable = [
@@ -42,6 +42,16 @@ class NotaryAktaTransaction extends Model
     {
         return $this->belongsTo(Client::class, 'client_code', 'client_code')
             ->withTrashed();
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(NotaryAktaDocuments::class, 'akta_transaction_id', 'id');
+    }
+
+    public function parties()
+    {
+        return $this->hasMany(NotaryAktaParties::class, 'akta_transaction_id', 'id');
     }
 
     protected $casts = [

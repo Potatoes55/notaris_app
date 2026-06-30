@@ -33,6 +33,7 @@ use App\Http\Controllers\PicDocumentsController;
 use App\Http\Controllers\PicHandOverController;
 use App\Http\Controllers\PicProcessController;
 use App\Http\Controllers\PicStaffController;
+use App\Http\Controllers\PinController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProsesLainController;
 use App\Http\Controllers\PublicPaymentController;
@@ -122,8 +123,19 @@ Route::middleware('guest', 'nocache')->group(function () {
     // Route::post('/client/search', [ClientController::class, 'searchByRegistrationCode'])->name('client.search');
     Route::post('/client/{uuid}/upload-document', [ClientController::class, 'uploadDocument'])
         ->name('client.uploadDocument');
+
     Route::get('/akta/{transaction_code}', [AktaQrController::class, 'show'])
+        ->middleware('ensure.pin')
         ->name('akta.qr.show');
+
+    Route::get('/akta/{transaction_code}/verify-pin', [AktaQrController::class, 'showPinForm'])
+        ->name('akta.qr.pin.form');
+
+    Route::post('/akta/{transaction_code}/verify-pin', [AktaQrController::class, 'checkPin'])
+        ->name('akta.qr.pin.check');
+    Route::get('reset-pin/{token}', [ForgotPasswordController::class, 'showResetPinForm'])->name('pin.reset');
+    Route::post('reset-pin', [ForgotPasswordController::class, 'resetPin'])->name('pin.update');
+
 });
 Route::middleware(['auth', 'restrict.by.email'])->group(function () {
     Route::get('/admin/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
@@ -132,12 +144,18 @@ Route::middleware(['auth', 'restrict.by.email'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('forgot-pin', [ForgotPasswordController::class, 'showPinRequestForm'])->name('pin.request');
+    Route::post('forgot-pin', [ForgotPasswordController::class, 'sendResetPinEmail'])->name('pin.email');
+
+    Route::get('/create-pin', [PinController::class, 'showCreateForm'])->name('pin.create');
+    Route::post('/create-pin', [PinController::class, 'store'])->name('pin.store');
 
     Route::get('/whoami', [WhoamiController::class, 'index'])->name('whoami');
     Route::post('/whoami/select', [WhoamiController::class, 'select'])->name('whoami.select');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+    Route::get('/settings/pin', [SettingController::class, 'indexPIN'])->name('settings.pin');
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])->name('profile.unlock');
 
     Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
@@ -275,7 +293,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     /* NOTARIS */
     Route::prefix('notaris')->name('notaris.')->group(function () {
 
-        Route::get('/', fn() => view('pages.notaris.index'))->name('index');
+        Route::get('/', fn () => view('pages.notaris.index'))->name('index');
 
         Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
         Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
@@ -318,11 +336,10 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
         Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
     });
 
-
     /* PPAT */
     Route::prefix('ppat')->name('ppat.')->group(function () {
 
-        Route::get('/', fn() => view('pages.ppat.index'))->name('index');
+        Route::get('/', fn () => view('pages.ppat.index'))->name('index');
 
         Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
         Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
@@ -367,7 +384,9 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
     /* KONSULTASI */
     Route::prefix('konsultasi')->name('konsultasi.')->group(function () {
-        Route::get('/', function () { return view('pages.konsultasi.index'); })->name('index');
+        Route::get('/', function () {
+            return view('pages.konsultasi.index');
+        })->name('index');
         Route::get('/klien', [ClientController::class, 'index'])->name('clients');
     });
 
