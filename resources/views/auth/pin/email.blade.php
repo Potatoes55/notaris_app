@@ -43,7 +43,9 @@
             </div>
 
             @if(session('status'))
-                <div class="alert alert-success">
+                <div class="alert border-0 text-white shadow-sm"
+                    style="background-color:#2dce89;border-radius:.5rem;">
+                    <i class="fas fa-check-circle me-2"></i>
                     {{ session('status') }}
                 </div>
             @endif
