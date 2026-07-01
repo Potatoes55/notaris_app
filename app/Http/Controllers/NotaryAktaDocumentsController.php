@@ -122,8 +122,8 @@ class NotaryAktaDocumentsController extends Controller
         ];
 
         // JIKA form dikhususkan untuk SK Kemenkumham (misal di input type-nya sengaja di-set 'sk_kemenkumham')
-        if ($request->input('type') === 'sk_kemenkumham' && ! $isSkCategory) {
-            notyf()->position('x', 'right')->position('y', 'top')->error('Jenis akta ini tidak memerlukan SK Kemenkumham.');
+        if ($request->input('type') === 'sk_kemenkum' && ! $isSkCategory) {
+            notyf()->position('x', 'right')->position('y', 'top')->error('Jenis akta ini tidak memerlukan SK Kemenkum.');
 
             return redirect()->back()->withInput();
         }
@@ -168,10 +168,13 @@ class NotaryAktaDocumentsController extends Controller
     public function edit($id)
     {
         $document = $this->service->get($id);
-        $category = isset($document->akta_transaction->akta_type) ? strtolower($document->akta_transaction->akta_type->category) : '';
+
+        $transaction = \App\Models\NotaryAktaTransaction::with('akta_type', 'client')
+            ->findOrFail($document->akta_transaction_id);
+        $category = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
         $isSkRequired = in_array($category, ['perubahan', 'pembubaran']);
 
-        return view('pages.BackOffice.AktaDocument.form', compact('document', 'isSkRequired'));
+        return view('pages.BackOffice.AktaDocument.form', compact('document', 'transaction', 'isSkRequired'));
     }
 
     public function update(Request $request, $id)

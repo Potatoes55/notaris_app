@@ -140,10 +140,11 @@
                                 <a href="{{ route('akta-documents.createData', ['akta_transaction_id' => $transaction->id]) }}"
                                     class="btn btn-primary btn-sm mb-0">+ Tambah Dokumen Akta</a>
 
+                                {{-- Tombol Tambah SK Kemenkumham --}}
                                 @if($transaction->akta_type && in_array(strtolower($transaction->akta_type->category), ['perubahan', 'pembubaran']))
-                                    <a href="{{ route('akta-documents.createData', ['akta_transaction_id' => $transaction->id]) }}?type=sk_kemenkumham"
+                                    <a href="{{ route('akta-documents.createData', ['akta_transaction_id' => $transaction->id]) }}?type=sk_kemenkum"
                                         class="btn btn-success btn-sm mb-0">
-                                        <i class="fa-solid fa-file-signature me-1"></i> + Input SK Kemenkumham
+                                        <i class="fa-solid fa-file-signature me-1"></i> + Input SK Kemenkum
                                     </a>
                                 @endif
                             </div>
