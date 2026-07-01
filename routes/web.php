@@ -45,7 +45,7 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\UserProfileController;
-use App\Http\Controllers\Whoami;
+use App\Http\Controllers\WhoamiController;
 use App\Models\Notaris;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
@@ -150,8 +150,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/create-pin', [PinController::class, 'showCreateForm'])->name('pin.create');
     Route::post('/create-pin', [PinController::class, 'store'])->name('pin.store');
 
-    Route::get('/whoami', [Whoami::class, 'index'])->name('whoami');
-    Route::post('/whoami/select', [Whoami::class, 'select'])->name('whoami.select');
+    Route::get('/whoami', [WhoamiController::class, 'index'])->name('whoami');
+    Route::post('/whoami/select', [WhoamiController::class, 'select'])->name('whoami.select');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');

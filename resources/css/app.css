@@ -637,3 +637,30 @@ main .nav-container h6,
 .navbar-nav {
     overflow-x: hidden !important;
 }
+
+/* whoami */
+body.whoami-page {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.choice-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.choice-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.btn-check:checked + .choice-card-pic {
+    border-color: #0d6efd;
+    background-color: #f0f7ff;
+}
+
+.btn-check:checked + .choice-card-notaris {
+    border-color: #198754;
+    background-color: #f0fff4;
+}
