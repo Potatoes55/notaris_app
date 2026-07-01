@@ -97,8 +97,11 @@ class NotaryAktaDocumentsController extends Controller
     {
         $transaction = NotaryAktaTransaction::with('akta_type', 'notaris', 'client')
             ->findOrFail($transaction_id);
+        $category = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
 
-        return view('pages.BackOffice.AktaDocument.form', compact('transaction'));
+        $isSkRequired = in_array($category, ['perubahan', 'pembubaran']);
+
+        return view('pages.BackOffice.AktaDocument.form', compact('transaction', 'isSkRequired'));
     }
 
     public function create() {}
@@ -108,40 +111,48 @@ class NotaryAktaDocumentsController extends Controller
     public function storeData(Request $request, $transaction_id)
     {
         $transaction = NotaryAktaTransaction::findOrFail($transaction_id);
+        $category = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
+        $isSkCategory = in_array($category, ['perubahan', 'pembubaran']);
 
-        $data = $request->validate([
+        $rules = [
             'name' => 'required|string',
             'type' => 'required|string',
-            // 'file_name' => 'required|string',
-            'file_url' => 'required|max:5000|mimes:png,jpg,jpeg,pdf',
-            // 'file_type' => 'required|string',
+            'file_url' => 'required|max:10240|mimes:png,jpg,jpeg,pdf',
             'uploaded_at' => 'required|date',
-        ], [
+        ];
+
+        // JIKA form dikhususkan untuk SK Kemenkumham (misal di input type-nya sengaja di-set 'sk_kemenkumham')
+        if ($request->input('type') === 'sk_kemenkumham' && ! $isSkCategory) {
+            notyf()->position('x', 'right')->position('y', 'top')->error('Jenis akta ini tidak memerlukan SK Kemenkumham.');
+
+            return redirect()->back()->withInput();
+        }
+
+        $messages = [
             'name.required' => 'Nama dokumen harus diisi.',
             'type.required' => 'Tipe dokumen harus diisi.',
             'file_url.required' => 'File dokumen harus diupload.',
             'uploaded_at.required' => 'Tanggal upload harus diisi.',
-            'file_url.max' => 'Ukuran file maksimal 1MB.',
+            'file_url.max' => 'Ukuran file maksimal 10MB.',
             'file_url.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG.',
+        ];
 
-        ]);
+        $data = $request->validate($rules, $messages);
 
         $data['notaris_id'] = $transaction->notaris_id;
-        // $data['client_id'] = $transaction->client_id;
         $data['akta_transaction_id'] = $transaction->id;
         $data['client_code'] = $transaction->client_code;
         $data['akta_number'] = $transaction->akta_number;
 
         if ($request->hasFile('file_url')) {
             $file = $request->file('file_url');
-            $originalName = $file->getClientOriginalName(); // contoh: akta_perubahan.pdf
-            $fileNameOnly = pathinfo($originalName, PATHINFO_FILENAME); // akta_perubahan
-            $fileExtension = $file->getClientOriginalExtension(); // pdf
+            $originalName = $file->getClientOriginalName();
+            $fileNameOnly = pathinfo($originalName, PATHINFO_FILENAME);
+            $fileExtension = $file->getClientOriginalExtension();
 
-            // simpan file ke storage/app/documents
+            // Simpan file ke storage/app/documents
             $storedPath = $file->storeAs('documents', $originalName);
 
-            // isi otomatis
             $data['file_url'] = $storedPath;
             $data['file_name'] = $fileNameOnly;
             $data['file_type'] = $fileExtension;
@@ -157,8 +168,10 @@ class NotaryAktaDocumentsController extends Controller
     public function edit($id)
     {
         $document = $this->service->get($id);
+        $category = isset($document->akta_transaction->akta_type) ? strtolower($document->akta_transaction->akta_type->category) : '';
+        $isSkRequired = in_array($category, ['perubahan', 'pembubaran']);
 
-        return view('pages.BackOffice.AktaDocument.form', compact('document'));
+        return view('pages.BackOffice.AktaDocument.form', compact('document', 'isSkRequired'));
     }
 
     public function update(Request $request, $id)

@@ -133,11 +133,21 @@
 
                         {{-- Tabel Dokumen --}}
                         <div class="mb-1">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5>Dokumen Akta</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5>Dokumen Akta</h5>
+                            <div class="d-flex gap-2">
+                                
                                 <a href="{{ route('akta-documents.createData', ['akta_transaction_id' => $transaction->id]) }}"
-                                    class="btn btn-primary btn-sm mb-0 ">+ Tambah Dokumen Akta</a>
+                                    class="btn btn-primary btn-sm mb-0">+ Tambah Dokumen Akta</a>
+
+                                @if($transaction->akta_type && in_array(strtolower($transaction->akta_type->category), ['perubahan', 'pembubaran']))
+                                    <a href="{{ route('akta-documents.createData', ['akta_transaction_id' => $transaction->id]) }}?type=sk_kemenkumham"
+                                        class="btn btn-success btn-sm mb-0">
+                                        <i class="fa-solid fa-file-signature me-1"></i> + Input SK Kemenkumham
+                                    </a>
+                                @endif
                             </div>
+                        </div>
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
