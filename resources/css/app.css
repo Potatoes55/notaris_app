@@ -639,28 +639,64 @@ main .nav-container h6,
 }
 
 /* whoami */
-body.whoami-page {
-    background-color: #f4f6f9;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.whoami-page .sidenav,
+.whoami-page aside,
+.whoami-page .navbar-vertical {
+    display: none !important;
+}
+
+.whoami-page .main-content,
+.whoami-page #main-content {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+.whoami-header-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.whoami-header-icon .icon {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .choice-card {
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    background: #fff;
+    transition: .25s ease;
     cursor: pointer;
 }
 
 .choice-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+    border-color: #fb6340;
+    box-shadow: 0 15px 35px rgba(0,0,0,.12);
 }
 
-.btn-check:checked + .choice-card-pic {
-    border-color: #0d6efd;
-    background-color: #f0f7ff;
+.choice-btn {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
 }
 
-.btn-check:checked + .choice-card-notaris {
-    border-color: #198754;
-    background-color: #f0fff4;
+.icon-box {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+}
+
+.icon-box i {
+    color: #fff;
+    font-size: 32px;
 }
