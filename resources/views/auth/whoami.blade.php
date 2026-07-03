@@ -1,70 +1,150 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Pilih Hak Akses - WhoAmI</title>
+@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-</head>
+@section('title', 'Pilih Hak Akses')
 
-<body class="whoami-page">
+@section('content')
 
-    <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-    <div class="card shadow border-0 p-4 p-md-5 text-center" style="max-width: 650px; width: 100%; border-radius: 16px;">
+<style>
+    .sidenav,
+    aside,
+    .navbar-vertical {
+        display: none !important;
+    }
 
-        <div class="mb-4">
-            <h2 class="fw-bold text-dark mb-2">Masuk Sebagai Apa Hari Ini?</h2>
-            <p class="text-muted">Silakan tentukan hak akses halaman yang ingin Anda buka terlebih dahulu</p>
-        </div>
+    .main-content,
+    #main-content {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
 
-        <form action="{{ route('whoami.select') }}" method="POST">
-            @csrf
+    .choice-card {
+        border: 1px solid #e9ecef;
+        border-radius: 1rem;
+        transition: all .25s ease;
+        cursor: pointer;
+        background: #fff;
+    }
 
-            <div class="row g-3 text-start">
+    .choice-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 1rem 2rem rgba(0,0,0,.12);
+        border-color: #fb6340;
+    }
 
-                <div class="col-md-6">
-                    <button type="submit" name="role" value="staff" class="w-100 btn p-0 text-start">
-                        <div class="card h-100 p-4 shadow-sm choice-card">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-primary bg-opacity-10 text-primary rounded p-3 me-3">
-                                    <i class="bi bi-person-workspace fs-3"></i>
-                                </div>
-                                <h4 class="fw-bold m-0 text-dark">PIC Staff</h4>
-                            </div>
-                            <p class="text-muted small m-0">
-                                Masuk langsung ke menu operasional, kelola data klien, dan pekerjaan staff.
-                            </p>
+    .choice-card .icon-box {
+        width: 65px;
+        height: 65px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    button.choice-btn {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        width: 100%;
+    }
+</style>
+
+@include('layouts.navbars.auth.topnav', ['title' => 'Pilih Hak Akses'])
+
+<div class="container-fluid py-4">
+
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10">
+
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-5">
+                        <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-xl mx-auto mb-3">
+                            <i class="fas fa-user-shield text-white text-lg"></i>
                         </div>
-                    </button>
-                </div>
 
-                <div class="col-md-6">
-                    <button type="submit" name="role" value="notaris" class="w-100 btn p-0 text-start">
-                        <div class="card h-100 p-4 shadow-sm choice-card">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-success bg-opacity-10 text-success rounded p-3 me-3">
-                                    <i class="bi bi-journal-text fs-3"></i>
-                                </div>
-                                <h4 class="fw-bold m-0 text-dark">Notaris / PPAT</h4>
+                        <h4 class="fw-bold mb-2">
+                            Masuk Sebagai Apa Hari Ini?
+                        </h4>
+
+                        <p class="text-sm text-muted mb-0">
+                            Pilih hak akses yang ingin digunakan untuk melanjutkan ke dalam aplikasi.
+                        </p>
+                    </div>
+
+                    <form action="{{ route('whoami.select') }}" method="POST">
+                        @csrf
+
+                        <div class="row g-4">
+
+                            <div class="col-md-6">
+                                <button type="submit"
+                                        name="role"
+                                        value="staff"
+                                        class="choice-btn">
+
+                                    <div class="choice-card h-100 p-4">
+
+                                        <div class="icon-box bg-gradient-primary shadow-sm mb-4">
+                                            <i class="fas fa-user-tie text-white fa-2x"></i>
+                                        </div>
+
+                                        <h5 class="fw-bold mb-2">
+                                            PIC Staff
+                                        </h5>
+
+                                        <p class="text-sm text-muted mb-4">
+                                            Kelola data klien, progress pekerjaan, dokumen, dan aktivitas operasional.
+                                        </p>
+
+                                        <span class="btn bg-gradient-primary btn-sm mb-0">
+                                            Masuk Sebagai Staff
+                                        </span>
+
+                                    </div>
+
+                                </button>
                             </div>
-                            <p class="text-muted small m-0">
-                                Masuk ke halaman pengaturan otorisasi pembukaan akses menu khusus Notaris.
-                            </p>
-                        </div>
-                    </button>
-                </div>
 
+                            <div class="col-md-6">
+                                <button type="submit"
+                                        name="role"
+                                        value="notaris"
+                                        class="choice-btn">
+
+                                    <div class="choice-card h-100 p-4">
+
+                                        <div class="icon-box bg-gradient-success shadow-sm mb-4">
+                                            <i class="fas fa-gavel text-white fa-2x"></i>
+                                        </div>
+
+                                        <h5 class="fw-bold mb-2">
+                                            Notaris / PPAT
+                                        </h5>
+
+                                        <p class="text-sm text-muted mb-4">
+                                            Akses menu khusus Notaris dan PPAT untuk proses otorisasi serta dokumen.
+                                        </p>
+
+                                        <span class="btn bg-gradient-success btn-sm mb-0">
+                                            Masuk Sebagai Notaris
+                                        </span>
+
+                                    </div>
+
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
             </div>
 
-        </form>
-
+        </div>
     </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+@endsection
