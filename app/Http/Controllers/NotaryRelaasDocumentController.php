@@ -21,14 +21,11 @@ class NotaryRelaasDocumentController extends Controller
     {
         $relaasInfo = null;
         $documents = collect();
-        $transactions = null; // Tambahkan penampung data range tanggal
+        $transactions = null;
 
         $hasDateFilter = $request->filled('start_date') && $request->filled('end_date');
 
-        // 1. KONDISI KHUSUS: Jika user HANYA menginputkan range tanggal saja
         if ($hasDateFilter && ! $request->filled('transaction_code') && ! $request->filled('relaas_number')) {
-
-            // Panggil fungsi service baru
             $transactions = $this->service->searchRelaasByDateRange(
                 $request->start_date,
                 $request->end_date
@@ -41,14 +38,11 @@ class NotaryRelaasDocumentController extends Controller
                     ->warning('Tidak ada transaksi relaas yang ditemukan pada rentang tanggal tersebut.');
             }
 
-            // Return ke blade khusus pencarian tanggal relaas
             return view('pages.BackOffice.RelaasAkta.AktaDocument.index_date', compact('transactions'));
         }
 
-        // 2. KONDISI DEFAULT: Jika minimal salah satu filter utama terisi (Kode/Nomor Relaas)
         if ($request->filled('transaction_code') || $request->filled('relaas_number')) {
 
-            // Tetap menggunakan service bawaan Anda (parameter ke-3 diset null karena sudah pakai range)
             $relaasInfo = $this->service->searchRelaas(
                 $request->transaction_code,
                 $request->relaas_number,

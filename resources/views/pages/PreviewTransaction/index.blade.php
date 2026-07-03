@@ -98,7 +98,7 @@
                                     {{-- pihak akta --}}
                                         <div class="mb-4">
                                         <h6 class="fw-bold text-capitalize text-primary mb-2">
-                                            <i class="bi bi-people me-1"></i> Klien
+                                            <i class="bi bi-people me-1"></i> Pihak Akta
                                         </h6>
 
                                         <div class="border rounded px-3 py-2 small bg-light">
