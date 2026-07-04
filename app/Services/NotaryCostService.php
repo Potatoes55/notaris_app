@@ -29,12 +29,14 @@ class NotaryCostService
 
         // Bersihkan input currency jadi angka mentah
         $data['product_cost'] = (int) str_replace('.', '', $data['product_cost'] ?? 0);
-        $data['admin_cost']   = (int) str_replace('.', '', $data['admin_cost'] ?? 0);
-        $data['other_cost']   = (int) str_replace('.', '', $data['other_cost'] ?? 0);
-        $data['amount_paid']  = (int) str_replace('.', '', $data['amount_paid'] ?? 0);
+        $data['admin_cost'] = (int) str_replace('.', '', $data['admin_cost'] ?? 0);
+        $data['other_cost'] = (int) str_replace('.', '', $data['other_cost'] ?? 0);
+        $data['amount_paid'] = (int) str_replace('.', '', $data['amount_paid'] ?? 0);
+        $data['pph'] = (int) str_replace('.', '', $data['pph'] ?? 0);
+        $data['bphtb'] = (int) str_replace('.', '', $data['bphtb'] ?? 0);
 
         // Hitung total
-        $data['total_cost'] = $data['product_cost'] + $data['admin_cost'] + $data['other_cost'];
+        $data['total_cost'] = $data['product_cost'] + $data['admin_cost'] + $data['other_cost'] + $data['pph'] + $data['bphtb'];
 
         return $this->repository->create($data);
     }
@@ -45,12 +47,14 @@ class NotaryCostService
 
         // Bersihkan input currency jadi angka mentah
         $data['product_cost'] = (int) str_replace('.', '', $data['product_cost'] ?? 0);
-        $data['admin_cost']   = (int) str_replace('.', '', $data['admin_cost'] ?? 0);
-        $data['other_cost']   = (int) str_replace('.', '', $data['other_cost'] ?? 0);
-        $data['amount_paid']  = (int) str_replace('.', '', $data['amount_paid'] ?? 0);
-
+        $data['admin_cost'] = (int) str_replace('.', '', $data['admin_cost'] ?? 0);
+        $data['other_cost'] = (int) str_replace('.', '', $data['other_cost'] ?? 0);
+        $data['amount_paid'] = (int) str_replace('.', '', $data['amount_paid'] ?? 0);
+        $data['pph'] = (int) str_replace('.', '', $data['pph'] ?? 0);
+        $data['bphtb'] = (int) str_replace('.', '', $data['bphtb'] ?? 0);
         // Hitung total
-        $data['total_cost'] = $data['product_cost'] + $data['admin_cost'] + $data['other_cost'] - $data['amount_paid'];
+        $data['total_cost'] = $data['product_cost'] + $data['admin_cost'] + $data['other_cost'] - $data['amount_paid'] - $data['pph'] - $data['bphtb'];
+
         return $this->repository->update($id, $data);
     }
 

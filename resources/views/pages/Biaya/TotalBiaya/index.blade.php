@@ -27,7 +27,7 @@
                 </div>
                 <form method="GET" action="{{ route('notary_costs.index') }}" class="d-flex gap-2 ms-auto me-4"
                     style="width: 500px;">
-                    <input type="text" name="search" placeholder="Cari kode pembayaran..."
+                    <input type="text" name="search" placeholder="Cari kode dokumen..."
                         value="{{ request('search') }}" class="form-control form-control-sm">
                     <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
                 </form>

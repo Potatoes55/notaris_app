@@ -12,7 +12,9 @@ class NotaryCostRepository implements NotaryCostRepositoryInterface
         return NotaryCost::with(['client', 'picDocument', 'payments'])
             ->where('notaris_id', auth()->user()->notaris_id)
             ->when($filters['search'] ?? null, function ($q, $search) {
-                $q->where('payment_code', 'like', "%{$search}%");
+                $q->whereHas('picDocument', function ($query) use ($search) {
+                    $query->where('pic_document_code', 'like', "%{$search}%");
+                });
             })
             ->latest()
             ->paginate(10);
@@ -32,6 +34,7 @@ class NotaryCostRepository implements NotaryCostRepositoryInterface
     {
         $cost = NotaryCost::findOrFail($id);
         $cost->update($data);
+
         return $cost;
     }
 

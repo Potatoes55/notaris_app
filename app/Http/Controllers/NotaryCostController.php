@@ -62,6 +62,8 @@ class NotaryCostController extends Controller
                 'admin_cost' => 'nullable',
                 'other_cost' => 'nullable',
                 'amount_paid' => 'nullable',
+                'pph' => 'nullable',
+                'bphtb' => 'nullable',
                 'payment_status' => 'required|string',
                 'paid_date' => 'nullable|date',
                 'due_date' => 'nullable|date',
@@ -79,7 +81,9 @@ class NotaryCostController extends Controller
         $adminCost = (int) str_replace('.', '', $request->admin_cost ?? 0);
         $otherCost = (int) str_replace('.', '', $request->other_cost ?? 0);
         $amountPaid = (int) str_replace('.', '', $request->amount_paid ?? 0);
-        $totalCost = $productCost + $adminCost + $otherCost;
+        $pph = (int) str_replace('.', '', $request->pph ?? 0);
+        $bphtb = (int) str_replace('.', '', $request->bphtb ?? 0);
+        $totalCost = $productCost + $adminCost + $otherCost + $pph + $bphtb;
 
         if ($amountPaid > $totalCost) {
             notyf()->position('x', 'right')->position('y', 'top')->error('Jumlah Pembayaran melebihi dari total biaya.');
@@ -138,6 +142,8 @@ class NotaryCostController extends Controller
             'client_code' => 'required',
             'pic_document_id' => 'required',
             'product_cost' => 'required',
+            'pph' => 'nullable',
+            'bphtb' => 'nullable',
             'payment_status' => 'required',
             'paid_date' => 'required|date',
             'due_date' => 'required|date',
