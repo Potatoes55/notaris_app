@@ -9,120 +9,215 @@
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center mb-0 pb-0">
-                    <h5>Hasil Pencarian Berdasarkan Tanggal</h5>
+            <div class="card shadow-lg">
+
+                <div class="card-header px-3 py-3">
+                    <h5 class="mb-0">Hasil Pencarian Berdasarkan Tanggal</h5>
                 </div>
-                
-                <div class="card-body pt-2">
-                    {{-- Form Pencarian (Tetap disediakan agar user bisa filter ulang) --}}
-                {{-- Form Pencarian --}}
-                <form method="GET" action="{{ route('akta-documents.index') }}"
-                    class="d-flex flex-wrap gap-2 mb-3 justify-content-end align-items-end no-spinner">
-                    @csrf
-                    
-                    {{-- Input Kode Transaksi --}}
-                    <div style="flex: 1; min-width: 300px;">
-                        <label for="transaction_code" class="form-label text-xs mb-1 font-weight-bold text-secondary">Kode Transaksi</label>
-                        <input type="text" name="transaction_code" id="transaction_code" class="form-control form-control-sm"
-                            placeholder="Cari Kode transaksi..." value="{{ $filters['transaction_code'] ?? '' }}">
+
+                <hr class="my-0">
+
+                <div class="card-body p-0">
+
+                    <div class="px-3 py-3">
+                        <form method="GET" action="{{ route('akta-documents.index') }}"
+                            class="d-flex flex-wrap gap-2 justify-content-end align-items-end no-spinner">
+                            @csrf
+
+                            <div style="flex:1; min-width:200px;">
+                                <label for="transaction_code" class="form-label text-sm">
+                                    Kode Transaksi
+                                </label>
+                                <input
+                                    type="text"
+                                    name="transaction_code"
+                                    id="transaction_code"
+                                    class="form-control"
+                                    placeholder="Cari Kode transaksi..."
+                                    value="{{ $filters['transaction_code'] ?? '' }}">
+                            </div>
+
+                            <div style="flex:1; min-width:200px;">
+                                <label for="akta_number" class="form-label text-sm">
+                                    Nomor Akta
+                                </label>
+                                <input
+                                    type="text"
+                                    name="akta_number"
+                                    id="akta_number"
+                                    class="form-control"
+                                    placeholder="Cari nomor akta..."
+                                    value="{{ $filters['akta_number'] ?? '' }}">
+                            </div>
+
+                            <div style="width:160px;">
+                                <label for="start_date" class="form-label text-sm">
+                                    Tanggal Mulai
+                                </label>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    name="start_date"
+                                    id="start_date"
+                                    value="{{ request('start_date') }}">
+                            </div>
+
+                            <div style="width:160px;">
+                                <label for="end_date" class="form-label text-sm">
+                                    Tanggal Selesai
+                                </label>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    name="end_date"
+                                    id="end_date"
+                                    value="{{ request('end_date') }}">
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn btn-primary mb-0 px-4">
+                                    Cari
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
-                    {{-- Input Nomor Akta --}}
-                    <div style="flex: 1; min-width: 300px;">
-                        <label for="akta_number" class="form-label text-xs mb-1 font-weight-bold text-secondary">Nomor Akta</label>
-                        <input type="text" name="akta_number" id="akta_number" class="form-control form-control-sm" 
-                            placeholder="Cari nomor akta..." value="{{ $filters['akta_number'] ?? '' }}">
-                    </div>
-
-                    {{-- Input Tanggal Mulai --}}
-                    <div style="width: 160px;">
-                        <label for="start_date" class="form-label text-xs mb-1 font-weight-bold text-secondary">Tanggal Mulai</label>
-                        <input type="date" class="form-control form-control-sm" name="start_date" id="start_date"
-                            value="{{ request('start_date') }}">
-                    </div>
-
-                    {{-- Input Tanggal Selesai --}}
-                    <div style="width: 160px;">
-                        <label for="end_date" class="form-label text-xs mb-1 font-weight-bold text-secondary">Tanggal Selesai</label>
-                        <input type="date" class="form-control form-control-sm" name="end_date" id="end_date"
-                            value="{{ request('end_date') }}">
-                    </div>
-
-                    {{-- Tombol Cari --}}
-                    <div>
-                        <button type="submit" class="btn btn-primary btn-sm mb-0" style="height: 36px;">Cari</button>
-                    </div>
-                </form>
-
-
-                    {{-- Tabel Hasil Pencarian Dokumen Massal --}}
-                    <div class="table-responsive p-0">
+                    <div class="table-responsive">
                         <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr class="text-center text-xs font-weight-bold text-uppercase text-secondary opacity-7">
-                                    <th>#</th>
-                                    <th>Nama Klien</th>
-                                    <th>Kode Transaksi</th>
-                                    <th>Jumlah Dokumen</th>
-                                    <th>Tanggal Submit</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
+
+<thead>
+    <tr>
+
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+            No
+        </th>
+
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+            Nama Klien
+        </th>
+
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+            Kode Transaksi
+        </th>
+
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+            Jumlah Dokumen
+        </th>
+
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+            Tanggal Submit
+        </th>
+
+        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+            Aksi
+        </th>
+
+    </tr>
+</thead>
+
                             <tbody>
-                                {{-- 1. Lakukan perulangan langsung pada koleksi item paginator ($documents) --}}
-                                    @forelse ($transactions as $tx)
-                                    <tr class="text-center text-sm">
-                                        {{-- Penomoran Pagination --}}
-                                        <td>{{ $transactions->firstItem() + $loop->index }}</td>
 
-                                        {{-- Nama Klien --}}
-                                        <td class="font-weight-bold">{{ $tx->client->fullname ?? '-' }}</td>
+                                @forelse ($transactions as $tx)
 
-                                        {{-- Kode Transaksi --}}
-                                        <td>
-                                            <span class="badge bg-light text-dark">{{ $tx->transaction_code }}</span>
+                                    <tr>
+
+                                        <td class="align-middle text-center">
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ $transactions->firstItem() + $loop->index }}
+                                            </p>
                                         </td>
 
-                                        {{-- Jumlah Dokumen di dalam transaksi tersebut --}}
-                                        <td>
-                                            <span class="badge bg-secondary">{{ $tx->documents_count ?? 0 }} Dokumen</span>
+                                        <td class="align-middle text-center">
+                                            <p class="text-sm font-weight-normal mb-0">
+                                                {{ $tx->client->fullname ?? '-' }}
+                                            </p>
                                         </td>
-                                        
-                                        
-                                        {{-- Tanggal Upload --}}
-                                        <td>
-                                            {{ $tx->date_submission ? \Carbon\Carbon::parse($tx->date_submission)->format('d F Y H:i') : '-' }}
+
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+
+                                                <p class="text-sm font-weight-normal mb-0">
+                                                    {{ $tx->transaction_code }}
+                                                </p>
+
+                                                @if($tx->transaction_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link text-primary p-0 mb-0"
+                                                        onclick="copyValue(this, '{{ $tx->transaction_code }}')">
+
+                                                        <i class="fa-solid fa-copy text-sm"></i>
+
+                                                    </button>
+                                                @endif
+
+                                            </div>
                                         </td>
-                                        
-                                        {{-- Tombol Detail Kembali ke Index Utama --}}
-                                        <td>
-                                            <a href="{{ route('akta-documents.index', ['transaction_code' => $tx->transaction_code]) }}" 
-                                            class="btn btn-sm btn-info mb-0">
-                                                <i class="fa fa-eye me-1"></i> Detail Transaksi
+
+                                        <td class="align-middle text-center">
+                                            <p class="text-sm font-weight-normal mb-0">
+                                                {{ $tx->documents_count ?? 0 }} Dokumen
+                                            </p>
+                                        </td>
+
+                                        <td class="align-middle text-center">
+                                            <p class="text-sm font-weight-normal mb-0">
+                                                {{ $tx->date_submission ? \Carbon\Carbon::parse($tx->date_submission)->format('d F Y H:i') : '-' }}
+                                            </p>
+                                        </td>
+
+                                        <td class="align-middle text-center">
+                                            <a href="{{ route('akta-documents.index', ['transaction_code' => $tx->transaction_code]) }}"
+                                                class="btn btn-info btn-xs mb-0">
+                                                Detail Transaksi
                                             </a>
                                         </td>
-                                        </td>
+
                                     </tr>
+
                                 @empty
-                                    {{-- Tampilan jika hasil pencarian tanggal memang tidak menghasilkan dokumen apapun --}}
+
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">
-                                            Tidak ada dokumen akta yang ditemukan pada rentang tanggal tersebut.
+                                        <td colspan="6" class="text-center py-4">
+                                            <p class="text-sm text-secondary mb-0">
+                                                Belum ada data dokumen.
+                                            </p>
                                         </td>
                                     </tr>
+
                                 @endforelse
+
                             </tbody>
+
                         </table>
                     </div>
 
-                    {{-- Pagination --}}
-                    <div class="d-flex justify-content-end mt-3">
+                    <div class="d-flex justify-content-end px-4 py-3">
                         {{ $transactions->links() }}
                     </div>
 
                 </div>
+
             </div>
         </div>
     </div>
+@push('js')
+<script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
+
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
+</script>
+@endpush
 @endsection

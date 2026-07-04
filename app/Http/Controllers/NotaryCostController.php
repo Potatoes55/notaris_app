@@ -26,6 +26,15 @@ class NotaryCostController extends Controller
         return auth()->user()->notaris_id;
     }
 
+    private function routeName()
+    {
+        return match (request()->segment(1)) {
+            'ppat' => 'ppat.costs',
+            'proses-lain' => 'proses-lain.biaya.total',
+            default => 'notary_costs.index',
+        };
+    }
+
     public function index(Request $request)
     {
         $search = $request->get('search');
@@ -101,7 +110,7 @@ class NotaryCostController extends Controller
         $this->service->create($validated);
         notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil ditambahkan.');
 
-        return redirect()->route('notary_costs.index');
+        return redirect()->route($this->routeName());
     }
 
     public function edit($id)
@@ -154,7 +163,7 @@ class NotaryCostController extends Controller
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil diubah.');
 
-        return redirect()->route('notary_costs.index');
+        return redirect()->route($this->routeName());
     }
 
     public function destroy($id)

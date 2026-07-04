@@ -14,48 +14,64 @@
                     <h5>Dokumen Akta</h5>
                 </div>
                 <div class="card-body pt-2 pb-0">
-                    {{-- Form Pencarian --}}
-                     
-                {{-- Form Pencarian --}}
                 <form method="GET" action="{{ route('akta-documents.index') }}"
                     class="d-flex flex-wrap gap-2 mb-3 justify-content-end align-items-end no-spinner">
                     @csrf
-                    
-                    {{-- Input Kode Transaksi --}}
-                    <div style="flex: 1; min-width: 300px;">
-                        <label for="transaction_code" class="form-label text-xs mb-1 font-weight-bold text-secondary">Kode Transaksi</label>
-                        <input type="text" name="transaction_code" id="transaction_code" class="form-control form-control-sm"
-                            placeholder="Cari Kode transaksi..." value="{{ $filters['transaction_code'] ?? '' }}">
+
+                    <div style="flex:1; min-width:200px;">
+                        <label for="transaction_code" class="form-label text-sm">
+                            Kode Transaksi
+                        </label>
+                        <input
+                            type="text"
+                            name="transaction_code"
+                            id="transaction_code"
+                            class="form-control"
+                            placeholder="Cari Kode transaksi..."
+                            value="{{ $filters['transaction_code'] ?? '' }}">
                     </div>
 
-                    {{-- Input Nomor Akta --}}
-                    <div style="flex: 1; min-width: 300px;">
-                        <label for="akta_number" class="form-label text-xs mb-1 font-weight-bold text-secondary">Nomor Akta</label>
-                        <input type="text" name="akta_number" id="akta_number" class="form-control form-control-sm" 
-                            placeholder="Cari nomor akta..." value="{{ $filters['akta_number'] ?? '' }}">
+                    <div style="flex:1; min-width:200px;">
+                        <label for="akta_number" class="form-label text-sm">
+                            Nomor Akta
+                        </label>
+                        <input
+                            type="text"
+                            name="akta_number"
+                            id="akta_number"
+                            class="form-control"
+                            placeholder="Cari nomor akta..."
+                            value="{{ $filters['akta_number'] ?? '' }}">
                     </div>
 
-                    {{-- Input Tanggal Mulai --}}
-                    <div style="width: 160px;">
-                        <label for="start_date" class="form-label text-xs mb-1 font-weight-bold text-secondary">Tanggal Mulai</label>
-                        <input type="date" class="form-control form-control-sm" name="start_date" id="start_date"
+                    <div style="width:160px;">
+                        <label for="start_date" class="form-label text-sm">
+                            Tanggal Mulai
+                        </label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            id="start_date"
+                            class="form-control"
                             value="{{ request('start_date') }}">
                     </div>
 
-                    {{-- Input Tanggal Selesai --}}
-                    <div style="width: 160px;">
-                        <label for="end_date" class="form-label text-xs mb-1 font-weight-bold text-secondary">Tanggal Selesai</label>
-                        <input type="date" class="form-control form-control-sm" name="end_date" id="end_date"
+                    <div style="width:160px;">
+                        <label for="end_date" class="form-label text-sm">
+                            Tanggal Selesai
+                        </label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            id="end_date"
+                            class="form-control"
                             value="{{ request('end_date') }}">
                     </div>
 
-                    {{-- Tombol Cari --}}
-                    <div>
-                        <button type="submit" class="btn btn-primary btn-sm mb-0" style="height: 36px;">Cari</button>
-                    </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm mb-0" style="height: 36px;">Cari</button>
+                        </div>
                 </form>
-
-
 
                     {{-- Tampilkan transaksi jika ada --}}
                     @if ($transaction)
