@@ -15,17 +15,17 @@ class AuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        return response()->json([
-            'header' => $request->header('Authorization'),
-            'bearer' => $request->bearerToken(),
-            'env' => env('API_TOKEN'),
-        ]);
+        // return response()->json([
+        //     'header' => $request->header('Authorization'),
+        //     'bearer' => $request->bearerToken(),
+        //     'env' => env('API_TOKEN'),
+        // ]);
 
         $staticToken = env('API_TOKEN');
 
         if ($request->bearerToken() !== $staticToken) {
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized',
             ], 401);
         }
 
