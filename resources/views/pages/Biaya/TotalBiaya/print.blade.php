@@ -214,6 +214,21 @@
                 <td>Biaya Lain-lain</td>
                 <td class="amount">{{ number_format($costs->other_cost, 0, ',', '.') }}</td>
             </tr>
+            @if (in_array(strtolower($costs->picDocument->transaction_type ?? ''), ['ppat', 'relaas']))
+                <tr>
+                    <td>PPh</td>
+                    <td class="amount">
+                        {{ number_format($costs->pph ?? 0, 0, ',', '.') }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>BPHTB</td>
+                    <td class="amount">
+                        {{ number_format($costs->bphtb ?? 0, 0, ',', '.') }}
+                    </td>
+                </tr>
+            @endif
             <tr class="total">
                 <td>Total Biaya</td>
                 <td class="amount" style="text-align: right;">

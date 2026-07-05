@@ -102,12 +102,21 @@ class NotaryCostController extends Controller
 
         $today = now()->format('Ymd');
         $countToday = NotaryCost::whereDate('created_at', now())->count() + 1;
-        $paymentCode = 'N-'.$today.'-'.str_pad($countToday, 3, '0', STR_PAD_LEFT);
+        $paymentCode = 'N-' . $today . '-' . str_pad($countToday, 3, '0', STR_PAD_LEFT);
 
         $validated['payment_code'] = $paymentCode;
         $validated['notaris_id'] = $this->getNotarisId();
 
+        $validated['product_cost'] = $productCost;
+        $validated['admin_cost'] = $adminCost;
+        $validated['other_cost'] = $otherCost;
+        $validated['amount_paid'] = $amountPaid;
+        $validated['pph'] = $pph;
+        $validated['bphtb'] = $bphtb;
+        $validated['total_cost'] = $totalCost;
+
         $this->service->create($validated);
+
         notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil ditambahkan.');
 
         return redirect()->route($this->routeName());
@@ -151,14 +160,33 @@ class NotaryCostController extends Controller
             'client_code' => 'required',
             'pic_document_id' => 'required',
             'product_cost' => 'required',
+            'admin_cost' => 'nullable',
+            'other_cost' => 'nullable',
+            'amount_paid' => 'nullable',
             'pph' => 'nullable',
             'bphtb' => 'nullable',
             'payment_status' => 'required',
             'paid_date' => 'required|date',
             'due_date' => 'required|date',
+            'note' => 'nullable',
         ]);
 
+        $productCost = (int) str_replace('.', '', $request->product_cost);
+        $adminCost = (int) str_replace('.', '', $request->admin_cost ?? 0);
+        $otherCost = (int) str_replace('.', '', $request->other_cost ?? 0);
+        $amountPaid = (int) str_replace('.', '', $request->amount_paid ?? 0);
+        $pph = (int) str_replace('.', '', $request->pph ?? 0);
+        $bphtb = (int) str_replace('.', '', $request->bphtb ?? 0);
+
         $validated['notaris_id'] = $this->getNotarisId();
+        $validated['product_cost'] = $productCost;
+        $validated['admin_cost'] = $adminCost;
+        $validated['other_cost'] = $otherCost;
+        $validated['amount_paid'] = $amountPaid;
+        $validated['pph'] = $pph;
+        $validated['bphtb'] = $bphtb;
+        $validated['total_cost'] = $productCost + $adminCost + $otherCost + $pph + $bphtb;
+
         $this->service->update($id, $validated);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Biaya berhasil diubah.');
