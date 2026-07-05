@@ -16,6 +16,8 @@ class NotaryCost extends Model
         'product_cost',
         'admin_cost',
         'other_cost',
+        'pph',
+        'bphtb',
         'total_cost',
         'amount_paid',
         'payment_status',
