@@ -204,17 +204,35 @@ Route::middleware(['auth'])->group(function () {
                 ->name('handovers');
         });
 
-        Route::middleware('check.full.access')
-            ->prefix('biaya')
-            ->name('biaya.')
-            ->group(function () {
+            Route::middleware('check.full.access')
+                ->prefix('biaya')
+                ->name('biaya.')
+                ->group(function () {
 
-                Route::get('/total', [NotaryCostController::class, 'index'])
-                    ->name('total');
+                    Route::get('/total', [NotaryCostController::class, 'index'])
+                        ->name('total');
 
-                Route::get('/pembayaran', [NotaryPaymenttController::class, 'index'])
-                    ->name('payments');
-            });
+                    Route::get('/total/create', [NotaryCostController::class, 'create'])
+                        ->name('total.create');
+
+                    Route::post('/total', [NotaryCostController::class, 'store'])
+                        ->name('total.store');
+
+                    Route::get('/total/{id}/edit', [NotaryCostController::class, 'edit'])
+                        ->name('total.edit');
+
+                    Route::put('/total/{id}', [NotaryCostController::class, 'update'])
+                        ->name('total.update');
+
+                    Route::delete('/total/{id}', [NotaryCostController::class, 'destroy'])
+                        ->name('total.destroy');
+
+                    Route::get('/total/{id}/print', [NotaryCostController::class, 'print'])
+                        ->name('total.print');
+
+                    Route::get('/pembayaran', [NotaryPaymenttController::class, 'index'])
+                        ->name('payments');
+                });
     });
     // cliet
     Route::resource('clients', ClientController::class)->except('show');
@@ -333,6 +351,13 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
         /* BIAYA */
         Route::get('/biaya/total', [NotaryCostController::class, 'index'])->name('costs');
+        Route::get('/biaya/total/create', [NotaryCostController::class, 'create'])->name('costs.create');
+        Route::post('/biaya/total', [NotaryCostController::class, 'store'])->name('costs.store');
+        Route::get('/biaya/total/{id}/edit', [NotaryCostController::class, 'edit'])->name('costs.edit');
+        Route::put('/biaya/total/{id}', [NotaryCostController::class, 'update'])->name('costs.update');
+        Route::delete('/biaya/total/{id}', [NotaryCostController::class, 'destroy'])->name('costs.destroy');
+        Route::get('/biaya/total/{id}/print', [NotaryCostController::class, 'print'])->name('costs.print');
+
         Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
     });
 
@@ -379,6 +404,13 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
         /* BIAYA */
         Route::get('/biaya/total', [NotaryCostController::class, 'index'])->name('costs');
+        Route::get('/biaya/total/create', [NotaryCostController::class, 'create'])->name('costs.create');
+        Route::post('/biaya/total', [NotaryCostController::class, 'store'])->name('costs.store');
+        Route::get('/biaya/total/{id}/edit', [NotaryCostController::class, 'edit'])->name('costs.edit');
+        Route::put('/biaya/total/{id}', [NotaryCostController::class, 'update'])->name('costs.update');
+        Route::delete('/biaya/total/{id}', [NotaryCostController::class, 'destroy'])->name('costs.destroy');
+        Route::get('/biaya/total/{id}/print', [NotaryCostController::class, 'print'])->name('costs.print');
+
         Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
     });
 

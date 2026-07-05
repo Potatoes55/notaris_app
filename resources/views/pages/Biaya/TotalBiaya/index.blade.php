@@ -8,24 +8,48 @@
     'title' => $module . ' / Total Biaya'
 ])
 
-@if ($module == 'PPAT')
-    @include('components.ppat-menu')
-@elseif ($module == 'Proses Lain')
-    @include('components.proseslain-menu')
-@else
-    @include('components.notaris-menu')
-@endif
+    @if ($module == 'PPAT')
+        @include('components.ppat-menu')
+    @elseif ($module == 'Proses Lain')
+        @include('components.proseslain-menu')
+    @else
+        @include('components.notaris-menu')
+    @endif
 
+    @php
+        $prefix = request()->segment(1);
+
+        $createRoute = match ($prefix) {
+            'notaris' => route('notaris.costs.create'),
+            'ppat' => route('ppat.costs.create'),
+            'proses-lain' => route('proses-lain.biaya.total.create'),
+            default => route('notary_costs.create'),
+        };
+
+        $indexRoute = match ($prefix) {
+            'notaris' => route('notaris.costs'),
+            'ppat' => route('ppat.costs'),
+            'proses-lain' => route('proses-lain.biaya.total'),
+            default => route('notary_costs.index'),
+        };
+
+        $editRoute = fn ($id) => match ($prefix) {
+            'notaris' => route('notaris.costs.edit', $id),
+            'ppat' => route('ppat.costs.edit', $id),
+            'proses-lain' => route('proses-lain.biaya.total.edit', $id),
+            default => route('notary_costs.edit', $id),
+        };
+    @endphp
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-0">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-4">
                     <h5 class="mb-0">Total Biaya</h5>
-                    <a href="{{ route('notary_costs.create') }}" class="btn btn-primary btn-sm mb-0">
+                    <a href="{{ $createRoute }}" class="btn btn-primary btn-sm mb-0">
                         + Tambah Biaya
                     </a>
                 </div>
-                <form method="GET" action="{{ route('notary_costs.index') }}" class="d-flex gap-2 ms-auto me-4"
+                <form method="GET" action="{{ $indexRoute }}" class="d-flex gap-2 ms-auto me-4"
                     style="width: 500px;">
                     <input type="text" name="search" placeholder="Cari kode dokumen..."
                         value="{{ request('search') }}" class="form-control form-control-sm">
@@ -260,7 +284,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a href="{{ route('notary_costs.edit', $cost->id) }}"
+                                            <a href="{{ $editRoute($cost->id) }}"
                                                 class="btn btn-info btn-sm mb-0">Edit</a>
                                             <!-- Tombol Hapus -->
                                             <button type="button" class="btn btn-danger btn-sm mb-0"

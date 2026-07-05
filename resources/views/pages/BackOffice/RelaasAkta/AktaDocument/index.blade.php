@@ -14,39 +14,67 @@
                 </div>
                 <div class="card-body pt-1 pb-0">
 
-                    {{-- Form Pencarian --}}
-                    <form method="GET" action="{{ route('relaas-documents.index') }}"
-                        class="d-flex flex-wrap gap-2 mb-3 justify-content-end align-items-end no-spinner">
-                        @csrf
-                        
-                        <div style="flex: 1; min-width: 200px;">
-                            <label for="transaction_code" class="form-label text-xs mb-1 font-weight-bold text-secondary">Kode Transaksi</label>
-                            <input type="text" name="transaction_code" id="transaction_code" class="form-control form-control-sm"
-                                placeholder="Cari Kode transaksi...">
-                        </div>
+                {{-- Form Pencarian --}}
+                <form method="GET" action="{{ route('relaas-documents.index') }}"
+                    class="d-flex flex-wrap gap-2 mb-3 justify-content-end align-items-end no-spinner">
+                    @csrf
 
-                        <div style="flex: 1; min-width: 200px;">
-                            <label for="relaas_number" class="form-label text-xs mb-1 font-weight-bold text-secondary">Nomor Relaas</label>
-                            <input type="text" name="relaas_number" id="relaas_number" class="form-control form-control-sm" 
-                                placeholder="Cari nomor relaas...">
-                        </div>
+                    <div style="flex:1; min-width:200px;">
+                        <label for="transaction_code" class="form-label text-sm">
+                            Kode Transaksi
+                        </label>
+                        <input
+                            type="text"
+                            name="transaction_code"
+                            id="transaction_code"
+                            class="form-control"
+                            placeholder="Cari Kode transaksi..."
+                            value="{{ request('transaction_code') }}">
+                    </div>
 
-                        <div style="width: 160px;">
-                            <label for="start_date" class="form-label text-xs mb-1 font-weight-bold text-secondary">Tanggal Mulai</label>
-                            <input type="date" class="form-control form-control-sm" name="start_date" id="start_date"
-                                value="{{ request('start_date') }}">
-                        </div>
+                    <div style="flex:1; min-width:200px;">
+                        <label for="relaas_number" class="form-label text-sm">
+                            Nomor Relaas
+                        </label>
+                        <input
+                            type="text"
+                            name="relaas_number"
+                            id="relaas_number"
+                            class="form-control"
+                            placeholder="Cari nomor relaas..."
+                            value="{{ request('relaas_number') }}">
+                    </div>
 
-                        <div style="width: 160px;">
-                            <label for="end_date" class="form-label text-xs mb-1 font-weight-bold text-secondary">Tanggal Selesai</label>
-                            <input type="date" class="form-control form-control-sm" name="end_date" id="end_date"
-                                value="{{ request('end_date') }}">
-                        </div>
+                    <div style="width:160px;">
+                        <label for="start_date" class="form-label text-sm">
+                            Tanggal Mulai
+                        </label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            id="start_date"
+                            class="form-control"
+                            value="{{ request('start_date') }}">
+                    </div>
 
-                        <div>
-                            <button type="submit" class="btn btn-primary btn-sm mb-0" style="height: 36px;">Cari</button>
-                        </div>
-                    </form>
+                    <div style="width:160px;">
+                        <label for="end_date" class="form-label text-sm">
+                            Tanggal Selesai
+                        </label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            id="end_date"
+                            class="form-control"
+                            value="{{ request('end_date') }}">
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary mb-0 px-4">
+                            Cari
+                        </button>
+                    </div>
+                </form>
 
                     @if ($relaasInfo)
                         <div class="card mb-4 shadow-sm">

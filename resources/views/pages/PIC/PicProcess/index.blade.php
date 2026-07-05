@@ -8,6 +8,14 @@
     'title' => $module . ' / PIC Proses Pengurusan'
 ])
 
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@elseif ($module == 'Proses Lain')
+    @include('components.proseslain-menu')
+@else
+    @include('components.notaris-menu')
+@endif
+
 @if(session('login_role') != 'staff')
     @if ($module == 'PPAT')
         @include('components.ppat-menu')
