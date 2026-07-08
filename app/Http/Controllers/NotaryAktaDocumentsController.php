@@ -6,7 +6,6 @@ use App\Models\NotaryAktaDocuments;
 use App\Models\NotaryAktaTransaction;
 use App\Services\NotaryAktaDocumentService;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class NotaryAktaDocumentsController extends Controller
 {
@@ -19,77 +18,63 @@ class NotaryAktaDocumentsController extends Controller
 
     public function index(Request $request)
     {
-        // 1. Ambil request input filter
-        $filters = $request->only(['transaction_code', 'akta_number', 'start_date', 'end_date']);
+        $filters = $request->only(['transaction_code', 'akta_number', 'start_date', 'end_date', 'fullname']);
         $transaction = null;
-        $documents = new LengthAwarePaginator([], 0, 10); // Default pagination kosong berupa LengthAwarePaginator aman untuk Blade
+        $documents = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
 
         $hasDateFilter = ! empty($filters['start_date']) && ! empty($filters['end_date']);
+        $hasClientFilter = ! empty($filters['fullname']);
 
-        // 2. Validasi: Jalankan proses hanya jika ada salah satu filter yang diisi
-        if (! empty($filters['transaction_code']) || ! empty($filters['akta_number']) || $hasDateFilter) {
+        if ($hasClientFilter || ($hasDateFilter && empty($filters['transaction_code']) && empty($filters['akta_number']))) {
 
-            // KONDISI KHUSUS: Jika user melakukan search TANGGAL SAJA (Tanpa kode transaksi / nomor akta)
-            if ($hasDateFilter && empty($filters['transaction_code']) && empty($filters['akta_number'])) {
+            $query = NotaryAktaTransaction::with(['client'])
+                ->withCount('documents')
+                ->where('notaris_id', auth()->user()->notaris_id);
 
-                // Ubah query ke NotaryAktaTransaction agar hasilnya unik per transaksi
-                $transactions = NotaryAktaTransaction::with(['client'])
-                    ->withCount('documents')
-                    ->where('notaris_id', auth()->user()->notaris_id)
-                    ->whereBetween('date_submission', [$filters['start_date'].' 00:00:00', $filters['end_date'].' 23:59:59'])
-                    ->orderBy('date_submission', 'desc')
-                    ->paginate(10)
-                    ->withQueryString();
-
-                if ($transactions->isEmpty()) {
-                    notyf()
-                        ->position('x', 'right')
-                        ->position('y', 'top')
-                        ->warning('Tidak ada transaksi akta yang ditemukan pada rentang tanggal tersebut.');
-                }
-                // dd($transactions);
-
-                return view('pages.BackOffice.AktaDocument.index_date', compact('transactions', 'filters', 'transaction'));
+            if ($hasDateFilter) {
+                $query->whereBetween('date_submission', [$filters['start_date'].' 00:00:00', $filters['end_date'].' 23:59:59']);
             }
 
-            $transaction = NotaryAktaTransaction::with('akta_type', 'notaris', 'client')
-                ->where('notaris_id', auth()->user()->notaris_id)
+            if ($hasClientFilter) {
+                $query->whereHas('client', function ($clientQuery) use ($filters) {
+                    $clientQuery->where('fullname', 'like', '%'.$filters['fullname'].'%');
+                });
+            }
+            $transactions = $query->orderBy('date_submission', 'desc')->paginate(10)
+                ->withQueryString();
+
+            if ($transactions->isEmpty()) {
+                notyf()->position('x', 'right')->position('y', 'top')->warning('Tidak ada transaksi akta yang ditemukan pada rentang tanggal tersebut.');
+            }
+
+            return view('pages.BackOffice.AktaDocument.index_date', compact('transactions', 'filters', 'transaction'));
+        }
+
+        if (! empty($filters['transaction_code']) || ! empty($filters['akta_number']) || ! empty($filters['fullname']) || $hasDateFilter) {
+
+            $documents = $this->service->list($filters);
+
+            $transaction = NotaryAktaTransaction::where('notaris_id', auth()->user()->notaris_id)
                 ->where(function ($q) use ($filters) {
                     if (! empty($filters['transaction_code'])) {
                         $q->where('transaction_code', $filters['transaction_code']);
                     }
                     if (! empty($filters['akta_number'])) {
-
-                        if (! empty($filters['transaction_code'])) {
-                            $q->orWhere('akta_number', $filters['akta_number']);
-                        } else {
-                            $q->where('akta_number', $filters['akta_number']);
-                        }
+                        $q->where('akta_number', 'like', '%'.$filters['akta_number'].'%');
                     }
                 })->first();
 
-            // Jika transaksi spesifik ditemukan, ambil dokumennya
-            if ($transaction) {
-                $documents = NotaryAktaDocuments::where('akta_transaction_id', $transaction->id)
-                    ->where('notaris_id', auth()->user()->notaris_id)
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(10)
-                    ->withQueryString();
-            } else {
-                // Jika transaksi TIDAK ditemukan, set documents menjadi kosong agar pagination tidak error
-                $documents = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
-
+            if ($documents->isEmpty() && ! $transaction) {
                 notyf()
                     ->position('x', 'right')
                     ->position('y', 'top')
                     ->warning('Data transaksi tidak ditemukan.');
             }
+
         } else {
-            // Jika halaman pertama kali dibuka tanpa menekan tombol cari apa-apa
             $documents = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
         }
 
-        // Return ke blade utama pencarian single transaksi
         return view('pages.BackOffice.AktaDocument.index', compact('transaction', 'documents', 'filters'));
     }
 

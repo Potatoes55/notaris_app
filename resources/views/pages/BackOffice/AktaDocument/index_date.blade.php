@@ -36,6 +36,18 @@
                                     placeholder="Cari Kode transaksi..."
                                     value="{{ $filters['transaction_code'] ?? '' }}">
                             </div>
+                                                <div style="flex:1; min-width:200px;">
+                        <label for="transaction_code" class="form-label text-sm">
+                            Nama Client
+                        </label>
+                        <input
+                            type="text"
+                            name="fullname"
+                            id="fullname"
+                            class="form-control"
+                            placeholder="Cari Nama Client..."
+                            value="{{ $filters['fullname'] ?? '' }}">
+                    </div>
 
                             <div style="flex:1; min-width:200px;">
                                 <label for="akta_number" class="form-label text-sm">
