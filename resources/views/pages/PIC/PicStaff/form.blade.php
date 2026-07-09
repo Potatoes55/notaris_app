@@ -14,7 +14,14 @@
                 </div>
                 <hr>
                 <div class="card-body px-4 pt-0 pb-2">
-                    <form action="{{ isset($pic_staff) ? route('pic_staff.update', $pic_staff) : route('pic_staff.store') }}"
+                    <form
+                        action="{{ isset($pic_staff)
+                            ? ($module == 'PPAT'
+                                ? route('ppat.pic.staff.update', $pic_staff)
+                                : route('notaris.pic.staff.update', $pic_staff))
+                            : ($module == 'PPAT'
+                                ? route('ppat.pic.staff.store')
+                                : route('notaris.pic.staff.store')) }}"
                         method="POST">
                         @csrf
                         @if (isset($pic_staff))
@@ -79,10 +86,18 @@
                         </div>
 
                         <div class="mt-4">
-                            <a href="{{ route('pic_staff.index') }}" class="btn btn-secondary">Kembali</a>
-                            <button type="submit"
-                                class="btn btn-primary">{{ isset($pic_staff) ? 'Update' : 'Simpan' }}</button>
-                        </div>
+                            <div class="mt-4">
+                                <a href="{{ $module == 'PPAT'
+                                        ? route('ppat.pic.staff')
+                                        : route('notaris.pic.staff') }}"
+                                    class="btn btn-secondary">
+                                    Kembali
+                                </a>
+
+                                <button type="submit" class="btn btn-primary">
+                                    {{ isset($pic_staff) ? 'Update' : 'Simpan' }}
+                                </button>
+                            </div>
                     </form>
                 </div>
             </div>

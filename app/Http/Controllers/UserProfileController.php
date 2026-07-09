@@ -15,43 +15,44 @@ class UserProfileController extends Controller
 {
     public function unlock(Request $request)
     {
+        // 1. Validasi input: minimal salah satu harus diisi (access_code ATAU pin)
         $request->validate([
-            'access_code' => 'required',
+            'access_code' => 'required_without:pin',
+            'pin' => 'required_without:access_code',
+        ], [
+            'access_code.required_without' => 'Kode akses wajib diisi jika PIN kosong.',
+            'pin.required_without' => 'PIN wajib diisi jika kode akses kosong.',
         ]);
 
         $user = auth()->user();
+        $isValid = false;
 
-        // if (!$user->access_code) {
-        //     return back()->with('error', 'Kode akses belum diset.');
-        // }
-        // if ($request->access_code === $user->access_code) {
-        //     // Ambil data subscription terakhir milik user
-        //     $lastSubscription = $user->subscriptions()
-        //         ->latest('end_date')
-        //         ->first();
+        // 2. Cek jika user menginput PIN dari form
+        if ($request->filled('pin') && $user->pin) {
+            if (Hash::check($request->pin, $user->pin)) {
+                $isValid = true;
+            }
+        }
 
-        // if (Hash::check($request->access_code, $user->access_code)) {
-        if ($request->access_code === $user->access_code) {
-            // if ($request->access_code === '1234') {
-            // buat validasi expired
-            // Cek apakah subscription ada dan belum melewati end_date
-            // if (!$lastSubscription || $lastSubscription->end_date < now()) {
-            //     notyf()->position('x', 'right')->position('y', 'top')
-            //         ->error('Subscription Anda telah berakhir. Tidak dapat membuka akses menu.');
+        // 3. Cek jika user menginput Access Code dari form
+        if ($request->filled('access_code') && $user->access_code) {
+            if ($request->access_code === $user->access_code) {
+                $isValid = true;
+            }
+        }
 
-            //     return back();
-            // }
-
+        // 4. Eksekusi hasil pengecekan
+        if ($isValid) {
             session([
                 'access_all_menu' => true,
-                // 'access_expires_at' => now()->addHour()
             ]);
 
             notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil membuka akses');
 
             return redirect()->intended(route('dashboard'));
         }
-        notyf()->position('x', 'right')->position('y', 'top')->error('Kode akses salah.');
+
+        notyf()->position('x', 'right')->position('y', 'top')->error('Kode akses atau PIN salah.');
 
         return back();
     }

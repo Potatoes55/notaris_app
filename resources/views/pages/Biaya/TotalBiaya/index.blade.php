@@ -3,20 +3,55 @@
 @section('title', 'Total Biaya')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Total Biaya'])
 
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Total Biaya'
+])
+
+    @if ($module == 'PPAT')
+        @include('components.ppat-menu')
+    @elseif ($module == 'Proses Lain')
+        @include('components.proseslain-menu')
+    @else
+        @include('components.notaris-menu')
+    @endif
+
+    @php
+        $prefix = request()->segment(1);
+
+        $createRoute = match ($prefix) {
+            'notaris' => route('notaris.costs.create'),
+            'ppat' => route('ppat.costs.create'),
+            'proses-lain' => route('proses-lain.biaya.total.create'),
+            default => route('notary_costs.create'),
+        };
+
+        $indexRoute = match ($prefix) {
+            'notaris' => route('notaris.costs'),
+            'ppat' => route('ppat.costs'),
+            'proses-lain' => route('proses-lain.biaya.total'),
+            default => route('notary_costs.index'),
+        };
+
+        $editRoute = fn ($id) => match ($prefix) {
+            'notaris' => route('notaris.costs.edit', $id),
+            'ppat' => route('ppat.costs.edit', $id),
+            'proses-lain' => route('proses-lain.biaya.total.edit', $id),
+            default => route('notary_costs.edit', $id),
+        };
+    @endphp
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-0">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-4">
                     <h5 class="mb-0">Total Biaya</h5>
-                    <a href="{{ route('notary_costs.create') }}" class="btn btn-primary btn-sm mb-0">
+                    <a href="{{ $createRoute }}" class="btn btn-primary btn-sm mb-0">
                         + Tambah Biaya
                     </a>
                 </div>
-                <form method="GET" action="{{ route('notary_costs.index') }}" class="d-flex gap-2 ms-auto me-4"
+                <form method="GET" action="{{ $indexRoute }}" class="d-flex gap-2 ms-auto me-4"
                     style="width: 500px;">
-                    <input type="text" name="search" placeholder="Cari kode pembayaran..."
+                    <input type="text" name="search" placeholder="Cari kode dokumen..."
                         value="{{ request('search') }}" class="form-control form-control-sm">
                     <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
                 </form>
@@ -42,10 +77,46 @@
                                 @forelse ($costs as $cost)
                                     <tr class="text-center text-sm">
                                         <td>{{ $costs->firstItem() + $loop->index }}</td>
-                                        <td>{{ $cost->payment_code }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $cost->payment_code }}</span>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary"
+                                                    onclick="copyValue(this, '{{ $cost->payment_code }}')">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
                                         <td>{{ $cost->client->fullname }}</td>
-                                        <td>{{ $cost->client->client_code }}</td>
-                                        <td>{{ $cost->picDocument?->pic_document_code ?? '-' }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $cost->client->client_code }}</span>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary"
+                                                    onclick="copyValue(this, '{{ $cost->client->client_code }}')">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $cost->picDocument?->pic_document_code ?? '-' }}</span>
+
+                                                @if($cost->picDocument?->pic_document_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $cost->picDocument->pic_document_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         @php
                                             $totalPaid = $cost->payments->where('is_valid', true)->sum('amount');
                                             $remaining = max(0, $cost->total_cost - $totalPaid);
@@ -148,6 +219,25 @@
                                                                             value="Rp {{ number_format($cost->other_cost, 0, ',', '.') }}"
                                                                             readonly>
                                                                     </div>
+                                                                    @if(in_array($cost->picDocument->transaction_type, ['ppat', 'relaas']))
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label text-start w-100 mb-1">PPh</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control"
+                                                                                value="Rp {{ number_format($cost->pph ?? 0, 0, ',', '.') }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label text-start w-100 mb-1">BPHTB</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control"
+                                                                                value="Rp {{ number_format($cost->bphtb ?? 0, 0, ',', '.') }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                    @endif
                                                                     <div class="col-md-6">
                                                                         <label
                                                                             class="form-label text-start w-100 mb-1">Total
@@ -213,7 +303,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a href="{{ route('notary_costs.edit', $cost->id) }}"
+                                            <a href="{{ $editRoute($cost->id) }}"
                                                 class="btn btn-info btn-sm mb-0">Edit</a>
                                             <!-- Tombol Hapus -->
                                             <button type="button" class="btn btn-danger btn-sm mb-0"
@@ -271,4 +361,23 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

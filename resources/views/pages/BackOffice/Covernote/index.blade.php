@@ -3,7 +3,17 @@
 @section('title', 'Covernote')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Covernote'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Covernote'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
+
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">
@@ -51,8 +61,35 @@
                                     <tr class="text-sm text-center">
                                         <td>{{ $covernotes->firstItem() + $loop->index }}</td>
                                         <td>{{ $covernote->client->fullname ?? '-' }}</td>
-                                        <td>{{ $covernote->client_code ?? '-' }}</td>
-                                        <td>{{ $covernote->covernote_number }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $covernote->client_code ?? '-' }}</span>
+
+                                                @if($covernote->client_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $covernote->client_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $covernote->covernote_number ?? '-' }}</span>
+
+                                                @if($covernote->covernote_number)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $covernote->covernote_number }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td>{{ $covernote->recipient ?? '-' }}</td>
                                         <td>{{ $covernote->subject ?? '-' }}</td>
                                         <td>{{ $covernote->date ? \Carbon\Carbon::parse($covernote->date)->format('d F Y') : '-' }}</td>
@@ -145,4 +182,23 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

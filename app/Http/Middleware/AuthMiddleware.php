@@ -15,15 +15,17 @@ class AuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Ambil token dari .env
+        // return response()->json([
+        //     'header' => $request->header('Authorization'),
+        //     'bearer' => $request->bearerToken(),
+        //     'env' => env('API_TOKEN'),
+        // ]);
+
         $staticToken = env('API_TOKEN');
 
-        // Ambil header Authorization
-        $authHeader = $request->header('Authorization');
-
-        if (!$authHeader || $authHeader !== "Bearer $staticToken") {
+        if ($request->bearerToken() !== $staticToken) {
             return response()->json([
-                'message' => 'Unauthorized. Invalid or missing token.'
+                'message' => 'Unauthorized',
             ], 401);
         }
 

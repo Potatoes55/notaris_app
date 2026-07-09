@@ -4,6 +4,7 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Pic'])
+    @include('components.proseslain-menu')
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-0">

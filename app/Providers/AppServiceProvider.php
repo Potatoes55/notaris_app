@@ -55,6 +55,8 @@ use App\Repositories\WaarmerkingRepository;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Email;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Request;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -95,12 +97,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
         User::observe(UserObserver::class);
         Paginator::useBootstrapFive();
 
         Email::defaults(function () {
             return Email::strict();
+        });
+        View::composer('*', function ($view) {
+
+            if (Request::is('ppat*')) {
+                $module = 'PPAT';
+            } elseif (Request::is('proses-lain*')) {
+                $module = 'Proses Lain';
+            } elseif (Request::is('konsultasi*')) {
+                $module = 'Konsultasi';
+            } else {
+                $module = 'Notaris';
+            }
+
+            $view->with('module', $module);
         });
     }
 }

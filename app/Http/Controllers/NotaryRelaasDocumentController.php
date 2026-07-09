@@ -21,13 +21,32 @@ class NotaryRelaasDocumentController extends Controller
     {
         $relaasInfo = null;
         $documents = collect();
+        $transactions = null;
 
-        // cek minimal salah satu input terisi
+        $hasDateFilter = $request->filled('start_date') && $request->filled('end_date');
+
+        if ($hasDateFilter && ! $request->filled('transaction_code') && ! $request->filled('relaas_number')) {
+            $transactions = $this->service->searchRelaasByDateRange(
+                $request->start_date,
+                $request->end_date
+            );
+
+            if ($transactions->isEmpty()) {
+                notyf()
+                    ->position('x', 'right')
+                    ->position('y', 'top')
+                    ->warning('Tidak ada transaksi relaas yang ditemukan pada rentang tanggal tersebut.');
+            }
+
+            return view('pages.BackOffice.RelaasAkta.AktaDocument.index_date', compact('transactions'));
+        }
+
         if ($request->filled('transaction_code') || $request->filled('relaas_number')) {
 
             $relaasInfo = $this->service->searchRelaas(
                 $request->transaction_code,
-                $request->relaas_number
+                $request->relaas_number,
+                null
             );
 
             if ($relaasInfo) {
@@ -36,7 +55,7 @@ class NotaryRelaasDocumentController extends Controller
                 notyf()
                     ->position('x', 'right')
                     ->position('y', 'top')
-                    ->warning('Data dokumen akta tidak ditemukan');
+                    ->warning('Data dokumen relaas akta tidak ditemukan');
             }
         }
 
@@ -172,5 +191,112 @@ class NotaryRelaasDocumentController extends Controller
         notyf()->position('x', 'right')->position('y', 'top')->success('Status dokumen berhasil diperbarui.');
 
         return redirect()->back();
+    }
+
+    public function viewPdf($id)
+    {
+        try {
+            $doc = \App\Models\NotaryRelaasDocument::find($id);
+            // dd($doc);
+            if (! $doc) {
+                return response()->json(['error' => 'Data dokumen tidak ditemukan.'], 404);
+            }
+
+            $filePath = public_path('storage/'.$doc->file_url);
+
+            if (! file_exists($filePath)) {
+                return response()->json(['error' => 'File fisik tidak ditemukan.'], 404);
+            }
+
+            $transaction = $doc->relaases;
+
+            if (! $transaction) {
+                return response()->json(['error' => 'Data transaksi tidak ditemukan untuk dokumen ini.'], 404);
+            }
+
+            $transactionCode = $transaction->transaction_code;
+            $hash = \Illuminate\Support\Facades\Crypt::encryptString($transactionCode);
+
+            $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)
+                ->margin(0)
+                ->generate(route('akta.qr.show', ['transaction_code' => $hash]));
+
+            $qrCodeCleanSvg = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrCodeSvg);
+
+            $mpdf = new \Mpdf\Mpdf([
+                'format' => 'A4',
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+            ]);
+
+            $fileType = strtolower($doc->file_type);
+
+            if (in_array($fileType, ['png', 'jpg', 'jpeg', 'svg'])) {
+
+                $widthMm = 210;
+                $heightMm = 297;
+
+                $topPositionMm = $heightMm * 0.4;
+                $leftPositionMm = 5;
+
+                $htmlContent = '
+            <div style="position: absolute; top: 0; left: 0; width: 210mm; height: 297mm; z-index: 1; margin: 0; padding: 0;">
+                <img src="'.$filePath.'" style="width: 210mm; height: 297mm; object-fit: contain; margin: 0; padding: 0;" />
+            </div>
+
+            <tt>
+                <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
+                    '.$qrCodeCleanSvg.'
+                </div>
+            </tt>
+            ';
+
+                $mpdf->WriteHTML($htmlContent);
+
+            } else {
+                $pageCount = $mpdf->setSourceFile($filePath);
+
+                for ($i = 1; $i <= $pageCount; $i++) {
+                    $importPage = $mpdf->importPage($i);
+                    $pageSize = $mpdf->getTemplateSize($importPage);
+
+                    $widthMm = $pageSize['width'];
+                    $heightMm = $pageSize['height'];
+                    $orientation = ($widthMm > $heightMm) ? 'L' : 'P';
+
+                    if ($i > 1) {
+                        $mpdf->WriteHTML('<pagebreak sheet-size="'.$widthMm.'mm '.$heightMm.'mm" margin-left="0" margin-right="0" margin-top="0" margin-bottom="0" />');
+                    } else {
+                        $mpdf->_setPageSize([$widthMm, $heightMm], $orientation);
+                    }
+
+                    $mpdf->useTemplate($importPage);
+                    $mpdf->page = $i;
+
+                    $topPositionMm = $heightMm * 0.4;
+                    $leftPositionMm = 4;
+
+                    $htmlQrLeftCenter = '
+                <tt>
+                    <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
+                        '.$qrCodeCleanSvg.'
+                    </div>
+                </tt>';
+
+                    $mpdf->WriteHTML($htmlQrLeftCenter);
+                }
+            }
+
+            return response($mpdf->Output("preview_dokumen_{$id}.pdf", 'I'))
+                ->header('Content-Type', 'application/pdf');
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Terjadi kesalahan sistem.',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

@@ -4,6 +4,7 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'PPAT / Dokumen Akta'])
+    @include('components.ppat-menu')
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
@@ -13,17 +14,67 @@
                 </div>
                 <div class="card-body pt-1 pb-0">
 
-                    {{-- Form Pencarian --}}
-                    <form method="GET" action="{{ route('relaas-documents.index') }}"
-                        class="mb-3 no-spinner d-flex
-                        gap-2  justify-content-end">
+                {{-- Form Pencarian --}}
+                <form method="GET" action="{{ route('relaas-documents.index') }}"
+                    class="d-flex flex-wrap gap-2 mb-3 justify-content-end align-items-end no-spinner">
+                    @csrf
 
-                        <input type="text" name="transaction_code" class="form-control"
-                            placeholder="Masukkan Kode Transaksi" value="{{ request('transaction_code') }}">
-                        <input type="text" name="relaas_number" class="form-control" placeholder="Masukkan Nomor Akta"
+                    <div style="flex:1; min-width:200px;">
+                        <label for="transaction_code" class="form-label text-sm">
+                            Kode Transaksi
+                        </label>
+                        <input
+                            type="text"
+                            name="transaction_code"
+                            id="transaction_code"
+                            class="form-control"
+                            placeholder="Cari Kode transaksi..."
+                            value="{{ request('transaction_code') }}">
+                    </div>
+
+                    <div style="flex:1; min-width:200px;">
+                        <label for="relaas_number" class="form-label text-sm">
+                            Nomor Relaas
+                        </label>
+                        <input
+                            type="text"
+                            name="relaas_number"
+                            id="relaas_number"
+                            class="form-control"
+                            placeholder="Cari nomor relaas..."
                             value="{{ request('relaas_number') }}">
-                        <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
-                    </form>
+                    </div>
+
+                    <div style="width:160px;">
+                        <label for="start_date" class="form-label text-sm">
+                            Tanggal Mulai
+                        </label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            id="start_date"
+                            class="form-control"
+                            value="{{ request('start_date') }}">
+                    </div>
+
+                    <div style="width:160px;">
+                        <label for="end_date" class="form-label text-sm">
+                            Tanggal Selesai
+                        </label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            id="end_date"
+                            class="form-control"
+                            value="{{ request('end_date') }}">
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary mb-0 px-4">
+                            Cari
+                        </button>
+                    </div>
+                </form>
 
                     @if ($relaasInfo)
                         <div class="card mb-4 shadow-sm">
@@ -34,11 +85,36 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <h6><strong>Kode Klien</strong></h6>
-                                        <p class="text-muted text-sm">{{ $relaasInfo->client_code }}</p>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <p class="text-muted text-sm mb-0">{{ $relaasInfo->client_code ?? '-' }}</p>
+
+                                            @if($relaasInfo->client_code)
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary copy-btn"
+                                                    onclick="copyValue(this, '{{ $relaasInfo->client_code }}')"
+                                                    title="Salin Kode Klien">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            @endif
+                                        </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <h6><strong>Nomor Transaksi</strong></h6>
-                                        <p class="text-muted text-sm">{{ $relaasInfo->relaas_number ?? '-' }}</p>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <p class="text-muted text-sm mb-0">{{ $relaasInfo->relaas_number ?? '-' }}</p>
+
+                                            @if($relaasInfo->relaas_number)
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary copy-btn"
+                                                    onclick="copyValue(this, '{{ $relaasInfo->relaas_number }}')"
+                                                    title="Salin Nomor Transaksi">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <h6><strong>Notaris</strong></h6>
@@ -150,25 +226,14 @@
 
                                                                     <div class="modal-body text-center">
 
-                                                                        {{-- Jika FILE IMAGE --}}
-                                                                        @if ($doc->file_type === 'svg' || $doc->file_type === 'png' || $doc->file_type === 'jpg' || $doc->file_type === 'jpeg')
-                                                                            <div class="d-flex justify-content-center align-items-center"
-                                                                                style="min-height: 400px;">
-                                                                                <img src="{{ asset('storage/' . $doc->file_url) }}"
-                                                                                    alt="Dokumen"
-                                                                                    class="img-fluid rounded shadow-sm"
-                                                                                    style="max-height: 90vh; object-fit: contain;">
-                                                                            </div>
-
-                                                                            {{-- Jika FILE PDF --}}
-                                                                        @elseif ($doc->file_type === 'pdf')
+                                                                  @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg']))
                                                                             <embed
-                                                                                src="{{ asset('storage/' . $doc->file_url) }}"
-                                                                                type="application/pdf" width="100%"
+                                                                                src="{{ route('ppat-documents.view-pdf', ['id' => $doc->id]) }}"
+                                                                                type="application/pdf" 
+                                                                                width="100%"
                                                                                 height="700px" />
                                                                         @else
-                                                                            <p class="text-muted">File tidak dapat
-                                                                                ditampilkan.</p>
+                                                                            <p class="text-muted">File tidak dapat ditampilkan.</p>
                                                                         @endif
 
                                                                     </div>
@@ -213,4 +278,21 @@
             </div>
         </div>
     </div>
+    <script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
+
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
+    </script>
 @endsection

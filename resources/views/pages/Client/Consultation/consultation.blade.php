@@ -1,79 +1,90 @@
 @extends('layouts.app')
 
-
 @section('title', 'Konsultasi')
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Konsultasi'])
+
     <div class="row mt-4 mx-4">
         <div class="col-md-12">
-            <div class="card mb-0">
-                <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-0 px-3 flex-wrap">
+
+            <div class="card">
+                <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-3 px-3 flex-wrap">
                     <h5>Konsultasi</h5>
+
                     <a href="{{ route('consultation.create', ['client_id' => $client->id]) }}"
                         class="btn btn-primary btn-sm mb-0">
                         + Tambah Konsultasi
                     </a>
                 </div>
+
                 <hr>
-                <div class="card-body px-0 pt-0 pb-0">
+
+                <div class="card-body px-0 pt-0 pb-0 mt-2">
+
                     <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
+                        <table class="table table-hover mb-0">
+
                             <thead>
-                                <tr>
-                                    <th class="th-title">
-                                        #
-                                    </th>
-                                    <th class="th-title">
-                                        Klien
-                                    </th>
-                                    <th class="th-title">
-                                        Kode Klien
-                                    </th>
-                                    <th class="th-title">
-                                        Subjek
-                                    </th>
-                                    <th class="th-title">
-                                        Deskripsi
-                                    </th>
-                                    <th class="th-title">
-                                        Status
-                                    </th>
-                                    <th class="th-title">
-                                        Aksi
-                                    </th>
+                                <tr class="text-center">
+                                    <th>#</th>
+                                    <th>Klien</th>
+                                    <th>Kode Klien</th>
+                                    <th>Subjek</th>
+                                    <th>Deskripsi</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 @forelse ($notaryConsultations as $notaryconsultation)
-                                    <tr class="text-center">
+                                    <tr class="text-center text-sm">
+
                                         <td>
                                             {{ $notaryConsultations->firstItem() + $loop->index }}
                                         </td>
+
                                         <td>
-                                            <p class="text-sm mb-0  text-center">{{ $notaryconsultation->client->fullname }}
-                                            </p>
+                                            {{ $notaryconsultation->client->fullname }}
                                         </td>
+
                                         <td>
-                                            <p class="text-sm mb-0  text-center">{{ $notaryconsultation->client_code }}
-                                            </p>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $notaryconsultation->client_code ?? '-' }}</span>
+
+                                                @if($notaryconsultation->client_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $notaryconsultation->client_code }}')"
+                                                        title="Salin Kode Klien">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
                                         </td>
+
                                         <td>
-                                            <p class="text-sm mb-0  text-center">{{ $notaryconsultation->subject }}
-                                            </p>
+                                            {{ $notaryconsultation->subject }}
                                         </td>
+
                                         <td>
-                                            <p class="text-sm mb-0  text-center">
-                                                {{ $notaryconsultation->description ?? '-' }}
-                                            </p>
+                                            {{ $notaryconsultation->description ?? '-' }}
                                         </td>
-                                        <td class="text-center">
-                                            <span
-                                                class="badge px-2  py-2 text-center d-inline-block text-capitalize
-                                        bg-{{ $notaryconsultation->status == 'done' ? 'success' : ($notaryconsultation->status == 'progress' ? 'warning' : 'secondary') }}">
-                                                @if ($notaryconsultation->status == 'done')
+
+                                        <td>
+                                            <span class="badge text-capitalize mb-0
+                                                @if($notaryconsultation->status == 'done')
+                                                    bg-success
+                                                @elseif($notaryconsultation->status == 'progress')
+                                                    bg-warning
+                                                @else
+                                                    bg-secondary
+                                                @endif">
+                                                @if($notaryconsultation->status == 'done')
                                                     Selesai
-                                                @elseif ($notaryconsultation->status == 'progress')
+                                                @elseif($notaryconsultation->status == 'progress')
                                                     Sedang Diproses
                                                 @else
                                                     {{ ucfirst($notaryconsultation->status) }}
@@ -81,30 +92,54 @@
                                             </span>
                                         </td>
 
-                                        <td class="text-center">
+                                        <td>
                                             <a href="{{ route('consultation.edit', $notaryconsultation->id) }}"
                                                 class="btn btn-info btn-xs mb-0">
-                                                {{-- <i class="fa-solid fa-pencil" style="font-size: 14px"> --}}
                                                 Edit
-                                                </i>
                                             </a>
                                         </td>
+
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted w-100 text-sm">Belum ada data
-                                            Konsultasi.
+                                        <td colspan="7" class="text-center text-muted text-sm">
+                                            Belum ada data Konsultasi.
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
+
                         </table>
-                        <div class="d-flex justify-content-end mt-3 px-4">
+
+                        <div class="mt-3 d-flex justify-content-end">
                             {{ $notaryConsultations->links() }}
                         </div>
+
                     </div>
+
                 </div>
             </div>
+
         </div>
     </div>
+
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

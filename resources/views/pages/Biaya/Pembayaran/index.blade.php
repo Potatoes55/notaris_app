@@ -2,9 +2,19 @@
 
 @section('title', 'Pembayaran')
 
-
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Pembayaran'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Pembayaran'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@elseif ($module == 'Proses Lain')
+    @include('components.proseslain-menu')
+@else
+    @include('components.notaris-menu')
+@endif
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
@@ -15,7 +25,7 @@
 
                 {{-- Cari PIC Document --}}
                 <div class="card-body">
-                    <form method="GET" action="{{ route('notary_payments.index') }}">
+                    <form method="GET" action="{{ url()->current() }}">
                         <div class="input-group">
                             <input type="text" name="payment_code" class="form-control"
                                 placeholder="Masukkan Kode Pembayaran" value="{{ request('payment_code') }}">
@@ -39,7 +49,18 @@
                                     <th class="text-capitalize">File Pembayaran</th>
                                 </thead>
                                 <tbody class="text-center">
-                                    <td class="text-sm">{{ $cost->payment_code }}</td>
+                                    <td class="text-sm">
+                                        <div class="d-flex justify-content-center align-items-center gap-2">
+                                            <span>{{ $cost->payment_code }}</span>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-link p-0 text-primary"
+                                                onclick="copyValue(this, '{{ $cost->payment_code }}')">
+                                                <i class="fa-solid fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </td>
                                     <td class="text-sm">{{ $cost->client->fullname }}</td>
                                     <td class="text-sm">Rp {{ number_format($cost->total_cost, 0, ',', '.') }}</td>
                                     <td class="text-sm">Rp {{ number_format($cost->amount_paid, 0, ',', '.') }}</td>
@@ -379,6 +400,25 @@
             color: inherit;
         }
     </style>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            window.notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection
 
 @push('js')

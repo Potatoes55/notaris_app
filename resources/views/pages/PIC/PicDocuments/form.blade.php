@@ -14,8 +14,15 @@
                 <hr>
                 <div class="card-body px-4 pt-0 pb-2">
                     <form
-                        action="{{ isset($picDocument) ? route('pic_documents.update', $picDocument) : route('pic_documents.store') }}"
-                        method="POST" id="picDocumentForm">
+                        action="{{ isset($picDocument)
+                            ? ($module == 'PPAT'
+                                ? route('ppat.pic.documents.update', $picDocument->id)
+                                : route('notaris.pic.documents.update', $picDocument->id))
+                            : ($module == 'PPAT'
+                                ? route('ppat.pic.documents.store')
+                                : route('notaris.pic.documents.store')) }}"
+                        method="POST"
+                        id="picDocumentForm">
                         @csrf
                         @if (isset($picDocument))
                             @method('PUT')
@@ -151,11 +158,18 @@
                         </div>
 
                         <div class="mt-4">
-                            <a href="{{ route('pic_documents.index') }}" class="btn btn-secondary">Kembali</a>
-                            <button type="submit" class="btn btn-primary">
-                                {{ isset($picDocument) ? 'Ubah' : 'Simpan' }}
-                            </button>
-                        </div>
+                            <div class="mt-4">
+                                <a href="{{ $module == 'PPAT'
+                                        ? route('ppat.pic.documents')
+                                        : route('notaris.pic.documents') }}"
+                                    class="btn btn-secondary">
+                                    Kembali
+                                </a>
+
+                                <button type="submit" class="btn btn-primary">
+                                    {{ isset($picDocument) ? 'Ubah' : 'Simpan' }}
+                                </button>
+                            </div>
                     </form>
                 </div>
             </div>

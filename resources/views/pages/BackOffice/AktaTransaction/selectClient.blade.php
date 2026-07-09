@@ -1,15 +1,16 @@
 @extends('layouts.app')
 
-
 @section('title', 'Transaksi Akta')
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Akta Notaris / Transaksi Akta'])
 
+    @include('components.notaris-menu')
+
     <div class="row mt-4 mx-4 ">
         <div class="col-md-12">
-            <div class="card mb-0  shadow-lg pb-0">
-                <div class="card-header pb-0 d-flex justify-content-between align-items-center  p-3 flex-wrap ">
+            <div class="card mb-0 shadow-lg pb-0">
+                <div class="card-header pb-0 d-flex justify-content-between align-items-center p-3 flex-wrap">
                     <h5 class="mb-lg-1 fw-bold">Klien</h5>
                     <div class="w-lg-25">
                         <form method="GET" action="{{ route('akta-transactions.selectClient') }}" class="no-spinner">
@@ -41,7 +42,21 @@
                                         <tr class="text-sm text-center">
                                             <td>{{ $clients->firstItem() + $loop->index }}</td>
                                             <td class="text-capitalize">{{ $client->fullname }}</td>
-                                            <td>{{ $client->client_code ?? '-' }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                                    <span>{{ $client->client_code ?? '-' }}</span>
+
+                                                    @if($client->client_code)
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-link p-0 text-primary copy-btn"
+                                                            onclick="copyValue(this, '{{ $client->client_code }}')"
+                                                            title="Salin Kode Klien">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
                                             <td class="text-capitalize">{{ $client->company_name ?? '-' }}</td>
                                             <td>{{ $client->akta_transactions_count }}</td>
                                             <td class="text-center">
@@ -67,5 +82,21 @@
             </div>
         </div>
     </div>
+    <script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
 
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
+    </script>
 @endsection

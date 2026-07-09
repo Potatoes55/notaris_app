@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Progress')
+@section('title', 'Log')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Progress'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Log'])
+    @include('components.proseslain-menu')
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-0">

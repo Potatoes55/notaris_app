@@ -48,7 +48,21 @@
                                 @forelse ($documents as $product)
                                     <tr class="text-center text-sm">
                                         <td>{{ $documents->firstItem() + $loop->index }}</td>
-                                        <td>{{ $product->client_code }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <span>{{ $product->client_code ?? '-' }}</span>
+
+                                                @if($product->client_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary copy-btn"
+                                                        onclick="copyValue(this, '{{ $product->client_code }}')"
+                                                        title="Salin Kode Klien">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td>{{ $product->client->fullname ?? '-' }}</td>
                                         <td>{{ $product->warkah_name ?? '-' }}</td>
                                         <td>{{ $product->city ?? '-' }}</td>
@@ -235,4 +249,21 @@
             </div>
         </div>
     </div>
+    <script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
+
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
+    </script>
 @endsection

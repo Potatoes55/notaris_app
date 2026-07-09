@@ -95,6 +95,29 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {{-- pihak akta --}}
+                                        <div class="mb-4">
+                                        <h6 class="fw-bold text-capitalize text-primary mb-2">
+                                            <i class="bi bi-people me-1"></i> Pihak Akta
+                                        </h6>
+
+                                        <div class="border rounded px-3 py-2 small bg-light">
+                                        @if($akta->parties->isNotEmpty())
+                                            @foreach($akta->parties as $party)
+                                                <div class="row mb-1">
+                                                    <h6 class="col-4 col-lg-2">Nama</h6>
+                                                    <div class="col-8 col-lg-8 fw-semibold">: {{ v($party->name ?? '-') }}</div>
+                                                </div>
+                                                <div class="row {{ !$loop->last ? 'mb-3 border-bottom pb-2' : '' }}">
+                                                    <h6 class="col-4 col-lg-2">Peran</h6>
+                                                    <div class="col-8 fw-semibold">: {{ v($party->role ?? '-') }}</div>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <div class="text-muted text-center">Tidak ada data pihak terkait.</div>
+                                        @endif
+                                    </div>
+                                    </div>
 
                                     {{-- TRANSAKSI --}}
                                     @php

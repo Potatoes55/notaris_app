@@ -11,6 +11,7 @@ class NotaryRelaasAkta extends Model
     use LogsActivityCustom, SoftDeletes;
 
     protected $table = 'notary_relaas_aktas';
+
     protected $fillable = [
         'notaris_id',
         'client_code',
@@ -24,7 +25,7 @@ class NotaryRelaasAkta extends Model
         'story_date',
         'story_location',
         'status',
-        'note'
+        'note',
     ];
 
     public function akta_type()
@@ -44,7 +45,12 @@ class NotaryRelaasAkta extends Model
 
     public function parties()
     {
-        return $this->hasMany(NotaryRelaasParties::class, 'notary_relaas_akta_id');
+        return $this->hasMany(NotaryRelaasParties::class, 'relaas_id', 'id');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(NotaryRelaasDocument::class, 'relaas_id', 'id');
     }
 
     protected $casts = [

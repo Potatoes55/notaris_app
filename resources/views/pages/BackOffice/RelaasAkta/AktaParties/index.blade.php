@@ -4,6 +4,7 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'PPAT / Pihak Akta'])
+    @include('components.ppat-menu')
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
@@ -38,11 +39,36 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <h6><strong>Kode Klien</strong></h6>
-                                        <p class="text-muted text-sm">{{ $relaasInfo->client_code }}</p>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <p class="text-muted text-sm mb-0">{{ $relaasInfo->client_code ?? '-' }}</p>
+
+                                            @if($relaasInfo->client_code)
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary copy-btn"
+                                                    onclick="copyValue(this, '{{ $relaasInfo->client_code }}')"
+                                                    title="Salin Kode Klien">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            @endif
+                                        </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <h6 class="mb-1"><strong>Nomor Akta</strong></h6>
-                                        <p class="text-muted text-sm">{{ $relaasInfo->first()->relaas_number ?? '-' }}</p>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <p class="text-muted text-sm mb-0">{{ $relaasInfo->relaas_number ?? '-' }}</p>
+
+                                            @if($relaasInfo->relaas_number)
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link p-0 text-primary copy-btn"
+                                                    onclick="copyValue(this, '{{ $relaasInfo->relaas_number }}')"
+                                                    title="Salin Nomor Akta">
+                                                    <i class="fa-solid fa-copy"></i>
+                                                </button>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <h6><strong>Notaris</strong></h6>
@@ -140,4 +166,21 @@
             </div>
         </div>
     </div>
+    <script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
+
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
+    </script>
 @endsection

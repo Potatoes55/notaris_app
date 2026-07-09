@@ -12,7 +12,6 @@ use Mpdf\Mpdf;
 
 class CovernoteController extends Controller
 {
-    // Helper untuk mengambil ID Notaris yang sedang login
     private function getNotarisId()
     {
         return Auth::user()->notaris_id;
@@ -21,23 +20,30 @@ class CovernoteController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        
+
         $covernotes = Covernote::with('client')
-            ->where('notaris_id', $this->getNotarisId()) // Filter data milik notaris saja
+            ->where('notaris_id', $this->getNotarisId())
             ->when($search, function ($query, $search) {
-                return $query->where(function($q) use ($search) {
+                return $query->where(function ($q) use ($search) {
                     $q->where('covernote_number', 'like', "%{$search}%")
-                    ->orWhere('subject', 'like', "%{$search}%")
-                    ->orWhere('recipient', 'like', "%{$search}%")
-                    ->orWhereHas('client', function ($q) use ($search) {
-                        $q->where('fullname', 'like', "%{$search}%");
-                    });
+                        ->orWhere('subject', 'like', "%{$search}%")
+                        ->orWhere('recipient', 'like', "%{$search}%")
+                        ->orWhereHas('client', function ($q) use ($search) {
+                            $q->where('fullname', 'like', "%{$search}%");
+                        });
                 });
             })
             ->latest()
             ->paginate(10);
 
-        return view('pages.BackOffice.Covernote.index', compact('covernotes'));
+        $module = request()->segment(1) === 'ppat'
+            ? 'PPAT'
+            : 'Notaris';
+
+        return view('pages.BackOffice.Covernote.index', compact(
+            'covernotes',
+            'module'
+        ));
     }
 
     public function print(Request $request)
@@ -45,7 +51,7 @@ class CovernoteController extends Controller
         $search = $request->input('search');
 
         $covernotes = Covernote::with('client')
-            ->where('notaris_id', $this->getNotarisId()) // Filter data print milik notaris saja
+            ->where('notaris_id', $this->getNotarisId())
             ->when($search, function ($query, $search) {
                 return $query->where('covernote_number', 'like', "%{$search}%")
                             ->orWhere('subject', 'like', "%{$search}%")
@@ -70,7 +76,6 @@ class CovernoteController extends Controller
 
     public function create()
     {
-        // Hanya tampilkan klien milik notaris ini di dropdown
         $clients = Client::where('notaris_id', $this->getNotarisId())->get();
         return view('pages.BackOffice.Covernote.form', compact('clients'));
     }
@@ -82,13 +87,12 @@ class CovernoteController extends Controller
             'covernote_number' => 'required|string|unique:covernotes,covernote_number',
         ]);
 
-        // Verifikasi kepemilikan klien
         $client = Client::where('id', $request->client_id)
                         ->where('notaris_id', $this->getNotarisId())
                         ->firstOrFail();
 
         $data = $request->all();
-        $data['notaris_id'] = $this->getNotarisId(); // Simpan notaris_id
+        $data['notaris_id'] = $this->getNotarisId();
         $data['client_code'] = $client->client_code;
 
         if ($request->hasFile('file')) {

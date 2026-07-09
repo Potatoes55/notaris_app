@@ -4,17 +4,16 @@ namespace App\Services;
 
 use App\Models\NotaryRelaasAkta;
 use App\Models\NotaryRelaasDocument;
-use Illuminate\Support\Facades\Storage;
 
 class NotaryRelaasDocumentService
 {
     /**
      * Cari relaas berdasarkan registration_code atau relaas_number
      */
-    public function searchRelaas(?string $transactionCode, ?string $relaasNumber)
+    public function searchRelaas(?string $transactionCode, ?string $relaasNumber, ?string $created_at)
     {
         return NotaryRelaasAkta::where('notaris_id', auth()->user()->notaris_id)
-            ->where(function ($q) use ($transactionCode, $relaasNumber) {
+            ->where(function ($q) use ($transactionCode, $relaasNumber, $created_at) {
 
                 if ($transactionCode) {
                     $q->where('transaction_code', $transactionCode);
@@ -23,8 +22,24 @@ class NotaryRelaasDocumentService
                 if ($relaasNumber) {
                     $q->orWhere('relaas_number', $relaasNumber);
                 }
+                if ($created_at) {
+                    $q->orWhere('created_at', $created_at);
+
+                }
             })
             ->first();
+    }
+
+    public function searchRelaasByDateRange(string $startDate, string $endDate)
+    {
+        return NotaryRelaasAkta::with(['client'])
+            ->withCount('documents')
+            ->where('notaris_id', auth()->user()->notaris_id)
+            ->whereBetween('story_date', [$startDate.' 00:00:00', $endDate.' 23:59:59'])
+            // ->whereHas('documents')
+            ->orderBy('story_date', 'desc')
+            ->paginate(10)
+            ->withQueryString();
     }
 
     /**
@@ -81,7 +96,7 @@ class NotaryRelaasDocumentService
     public function toggleStatus(int $id)
     {
         $document = $this->findById($id);
-        $document->status = !$document->status;
+        $document->status = ! $document->status;
         $document->save();
 
         return $document;

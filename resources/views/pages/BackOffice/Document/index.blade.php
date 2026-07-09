@@ -5,6 +5,7 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Dokumen'])
+    @include('components.notaris-menu')
 
     <div class="row mt-4 mx-4">
         <div class="col md-12">

@@ -2,9 +2,17 @@
 
 @section('title', 'Laporan Akta')
 
-
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Laporan Akta'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Laporan Akta'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@else
+    @include('components.notaris-menu')
+@endif
 
     <div class="row mt-4 mx-4">
         <div class="col md-12">
@@ -97,8 +105,34 @@
                                 @foreach ($data as $index => $row)
                                     <tr class="text-center text-sm">
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $row->akta_number ?? ($row->relaas_number ?? '-') }}</td>
-                                        <td>{{ $row->client_code ?? '-' }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $row->akta_number ?? ($row->relaas_number ?? '-') }}</span>
+
+                                                @if($row->akta_number || $row->relaas_number)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $row->akta_number ?? $row->relaas_number }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <span>{{ $row->client_code ?? '-' }}</span>
+
+                                                @if($row->client_code)
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this, '{{ $row->client_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td>{{ $row->client->fullname ?? '-' }}</td>
                                         <td>{{ $row->created_at->format('d-m-Y H:i') }}</td>
                                         <td>
@@ -124,5 +158,23 @@
             @endif
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+            navigator.clipboard.writeText(value);
 
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

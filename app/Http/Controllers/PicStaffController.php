@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Models\PicStaff;
 use App\Services\PicStaffService;
 use Illuminate\Http\Request;
@@ -16,24 +15,45 @@ class PicStaffController extends Controller
         $this->service = $service;
     }
 
+    private function getModule()
+    {
+        return request()->routeIs('ppat.*') ? 'PPAT' : 'Notaris';
+    }
+
+    private function getIndexRoute()
+    {
+        return request()->routeIs('ppat.*')
+            ? 'ppat.pic.staff'
+            : 'notaris.pic.staff';
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $module = $this->getModule();
+
         $picStaffs = $this->service->getAll($search);
 
-        return view('pages.PIC.PicStaff.index', compact('picStaffs', 'search'));
+        return view(
+            'pages.PIC.PicStaff.index',
+            compact('picStaffs', 'search', 'module')
+        );
     }
 
     public function create()
     {
-        return view('pages.PIC.PicStaff.form');
+        $module = $this->getModule();
+
+        return view(
+            'pages.PIC.PicStaff.form',
+            compact('module')
+        );
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate(
             [
-                // 'notaris_id'   => 'required|exists:notaris,id',
                 'full_name'    => 'required|string|max:255',
                 'email'        => 'required|email',
                 'phone_number' => 'required|string|max:50',
@@ -55,19 +75,27 @@ class PicStaffController extends Controller
 
         $this->service->store($validated);
 
-        notyf()->position('x', 'right')->position('y', 'top')->success('PIC Staff berhasil ditambahkan.');
-        return redirect()->route('pic_staff.index');
+        notyf()
+            ->position('x', 'right')
+            ->position('y', 'top')
+            ->success('PIC Staff berhasil ditambahkan.');
+
+        return redirect()->route($this->getIndexRoute());
     }
 
     public function edit(PicStaff $pic_staff)
     {
-        return view('pages.PIC.PicStaff.form', compact('pic_staff'));
+        $module = $this->getModule();
+
+        return view(
+            'pages.PIC.PicStaff.form',
+            compact('pic_staff', 'module')
+        );
     }
 
     public function update(Request $request, PicStaff $pic_staff)
     {
         $validated = $request->validate([
-            // 'notaris_id'   => 'required|exists:notaris,id',
             'full_name'    => 'required|string|max:255',
             'email'        => 'required|email',
             'phone_number' => 'required|string|max:50',
@@ -76,19 +104,27 @@ class PicStaffController extends Controller
             'note'         => 'nullable|string|max:255',
         ]);
 
-        $validated['notaris_id'] = auth()->user()->notaris->id;
+        $validated['notaris_id'] = auth()->user()->notaris_id;
 
         $this->service->update($pic_staff, $validated);
 
-        notyf()->position('x', 'right')->position('y', 'top')->success('PIC Staff berhasil diperbarui.');
-        return redirect()->route('pic_staff.index');
+        notyf()
+            ->position('x', 'right')
+            ->position('y', 'top')
+            ->success('PIC Staff berhasil diperbarui.');
+
+        return redirect()->route($this->getIndexRoute());
     }
 
     public function destroy(PicStaff $pic_staff)
     {
         $this->service->destroy($pic_staff);
 
-        notyf()->position('x', 'right')->position('y', 'top')->success('PIC Staff berhasil dihapus.');
-        return redirect()->route('pic_staff.index');
+        notyf()
+            ->position('x', 'right')
+            ->position('y', 'top')
+            ->success('PIC Staff berhasil dihapus.');
+
+        return redirect()->route($this->getIndexRoute());
     }
 }

@@ -5,6 +5,7 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Klien'])
+    @include('components.konsultasi-menu')
     <div class="row mt-4 mx-4 ">
         <div class="col-md-12">
             <div class="card mb-0  p-3 shadow-lg pb-0">
@@ -24,9 +25,13 @@
                                 'type' => 'company'
                             ]);
                         @endphp
-                        <button class="btn btn-outline-primary btn-sm mb-0" data-bs-toggle="modal"
-                            data-bs-target="#shareLinkModal">
-                            <i class="fas fa-link"></i> Salin Link Form Klien
+                        <button type="button"
+                            class="btn bg-gradient-primary btn-sm mb-0 d-inline-flex align-items-center justify-content-center"
+                            data-bs-toggle="modal"
+                            data-bs-target="#shareLinkModal"
+                            style="height:35px; min-width:140px; border-radius:12px; padding:0 24px; font-weight:600;">
+                            <i class="fas fa-link me-2"></i>
+                            Salin Link
                         </button>
 
                         <div class="modal fade" id="shareLinkModal" tabindex="-1" aria-hidden="true">
@@ -175,9 +180,19 @@
                                             <td>
                                                 {{ $clients->firstItem() + $loop->index }}
                                             </td>
-                                            <td>
-                                                {{ $client->client_code }}
+                                            <td class="text-center align-middle">
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $client->client_code ?? '-' }}</span>
 
+                                                    @if($client->client_code)
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-link p-0 text-primary"
+                                                            onclick="copyValue(this, '{{ $client->client_code }}')">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             </td>
                                             <td>
                                                 {{ $client->fullname }}
@@ -391,6 +406,25 @@
             </div>
         </div>
     </div>
+@push('js')
+<script>
+    function copyValue(button, value) {
+        navigator.clipboard.writeText(value);
+
+        const icon = button.querySelector('i');
+
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        notyf.success('Berhasil disalin');
+
+        setTimeout(() => {
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
+        }, 1000);
+    }
+</script>
+@endpush
 @endsection
 
 @push('js')

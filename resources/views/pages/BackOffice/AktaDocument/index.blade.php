@@ -5,6 +5,8 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Akta Notaris / Dokumen Akta'])
 
+    @include('components.notaris-menu')
+
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">
@@ -12,17 +14,64 @@
                     <h5>Dokumen Akta</h5>
                 </div>
                 <div class="card-body pt-2 pb-0">
-                    {{-- Form Pencarian --}}
-                    <form method="GET" action="{{ route('akta-documents.index') }}"
-                        class="d-flex gap-2 mb-3 justify-content-end" class="no-spinner">
-                        <input type="text" name="transaction_code" class="form-control"
-                            placeholder="Cari Kode transaksi..." value="{{ $filters['transaction_code'] ?? '' }}">
-                        <input type="text" name="akta_number" class="form-control" placeholder="Cari nomor akta..."
+                <form method="GET" action="{{ route('akta-documents.index') }}"
+                    class="d-flex flex-wrap gap-2 mb-3 justify-content-end align-items-end no-spinner">
+                    @csrf
+
+                    <div style="flex:1; min-width:200px;">
+                        <label for="transaction_code" class="form-label text-sm">
+                            Kode Transaksi
+                        </label>
+                        <input
+                            type="text"
+                            name="transaction_code"
+                            id="transaction_code"
+                            class="form-control"
+                            placeholder="Cari Kode transaksi..."
+                            value="{{ $filters['transaction_code'] ?? '' }}">
+                    </div>
+
+                    <div style="flex:1; min-width:200px;">
+                        <label for="akta_number" class="form-label text-sm">
+                            Nomor Akta
+                        </label>
+                        <input
+                            type="text"
+                            name="akta_number"
+                            id="akta_number"
+                            class="form-control"
+                            placeholder="Cari nomor akta..."
                             value="{{ $filters['akta_number'] ?? '' }}">
-                        <button type="submit" class="btn btn-primary btn-sm mb-0">Cari</button>
-                    </form>
+                    </div>
 
+                    <div style="width:160px;">
+                        <label for="start_date" class="form-label text-sm">
+                            Tanggal Mulai
+                        </label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            id="start_date"
+                            class="form-control"
+                            value="{{ request('start_date') }}">
+                    </div>
 
+                    <div style="width:160px;">
+                        <label for="end_date" class="form-label text-sm">
+                            Tanggal Selesai
+                        </label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            id="end_date"
+                            class="form-control"
+                            value="{{ request('end_date') }}">
+                    </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm mb-0" style="height: 36px;">Cari</button>
+                        </div>
+                </form>
 
                     {{-- Tampilkan transaksi jika ada --}}
                     @if ($transaction)
@@ -32,14 +81,41 @@
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <h6 class="mb-1"><strong>Kode Klien</strong></h6>
-                                        <p class="text-muted text-sm">{{ $transaction->client_code }}</p>
+                                <div class="col-md-6">
+                                    <h6 class="mb-1"><strong>Kode Klien</strong></h6>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <p class="text-muted text-sm mb-0">
+                                            {{ $transaction->client_code }}
+                                        </p>
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-link p-0 text-primary"
+                                            onclick="copyValue(this, '{{ $transaction->client_code }}')">
+                                            <i class="fa-solid fa-copy"></i>
+                                        </button>
                                     </div>
-                                    <div class="col-md-6">
-                                        <h6 class="mb-1"><strong>Nomor Akta</strong></h6>
-                                        <p class="text-muted text-sm">{{ $transaction->akta_number ?? '-' }}</p>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 class="mb-1"><strong>Nomor Akta</strong></h6>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <p class="text-muted text-sm mb-0">
+                                            {{ $transaction->akta_number ?? '-' }}
+                                        </p>
+
+                                        @if($transaction->akta_number)
+                                            <button
+                                                type="button"
+                                                class="btn btn-link p-0 text-primary"
+                                                onclick="copyValue(this, '{{ $transaction->akta_number }}')">
+                                                <i class="fa-solid fa-copy"></i>
+                                            </button>
+                                        @endif
                                     </div>
+                                </div>
                                     {{-- <div class="col-md-6">
                                         <h6 class="mb-1"><strong>Tipe Akta</strong></h6>
                                         <p class="text-muted text-sm">{{ $transaction->akta_type->type ?? '-' }}</p>
@@ -73,11 +149,22 @@
 
                         {{-- Tabel Dokumen --}}
                         <div class="mb-1">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5>Dokumen Akta</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5>Dokumen Akta</h5>
+                            <div class="d-flex gap-2">
+                                
                                 <a href="{{ route('akta-documents.createData', ['akta_transaction_id' => $transaction->id]) }}"
-                                    class="btn btn-primary btn-sm mb-0 ">+ Tambah Dokumen Akta</a>
+                                    class="btn btn-primary btn-sm mb-0">+ Tambah Dokumen Akta</a>
+
+                                {{-- Tombol Tambah SK Kemenkumham --}}
+                                @if($transaction->akta_type && in_array(strtolower($transaction->akta_type->category), ['perubahan', 'pembubaran']))
+                                    <a href="{{ route('akta-documents.createData', ['akta_transaction_id' => $transaction->id]) }}?type=sk_kemenkum"
+                                        class="btn btn-success btn-sm mb-0">
+                                        <i class="fa-solid fa-file-signature me-1"></i> + Input SK Kemenkum
+                                    </a>
+                                @endif
                             </div>
+                        </div>
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
@@ -144,25 +231,14 @@
 
                                                                     <div class="modal-body text-center">
 
-                                                                        {{-- Jika FILE IMAGE --}}
-                                                                        @if ($doc->file_type === 'svg' || $doc->file_type === 'png' || $doc->file_type === 'jpg' || $doc->file_type === 'jpeg')
-                                                                            <div class="d-flex justify-content-center align-items-center"
-                                                                                style="min-height: 400px;">
-                                                                                <img src="{{ asset('storage/' . $doc->file_url) }}"
-                                                                                    alt="Dokumen"
-                                                                                    class="img-fluid rounded shadow-sm"
-                                                                                    style="max-height: 90vh; object-fit: contain;">
-                                                                            </div>
-
-                                                                            {{-- Jika FILE PDF --}}
-                                                                        @elseif ($doc->file_type === 'pdf')
+                                                                       @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg']))
                                                                             <embed
-                                                                                src="{{ asset('storage/' . $doc->file_url) }}"
-                                                                                type="application/pdf" width="100%"
+                                                                                src="{{ route('akta-documents.view-pdf', ['id' => $doc->id]) }}"
+                                                                                type="application/pdf" 
+                                                                                width="100%"
                                                                                 height="700px" />
                                                                         @else
-                                                                            <p class="text-muted">File tidak dapat
-                                                                                ditampilkan.</p>
+                                                                            <p class="text-muted">File tidak dapat ditampilkan.</p>
                                                                         @endif
 
                                                                     </div>
@@ -206,4 +282,24 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        function copyValue(button, value) {
+
+            navigator.clipboard.writeText(value);
+
+            const icon = button.querySelector('i');
+
+            icon.classList.remove('fa-copy');
+            icon.classList.add('fa-check');
+
+            notyf.success('Berhasil disalin');
+
+            setTimeout(() => {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-copy');
+            }, 1000);
+        }
+    </script>
+    @endpush
 @endsection

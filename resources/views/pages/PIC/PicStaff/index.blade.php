@@ -3,13 +3,37 @@
 @section('title', 'PIC Staff')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'PIC / PIC Staff'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / PIC Staff'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@elseif ($module == 'Proses Lain')
+    @include('components.proseslain-menu')
+@else
+    @include('components.notaris-menu')
+@endif
+
+@if(session('login_role') != 'staff')
+    @if ($module == 'PPAT')
+        @include('components.ppat-menu')
+    @elseif ($module == 'Proses Lain')
+        @include('components.proseslain-menu')
+    @else
+        @include('components.notaris-menu')
+    @endif
+@endif
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">PIC Staff</h5>
-                    <a href="{{ route('pic_staff.create') }}" class="btn btn-primary btn-sm mb-0">
+                    <a href="{{ $module == 'PPAT'
+                        ? route('ppat.pic.staff.create')
+                        : route('notaris.pic.staff.create') }}"
+                        class="btn btn-primary btn-sm mb-0">
                         + Tambah PIC
                     </a>
                 </div>

@@ -33,6 +33,7 @@ use App\Http\Controllers\PicDocumentsController;
 use App\Http\Controllers\PicHandOverController;
 use App\Http\Controllers\PicProcessController;
 use App\Http\Controllers\PicStaffController;
+use App\Http\Controllers\PinController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProsesLainController;
 use App\Http\Controllers\PublicPaymentController;
@@ -44,6 +45,7 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\WhoamiController;
 use App\Models\Notaris;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
@@ -121,8 +123,19 @@ Route::middleware('guest', 'nocache')->group(function () {
     // Route::post('/client/search', [ClientController::class, 'searchByRegistrationCode'])->name('client.search');
     Route::post('/client/{uuid}/upload-document', [ClientController::class, 'uploadDocument'])
         ->name('client.uploadDocument');
+
     Route::get('/akta/{transaction_code}', [AktaQrController::class, 'show'])
+        ->middleware('ensure.pin')
         ->name('akta.qr.show');
+
+    Route::get('/akta/{transaction_code}/verify-pin', [AktaQrController::class, 'showPinForm'])
+        ->name('akta.qr.pin.form');
+
+    Route::post('/akta/{transaction_code}/verify-pin', [AktaQrController::class, 'checkPin'])
+        ->name('akta.qr.pin.check');
+    Route::get('reset-pin/{token}', [ForgotPasswordController::class, 'showResetPinForm'])->name('pin.reset');
+    Route::post('reset-pin', [ForgotPasswordController::class, 'resetPin'])->name('pin.update');
+
 });
 Route::middleware(['auth', 'restrict.by.email'])->group(function () {
     Route::get('/admin/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
@@ -131,9 +144,18 @@ Route::middleware(['auth', 'restrict.by.email'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('forgot-pin', [ForgotPasswordController::class, 'showPinRequestForm'])->name('pin.request');
+    Route::post('forgot-pin', [ForgotPasswordController::class, 'sendResetPinEmail'])->name('pin.email');
+
+    Route::get('/create-pin', [PinController::class, 'showCreateForm'])->name('pin.create');
+    Route::post('/create-pin', [PinController::class, 'store'])->name('pin.store');
+
+    Route::get('/whoami', [WhoamiController::class, 'index'])->name('whoami');
+    Route::post('/whoami/select', [WhoamiController::class, 'select'])->name('whoami.select');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+    Route::get('/settings/pin', [SettingController::class, 'indexPIN'])->name('settings.pin');
     Route::post('/profile/unlock', [UserProfileController::class, 'unlock'])->name('profile.unlock');
 
     Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
@@ -154,6 +176,64 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('proses-lain-progress/{id}', [ProsesLainController::class, 'destroyProgress'])->name('proses-lain-progress.destroy');
     Route::get('/proses-lain-pic/get-pic/{client_code}', [ProsesLainController::class, 'getPicByClient'])->name('proses-lain-pic.get-pic');
     Route::delete('proses-lain-pic/{id}', [ProsesLainController::class, 'destroy'])->name('proses-lain-pic.destroy');
+
+    Route::prefix('proses-lain')->name('proses-lain.')->group(function () {
+
+        Route::get('/', function () {
+            return view('pages.ProsesLain.index');
+        })->name('index');
+
+        Route::get('/transaksi', [ProsesLainController::class, 'index'])
+            ->name('transaksi');
+
+        Route::get('/progress', [ProsesLainController::class, 'indexProgress'])
+            ->name('progress');
+
+        Route::prefix('pic')->name('pic.')->group(function () {
+
+            Route::get('/staff', [PicStaffController::class, 'index'])
+                ->name('staff');
+
+            Route::get('/dokumen', [PicDocumentsController::class, 'index'])
+                ->name('documents');
+
+            Route::get('/proses', [PicProcessController::class, 'index'])
+                ->name('process');
+
+            Route::get('/handover', [PicHandOverController::class, 'index'])
+                ->name('handovers');
+        });
+
+            Route::middleware('check.full.access')
+                ->prefix('biaya')
+                ->name('biaya.')
+                ->group(function () {
+
+                    Route::get('/total', [NotaryCostController::class, 'index'])
+                        ->name('total');
+
+                    Route::get('/total/create', [NotaryCostController::class, 'create'])
+                        ->name('total.create');
+
+                    Route::post('/total', [NotaryCostController::class, 'store'])
+                        ->name('total.store');
+
+                    Route::get('/total/{id}/edit', [NotaryCostController::class, 'edit'])
+                        ->name('total.edit');
+
+                    Route::put('/total/{id}', [NotaryCostController::class, 'update'])
+                        ->name('total.update');
+
+                    Route::delete('/total/{id}', [NotaryCostController::class, 'destroy'])
+                        ->name('total.destroy');
+
+                    Route::get('/total/{id}/print', [NotaryCostController::class, 'print'])
+                        ->name('total.print');
+
+                    Route::get('/pembayaran', [NotaryPaymenttController::class, 'index'])
+                        ->name('payments');
+                });
+    });
     // cliet
     Route::resource('clients', ClientController::class)->except('show');
     Route::put('/clients/{id}/valid', [ClientController::class, 'markAsValid'])->name('clients.markAsValid');
@@ -227,13 +307,130 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
         Route::get('/profile', 'show')->name('profile');
         Route::put('/profile', 'update')->name('profile.update');
     });
-    Route::get('covernotes/print', [CovernoteController::class, 'print'])->name('covernotes.print');
-    Route::resource('covernotes', CovernoteController::class);
 
-    Route::get('/backup-restore', [BackupRestoreController::class, 'index'])->name('backup-restore.index');
+    /* NOTARIS */
+    Route::prefix('notaris')->name('notaris.')->group(function () {
 
-    Route::post('/backup', [BackupRestoreController::class, 'backup'])->name('backup');
-    Route::post('/restore', [BackupRestoreController::class, 'restore'])->name('restore');
+        Route::get('/', fn () => view('pages.notaris.index'))->name('index');
+
+        Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
+        Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
+        Route::get('/laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan');
+
+        /* PIC STAFF */
+        Route::get('/pic/staff', [PicStaffController::class, 'index'])->name('pic.staff');
+        Route::get('/pic/staff/create', [PicStaffController::class, 'create'])->name('pic.staff.create');
+        Route::post('/pic/staff', [PicStaffController::class, 'store'])->name('pic.staff.store');
+        Route::get('/pic/staff/{pic_staff}/edit', [PicStaffController::class, 'edit'])->name('pic.staff.edit');
+        Route::put('/pic/staff/{pic_staff}', [PicStaffController::class, 'update'])->name('pic.staff.update');
+        Route::delete('/pic/staff/{pic_staff}', [PicStaffController::class, 'destroy'])->name('pic.staff.destroy');
+
+        /* PIC DOKUMEN */
+        Route::get('/pic/dokumen', [PicDocumentsController::class, 'index'])->name('pic.documents');
+        Route::get('/pic/dokumen/create', [PicDocumentsController::class, 'create'])->name('pic.documents.create');
+        Route::post('/pic/dokumen', [PicDocumentsController::class, 'store'])->name('pic.documents.store');
+        Route::get('/pic/dokumen/{id}/edit', [PicDocumentsController::class, 'edit'])->name('pic.documents.edit');
+        Route::put('/pic/dokumen/{id}', [PicDocumentsController::class, 'update'])->name('pic.documents.update');
+        Route::delete('/pic/dokumen/{id}', [PicDocumentsController::class, 'destroy'])->name('pic.documents.destroy');
+        Route::get('/pic/dokumen/{id}/print', [PicDocumentsController::class, 'print'])->name('pic.documents.print');
+
+        /* PIC PROSES */
+        Route::get('/pic/proses', [PicProcessController::class, 'index'])->name('pic.process');
+        Route::get('/pic/proses/create', [PicProcessController::class, 'create'])->name('pic.process.create');
+        Route::post('/pic/proses', [PicProcessController::class, 'store'])->name('pic.process.store');
+        Route::get('/pic/proses/{id}/edit', [PicProcessController::class, 'edit'])->name('pic.process.edit');
+        Route::put('/pic/proses/{id}', [PicProcessController::class, 'update'])->name('pic.process.update');
+        Route::delete('/pic/proses/{id}', [PicProcessController::class, 'destroy'])->name('pic.process.destroy');
+
+        /* PIC HANDOVER */
+        Route::get('/pic/handover', [PicHandoverController::class, 'index'])->name('pic.handovers');
+        Route::get('/pic/handover/create', [PicHandoverController::class, 'create'])->name('pic.handovers.create');
+        Route::post('/pic/handover', [PicHandoverController::class, 'store'])->name('pic.handovers.store');
+        Route::delete('/pic/handover/{id}', [PicHandoverController::class, 'destroy'])->name('pic.handovers.destroy');
+        Route::get('/pic/handover/{id}/print', [PicHandoverController::class, 'print'])->name('pic.handovers.print');
+
+        /* BIAYA */
+        Route::get('/biaya/total', [NotaryCostController::class, 'index'])->name('costs');
+        Route::get('/biaya/total/create', [NotaryCostController::class, 'create'])->name('costs.create');
+        Route::post('/biaya/total', [NotaryCostController::class, 'store'])->name('costs.store');
+        Route::get('/biaya/total/{id}/edit', [NotaryCostController::class, 'edit'])->name('costs.edit');
+        Route::put('/biaya/total/{id}', [NotaryCostController::class, 'update'])->name('costs.update');
+        Route::delete('/biaya/total/{id}', [NotaryCostController::class, 'destroy'])->name('costs.destroy');
+        Route::get('/biaya/total/{id}/print', [NotaryCostController::class, 'print'])->name('costs.print');
+
+        Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
+    });
+
+    /* PPAT */
+    Route::prefix('ppat')->name('ppat.')->group(function () {
+
+        Route::get('/', fn () => view('pages.ppat.index'))->name('index');
+
+        Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
+        Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
+        Route::get('/laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan');
+
+        /* PIC STAFF */
+        Route::get('/pic/staff', [PicStaffController::class, 'index'])->name('pic.staff');
+        Route::get('/pic/staff/create', [PicStaffController::class, 'create'])->name('pic.staff.create');
+        Route::post('/pic/staff', [PicStaffController::class, 'store'])->name('pic.staff.store');
+        Route::get('/pic/staff/{pic_staff}/edit', [PicStaffController::class, 'edit'])->name('pic.staff.edit');
+        Route::put('/pic/staff/{pic_staff}', [PicStaffController::class, 'update'])->name('pic.staff.update');
+        Route::delete('/pic/staff/{pic_staff}', [PicStaffController::class, 'destroy'])->name('pic.staff.destroy');
+
+        /* PIC DOKUMEN */
+        Route::get('/pic/dokumen', [PicDocumentsController::class, 'index'])->name('pic.documents');
+        Route::get('/pic/dokumen/create', [PicDocumentsController::class, 'create'])->name('pic.documents.create');
+        Route::post('/pic/dokumen', [PicDocumentsController::class, 'store'])->name('pic.documents.store');
+        Route::get('/pic/dokumen/{id}/edit', [PicDocumentsController::class, 'edit'])->name('pic.documents.edit');
+        Route::put('/pic/dokumen/{id}', [PicDocumentsController::class, 'update'])->name('pic.documents.update');
+        Route::delete('/pic/dokumen/{id}', [PicDocumentsController::class, 'destroy'])->name('pic.documents.destroy');
+        Route::get('/pic/dokumen/{id}/print', [PicDocumentsController::class, 'print'])->name('pic.documents.print');
+
+        /* PIC PROSES */
+        Route::get('/pic/proses', [PicProcessController::class, 'index'])->name('pic.process');
+        Route::get('/pic/proses/create', [PicProcessController::class, 'create'])->name('pic.process.create');
+        Route::post('/pic/proses', [PicProcessController::class, 'store'])->name('pic.process.store');
+        Route::get('/pic/proses/{id}/edit', [PicProcessController::class, 'edit'])->name('pic.process.edit');
+        Route::put('/pic/proses/{id}', [PicProcessController::class, 'update'])->name('pic.process.update');
+        Route::delete('/pic/proses/{id}', [PicProcessController::class, 'destroy'])->name('pic.process.destroy');
+
+        /* PIC HANDOVER */
+        Route::get('/pic/handover', [PicHandoverController::class, 'index'])->name('pic.handovers');
+        Route::get('/pic/handover/create', [PicHandoverController::class, 'create'])->name('pic.handovers.create');
+        Route::post('/pic/handover', [PicHandoverController::class, 'store'])->name('pic.handovers.store');
+        Route::delete('/pic/handover/{id}', [PicHandoverController::class, 'destroy'])->name('pic.handovers.destroy');
+        Route::get('/pic/handover/{id}/print', [PicHandoverController::class, 'print'])->name('pic.handovers.print');
+
+        /* BIAYA */
+        Route::get('/biaya/total', [NotaryCostController::class, 'index'])->name('costs');
+        Route::get('/biaya/total/create', [NotaryCostController::class, 'create'])->name('costs.create');
+        Route::post('/biaya/total', [NotaryCostController::class, 'store'])->name('costs.store');
+        Route::get('/biaya/total/{id}/edit', [NotaryCostController::class, 'edit'])->name('costs.edit');
+        Route::put('/biaya/total/{id}', [NotaryCostController::class, 'update'])->name('costs.update');
+        Route::delete('/biaya/total/{id}', [NotaryCostController::class, 'destroy'])->name('costs.destroy');
+        Route::get('/biaya/total/{id}/print', [NotaryCostController::class, 'print'])->name('costs.print');
+
+        Route::get('/biaya/pembayaran', [NotaryPaymenttController::class, 'index'])->name('payments');
+    });
+
+    /* KONSULTASI */
+    Route::prefix('konsultasi')->name('konsultasi.')->group(function () {
+        Route::get('/', function () {
+            return view('pages.konsultasi.index');
+        })->name('index');
+        Route::get('/klien', [ClientController::class, 'index'])->name('clients');
+    });
+
+    /* BACKUP & RESTORE */
+    Route::get('/backup-restore', [BackupRestoreController::class, 'index'])
+        ->name('backup-restore.index');
+
+    Route::post('/backup', [BackupRestoreController::class, 'backup'])
+        ->name('backup');
+
+    Route::post('/restore', [BackupRestoreController::class, 'restore'])
+        ->name('restore');
 
     // UserProfileController routes
 
@@ -259,6 +456,9 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
     Route::get('akta-transactions/select-client', [NotaryAktaTransactionController::class, 'selectClient'])
         ->name('akta-transactions.selectClient');
     Route::resource('akta-transactions', NotaryAktaTransactionController::class);
+
+    // Route::get('akta-documents/{id}/view-pdf', [NotaryAktaDocumentsController::class, 'viewPdf'])
+    //     ->name('akta-documents.view-pdf');
     Route::resource('akta-documents', NotaryAktaDocumentsController::class);
 
     Route::get('/akta-documents/create/{akta_transaction_id}', [NotaryAktaDocumentsController::class, 'createData'])
@@ -266,6 +466,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
     Route::post('/akta-documents/store/{akta_transaction_id}', [NotaryAktaDocumentsController::class, 'storeData'])
         ->name('akta-documents.storeData');
+
     Route::resource('akta-parties', NotaryAktaPartiesController::class)->except('create', 'store', 'show');
     Route::get('akta-parties/createData/{akta_transaction_id}', [NotaryAktaPartiesController::class, 'createData'])
         ->name('akta-parties.createData');
@@ -313,3 +514,7 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
 // Logout route
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('cetak-akta-pdf/{id}', [NotaryAktaDocumentsController::class, 'viewPdf'])
+    ->name('akta-documents.view-pdf');
+Route::get('cetak-akta-ppat-pdf/{id}', [NotaryRelaasDocumentController::class, 'viewPdf'])
+    ->name('ppat-documents.view-pdf');

@@ -4,6 +4,7 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Laporan Pengurusan'])
+    @include('components.konsultasi-menu')
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card shadow-sm border-0 pb-0">

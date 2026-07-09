@@ -3,16 +3,45 @@
 @section('title', 'Serah Terima Dokumen')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Serah Terima Dokumen'])
+
+@include('layouts.navbars.auth.topnav', [
+    'title' => $module . ' / Serah Terima Dokumen'
+])
+
+@if ($module == 'PPAT')
+    @include('components.ppat-menu')
+@elseif ($module == 'Proses Lain')
+    @include('components.proseslain-menu')
+@else
+    @include('components.notaris-menu')
+@endif
+
+@if(session('login_role') != 'staff')
+    @if ($module == 'PPAT')
+        @include('components.ppat-menu')
+    @elseif ($module == 'Proses Lain')
+        @include('components.proseslain-menu')
+    @else
+        @include('components.notaris-menu')
+    @endif
+@endif
 
     <div class="row mt-4 mx-4">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                     <h5>Serah Terima Dokumen</h5>
-                    <a href="{{ route('pic_handovers.create') }}" class="btn btn-primary btn-sm mb-0">
-                        + Tambah Serah Terima
-                    </a>
+                    @if ($module == 'PPAT')
+                        <a href="{{ route('ppat.pic.handovers.create') }}"
+                            class="btn btn-primary btn-sm mb-0">
+                            + Tambah Serah Terima
+                        </a>
+                    @else
+                        <a href="{{ route('notaris.pic.handovers.create') }}"
+                            class="btn btn-primary btn-sm mb-0">
+                            + Tambah Serah Terima
+                        </a>
+                    @endif
                 </div>
                 <form method="GET" action="{{ route('pic_handovers.index') }}"
                     class="d-flex justify-content-end gap-2 mb-0 mx-3 mt-3">

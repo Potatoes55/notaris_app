@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class NotaryAktaDocuments extends Model
 {
-
     protected $table = 'notary_akta_documents';
 
     protected $fillable = [

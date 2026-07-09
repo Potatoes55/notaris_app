@@ -48,19 +48,15 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            notyf()
-                ->position('x', 'right')
-                ->position('y', 'top')
-                ->success('Anda Login Sebagai PIC, '.$user->username.'!');
-            if (! session('access_all_menu')) {
-                session()->flash(
-                    'access_code_warning',
-                    'Masukan Access Code untuk mengakses fitur Notaris/PPAT.'
-                );
-            }
+            // if (! session('access_all_menu')) {
+            //     session()->flash(
+            //         'access_code_warning',
+            //         'Masukan Access Code untuk mengakses fitur Notaris/PPAT.'
+            //     );
+            // }
 
             // return redirect()->route('dashboard');
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('whoami'));
         } else {
             notyf()->position('x', 'right')->position('y', 'top')->error('Email atau kata sandi salah.');
 

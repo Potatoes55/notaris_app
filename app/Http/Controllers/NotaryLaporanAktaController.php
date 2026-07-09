@@ -20,6 +20,10 @@ class NotaryLaporanAktaController extends Controller
         $status = $request->get('status');
         $notaris = auth()->user()->notaris;
 
+        $module = request()->segment(1) === 'ppat'
+            ? 'PPAT'
+            : 'Notaris';
+
         $data = collect();
 
         if ($queryType && $startDate && $endDate) {
@@ -39,7 +43,6 @@ class NotaryLaporanAktaController extends Controller
                         Carbon::parse($endDate)->endOfDay(),
                     ]);
 
-                // 🔥 FILTER STATUS (OPSIONAL)
                 if ($status) {
                     $query->where('status', $status);
                 }
@@ -55,6 +58,7 @@ class NotaryLaporanAktaController extends Controller
             'endDate' => $endDate,
             'status' => $status,
             'notaris' => $notaris,
+            'module' => $module,
         ]);
     }
 
