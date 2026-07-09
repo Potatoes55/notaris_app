@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class Whoamicontroller extends Controller
 {
@@ -19,7 +18,7 @@ class Whoamicontroller extends Controller
         ]);
 
         session([
-            'login_role' => $request->role
+            'login_role' => $request->role,
         ]);
 
         if ($request->role == 'staff') {
