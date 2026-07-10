@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\NotaryAktaTransaction;
 use App\Repositories\Interfaces\NotaryAktaTransactionRepositoryInterface;
-use Illuminate\Database\Eloquent\Collection;
 
 class NotaryAktaTransactionRepository implements NotaryAktaTransactionRepositoryInterface
 {
@@ -30,16 +29,16 @@ class NotaryAktaTransactionRepository implements NotaryAktaTransactionRepository
         $query = NotaryAktaTransaction::with(['client', 'akta_type'])
             ->where('notaris_id', auth()->user()->notaris_id);
 
-        if (!empty($filters['client_code'])) {
+        if (! empty($filters['client_code'])) {
             $query->where('client_code', $filters['client_code']);
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['transaction_code'])) {
-            $query->where('transaction_code', 'like', '%' . $filters['transaction_code'] . '%');
+        if (! empty($filters['transaction_code'])) {
+            $query->where('transaction_code', 'like', '%'.$filters['transaction_code'].'%');
         }
 
         return $query->latest()->paginate($perPage);
@@ -47,9 +46,12 @@ class NotaryAktaTransactionRepository implements NotaryAktaTransactionRepository
 
     public function find(int $id)
     {
-        return NotaryAktaTransaction::with(['client', 'akta_type'])->findOrFail($id);
+        return NotaryAktaTransaction::with(['client', 'akta_type'])
+            // ->whereHas('client', function ($query) {
+            //     $query->where('fullname', 'like', '%'.request()->query('fullname').'%');
+            // })
+            ->findOrFail($id);
     }
-
 
     public function create(array $data)
     {
@@ -59,7 +61,6 @@ class NotaryAktaTransactionRepository implements NotaryAktaTransactionRepository
         // $data['akta_number'] = null;
         // $data['akta_number_created_at'] = null;
 
-
         return NotaryAktaTransaction::create($data);
     }
 
@@ -67,6 +68,7 @@ class NotaryAktaTransactionRepository implements NotaryAktaTransactionRepository
     {
         $transaction = $this->find($id);
         $transaction->update($data);
+
         return $transaction;
     }
 
@@ -79,6 +81,7 @@ class NotaryAktaTransactionRepository implements NotaryAktaTransactionRepository
     {
         $transaction = $this->find($id);
         $transaction->update(['status' => $status]);
+
         return $transaction;
     }
 }

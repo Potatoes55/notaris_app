@@ -19,49 +19,65 @@ class NotaryRelaasDocumentController extends Controller
 
     public function index(Request $request)
     {
+        $notarisId = auth()->user()->notaris_id;
+        $filters = $request->only(['search', 'start_date', 'end_date']);
+        $search = $request->input('search');
+
         $relaasInfo = null;
         $documents = collect();
         $transactions = null;
 
+        $hasSearch = $request->filled('search');
         $hasDateFilter = $request->filled('start_date') && $request->filled('end_date');
 
-        if ($hasDateFilter && ! $request->filled('transaction_code') && ! $request->filled('relaas_number')) {
-            $transactions = $this->service->searchRelaasByDateRange(
-                $request->start_date,
-                $request->end_date
-            );
+        if ($hasSearch || $hasDateFilter) {
 
-            if ($transactions->isEmpty()) {
-                notyf()
-                    ->position('x', 'right')
-                    ->position('y', 'top')
-                    ->warning('Tidak ada transaksi relaas yang ditemukan pada rentang tanggal tersebut.');
+            if ($hasSearch) {
+
+                $relaasInfo = $this->service->searchRelaas(['search' => $search]);
             }
 
-            return view('pages.BackOffice.RelaasAkta.AktaDocument.index_date', compact('transactions'));
-        }
-
-        if ($request->filled('transaction_code') || $request->filled('relaas_number')) {
-
-            $relaasInfo = $this->service->searchRelaas(
-                $request->transaction_code,
-                $request->relaas_number,
-                null
-            );
-
             if ($relaasInfo) {
-                $documents = $this->service->getDocuments($relaasInfo->id);
+
+                $documents = $relaasInfo->documents;
             } else {
-                notyf()
-                    ->position('x', 'right')
-                    ->position('y', 'top')
-                    ->warning('Data dokumen relaas akta tidak ditemukan');
+
+                $query = NotaryRelaasAkta::with(['client', 'akta_type'])
+                    ->withCount('documents')
+                    ->where('notaris_id', $notarisId);
+
+                if ($hasSearch) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('relaas_number', 'like', '%'.$search.'%')
+                            ->orWhereHas('client', function ($clientQuery) use ($search) {
+                                $clientQuery->where('fullname', 'like', '%'.$search.'%');
+                            });
+                    });
+                }
+
+                if ($hasDateFilter) {
+                    $query->whereBetween('story_date', [
+                        $filters['start_date'].' 00:00:00',
+                        $filters['end_date'].' 23:59:59',
+                    ]);
+                }
+
+                $transactions = $query->orderBy('story_date', 'desc')
+                    ->paginate(10)
+                    ->withQueryString();
+
+                if ($transactions->isEmpty()) {
+                    notyf()
+                        ->position('x', 'right')
+                        ->position('y', 'top')
+                        ->warning('Tidak ada transaksi relaas yang ditemukan.');
+                }
             }
         }
 
         return view(
             'pages.BackOffice.RelaasAkta.AktaDocument.index',
-            compact('relaasInfo', 'documents')
+            compact('relaasInfo', 'transactions', 'documents', 'filters')
         );
     }
 

@@ -7,27 +7,19 @@ use App\Models\NotaryRelaasDocument;
 
 class NotaryRelaasDocumentService
 {
-    /**
-     * Cari relaas berdasarkan registration_code atau relaas_number
-     */
-    public function searchRelaas(?string $transactionCode, ?string $relaasNumber, ?string $created_at)
+    public function searchRelaas(array $filters = [])
     {
-        return NotaryRelaasAkta::where('notaris_id', auth()->user()->notaris_id)
-            ->where(function ($q) use ($transactionCode, $relaasNumber, $created_at) {
+        $query = NotaryRelaasAkta::where('notaris_id', auth()->user()->notaris_id);
 
-                if ($transactionCode) {
-                    $q->where('transaction_code', $transactionCode);
-                }
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('transaction_code', $search)
+                    ->orWhere('relaas_number', $search);
+            });
+        }
 
-                if ($relaasNumber) {
-                    $q->orWhere('relaas_number', $relaasNumber);
-                }
-                if ($created_at) {
-                    $q->orWhere('created_at', $created_at);
-
-                }
-            })
-            ->first();
+        return $query->with(['client', 'akta_type', 'documents'])->first();
     }
 
     public function searchRelaasByDateRange(string $startDate, string $endDate)
