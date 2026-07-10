@@ -18,64 +18,66 @@ class NotaryAktaDocumentsController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->only(['transaction_code', 'akta_number', 'start_date', 'end_date', 'fullname']);
+        $notarisId = auth()->user()->notaris_id;
+        $filters = $request->only(['search', 'start_date', 'end_date']);
+        $search = $request->input('search');
+
         $transaction = null;
-        $documents = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        $transactions = null;
+        $documents = collect();
 
-        $hasDateFilter = ! empty($filters['start_date']) && ! empty($filters['end_date']);
-        $hasClientFilter = ! empty($filters['fullname']);
+        $hasSearch = $request->filled('search');
+        $hasDateFilter = $request->filled('start_date') && $request->filled('end_date');
 
-        if ($hasClientFilter || ($hasDateFilter && empty($filters['transaction_code']) && empty($filters['akta_number']))) {
+        if ($hasSearch || $hasDateFilter) {
 
-            $query = NotaryAktaTransaction::with(['client'])
-                ->withCount('documents')
-                ->where('notaris_id', auth()->user()->notaris_id);
-
-            if ($hasDateFilter) {
-                $query->whereBetween('date_submission', [$filters['start_date'].' 00:00:00', $filters['end_date'].' 23:59:59']);
+            if ($hasSearch) {
+                $transaction = NotaryAktaTransaction::with(['client', 'akta_type'])
+                    ->where('notaris_id', $notarisId)
+                    ->where(function ($query) use ($search) {
+                        $query->where('transaction_code', $search)
+                            ->orWhere('akta_number', $search);
+                    })->first();
             }
 
-            if ($hasClientFilter) {
-                $query->whereHas('client', function ($clientQuery) use ($filters) {
-                    $clientQuery->where('fullname', 'like', '%'.$filters['fullname'].'%');
-                });
-            }
-            $transactions = $query->orderBy('date_submission', 'desc')->paginate(10)
-                ->withQueryString();
+            if ($transaction) {
+                $documents = $this->service->list(['akta_transaction_id' => $transaction->id]);
+            } else {
+                $query = NotaryAktaTransaction::with(['client', 'akta_type'])
+                    ->withCount('documents')
+                    ->where('notaris_id', $notarisId);
 
-            if ($transactions->isEmpty()) {
-                notyf()->position('x', 'right')->position('y', 'top')->warning('Tidak ada transaksi akta yang ditemukan pada rentang tanggal tersebut.');
-            }
+                if ($hasSearch) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('akta_number', 'like', '%'.$search.'%')
+                            ->orWhereHas('client', function ($clientQuery) use ($search) {
+                                $clientQuery->where('fullname', 'like', '%'.$search.'%');
+                            });
+                    });
+                }
+                // dd($transaction);
 
-            return view('pages.BackOffice.AktaDocument.index_date', compact('transactions', 'filters', 'transaction'));
+                if ($hasDateFilter) {
+                    $query->whereBetween('date_submission', [
+                        $filters['start_date'].' 00:00:00',
+                        $filters['end_date'].' 23:59:59',
+                    ]);
+                }
+
+                $transactions = $query->orderBy('date_submission', 'desc')
+                    ->paginate(10)
+                    ->withQueryString();
+
+                if ($transactions->isEmpty()) {
+                    notyf()
+                        ->position('x', 'right')
+                        ->position('y', 'top')
+                        ->warning('Data transaksi atau dokumen tidak ditemukan.');
+                }
+            }
         }
 
-        if (! empty($filters['transaction_code']) || ! empty($filters['akta_number']) || ! empty($filters['fullname']) || $hasDateFilter) {
-
-            $documents = $this->service->list($filters);
-
-            $transaction = NotaryAktaTransaction::where('notaris_id', auth()->user()->notaris_id)
-                ->where(function ($q) use ($filters) {
-                    if (! empty($filters['transaction_code'])) {
-                        $q->where('transaction_code', $filters['transaction_code']);
-                    }
-                    if (! empty($filters['akta_number'])) {
-                        $q->where('akta_number', 'like', '%'.$filters['akta_number'].'%');
-                    }
-                })->first();
-
-            if ($documents->isEmpty() && ! $transaction) {
-                notyf()
-                    ->position('x', 'right')
-                    ->position('y', 'top')
-                    ->warning('Data transaksi tidak ditemukan.');
-            }
-
-        } else {
-            $documents = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
-        }
-
-        return view('pages.BackOffice.AktaDocument.index', compact('transaction', 'documents', 'filters'));
+        return view('pages.BackOffice.AktaDocument.index', compact('transaction', 'transactions', 'documents', 'filters'));
     }
 
     public function createData($transaction_id)
