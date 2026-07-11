@@ -97,109 +97,76 @@
                     <div class="table-responsive">
                         <table class="table align-items-center mb-0">
 
-<thead>
-    <tr>
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle" style="width:70px;">#</th>
+                            <th class="text-center align-middle">Nama Klien</th>
+                            <th class="text-center align-middle">Kode Transaksi</th>
+                            <th class="text-center align-middle">Jumlah Dokumen</th>
+                            <th class="text-center align-middle">Tanggal Submit</th>
+                            <th class="text-center align-middle" style="width:180px;">Aksi</th>
+                        </tr>
+                    </thead>
 
-        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-            No
-        </th>
+                    <tbody>
+                        @forelse ($transactions as $tx)
+                            <tr>
 
-        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-            Nama Klien
-        </th>
+                                <td class="text-center align-middle">
+                                    <p class="text-sm mb-0">
+                                        {{ $transactions->firstItem() + $loop->index }}
+                                    </p>
+                                </td>
 
-        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-            Kode Transaksi
-        </th>
+                                <td class="text-center align-middle">
+                                    <p class="text-sm mb-0">
+                                        {{ $tx->client->fullname ?? '-' }}
+                                    </p>
+                                </td>
 
-        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-            Jumlah Dokumen
-        </th>
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        <span>{{ $tx->transaction_code }}</span>
 
-        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-            Tanggal Submit
-        </th>
+                                        @if($tx->transaction_code)
+                                            <button
+                                                type="button"
+                                                class="btn btn-link p-0 text-primary"
+                                                onclick="copyValue(this, '{{ $tx->transaction_code }}')">
+                                                <i class="fa-solid fa-copy"></i>
+                                            </button>
+                                        @endif
+                                    </div>
+                                </td>
 
-        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-            Aksi
-        </th>
+                                <td class="text-center align-middle">
+                                    <p class="text-sm mb-0">
+                                        {{ $tx->documents_count ?? 0 }} Dokumen
+                                    </p>
+                                </td>
 
-    </tr>
-</thead>
+                                <td class="text-center align-middle">
+                                    <p class="text-sm mb-0">
+                                        {{ $tx->date_submission ? \Carbon\Carbon::parse($tx->date_submission)->format('d F Y H:i') : '-' }}
+                                    </p>
+                                </td>
 
-                            <tbody>
+                                <td class="text-center align-middle">
+                                    <a href="{{ route('akta-documents.index', ['transaction_code' => $tx->transaction_code]) }}"
+                                        class="btn btn-info btn-xs mb-0">
+                                        Detail Transaksi
+                                    </a>
+                                </td>
 
-                                @forelse ($transactions as $tx)
-
-                                    <tr>
-
-                                        <td class="align-middle text-center">
-                                            <p class="text-xs font-weight-bold mb-0">
-                                                {{ $transactions->firstItem() + $loop->index }}
-                                            </p>
-                                        </td>
-
-                                        <td class="align-middle text-center">
-                                            <p class="text-sm font-weight-normal mb-0">
-                                                {{ $tx->client->fullname ?? '-' }}
-                                            </p>
-                                        </td>
-
-                                        <td class="align-middle">
-                                            <div class="d-flex justify-content-center align-items-center gap-2">
-
-                                                <p class="text-sm font-weight-normal mb-0">
-                                                    {{ $tx->transaction_code }}
-                                                </p>
-
-                                                @if($tx->transaction_code)
-                                                    <button
-                                                        type="button"
-                                                        class="btn btn-link text-primary p-0 mb-0"
-                                                        onclick="copyValue(this, '{{ $tx->transaction_code }}')">
-
-                                                        <i class="fa-solid fa-copy text-sm"></i>
-
-                                                    </button>
-                                                @endif
-
-                                            </div>
-                                        </td>
-
-                                        <td class="align-middle text-center">
-                                            <p class="text-sm font-weight-normal mb-0">
-                                                {{ $tx->documents_count ?? 0 }} Dokumen
-                                            </p>
-                                        </td>
-
-                                        <td class="align-middle text-center">
-                                            <p class="text-sm font-weight-normal mb-0">
-                                                {{ $tx->date_submission ? \Carbon\Carbon::parse($tx->date_submission)->format('d F Y H:i') : '-' }}
-                                            </p>
-                                        </td>
-
-                                        <td class="align-middle text-center">
-                                            <a href="{{ route('akta-documents.index', ['transaction_code' => $tx->transaction_code]) }}"
-                                                class="btn btn-info btn-xs mb-0">
-                                                Detail Transaksi
-                                            </a>
-                                        </td>
-
-                                    </tr>
-
-                                @empty
-
-                                    <tr>
-                                        <td colspan="6" class="text-center py-4">
-                                            <p class="text-sm text-secondary mb-0">
-                                                Belum ada data dokumen.
-                                            </p>
-                                        </td>
-                                    </tr>
-
-                                @endforelse
-
-                            </tbody>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    Belum ada data dokumen.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
 
                         </table>
                     </div>

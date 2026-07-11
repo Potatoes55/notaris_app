@@ -219,6 +219,25 @@
                                                                             value="Rp {{ number_format($cost->other_cost, 0, ',', '.') }}"
                                                                             readonly>
                                                                     </div>
+                                                                    @if(in_array($cost->picDocument->transaction_type, ['ppat', 'relaas']))
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label text-start w-100 mb-1">PPh</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control"
+                                                                                value="Rp {{ number_format($cost->pph ?? 0, 0, ',', '.') }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label text-start w-100 mb-1">BPHTB</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control"
+                                                                                value="Rp {{ number_format($cost->bphtb ?? 0, 0, ',', '.') }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                    @endif
                                                                     <div class="col-md-6">
                                                                         <label
                                                                             class="form-label text-start w-100 mb-1">Total
