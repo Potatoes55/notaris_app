@@ -8,11 +8,12 @@
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center mb-0 pb-0">
-                    <h6>Penomoran Akta</h6>
-                </div>
-                <div class="card-body pt-1">
+        <div class="card border">
+            <div class="card-header pb-0">
+                <h6>Input Penomoran Akta</h6>
+            </div>
+            <hr>
+            <div class="card-body pt-2">
 
                     {{-- Nomor Akta Terakhir --}}
                     @if ($lastAkta)
@@ -37,53 +38,79 @@
                     </form>
 
                     {{-- KONDISI 1: JIKA HASIL PENCARIAN BERUPA DAFTAR TRANSAKSI (Cari Berdasarkan Nama Klien / Parsial) --}}
-                    @if (isset($transactions) && $transactions->count() > 0)
-                        <div class="card mb-4 shadow-sm">
-                            <div class="card-header bg-secondary text-white py-2">
-                                <h6 class="mb-0 text-white text-sm">Hasil Pencarian Transaksi</h6>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center mb-0 table-hover">
-                                    <thead>
-                                        <tr class="text-xs font-weight-bold opacity-7">
-                                            <th>#</th>
-                                            <th>Kode Transaksi</th>
-                                            <th>Nama Klien</th>
-                                            <th>Nomor Akta</th>
-                                            <th class="text-center">Aksi</th>
+                    @if(isset($transactions) && $transactions->count() > 0)
+
+                    <div class="mb-0">
+                        <h5>Daftar Transaksi Akta</h5>
+
+                        <div class="table-responsive p-0">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr class="text-center text-sm">
+                                        <th>#</th>
+                                        <th>Kode Transaksi</th>
+                                        <th>Nomor Akta</th>
+                                        <th>Nama Klien</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach($transactions as $tx)
+                                        <tr class="text-center text-sm">
+                                            <td>{{ $transactions->firstItem() + $loop->index }}</td>
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $tx->transaction_code }}</span>
+                                                    <button type="button" class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this,'{{ $tx->transaction_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $tx->relaas_number ?? '-' }}</span>
+
+                                                    @if($tx->relaas_number)
+                                                        <button type="button" class="btn btn-link p-0 text-primary"
+                                                            onclick="copyValue(this,'{{ $tx->relaas_number }}')">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+
+                                            <td>{{ $tx->client->fullname ?? '-' }}</td>
+
+                                            <td>
+                                                <a href="{{ route('relaas_akta.indexNumber',['search'=>$tx->transaction_code]) }}"
+                                                    class="btn btn-sm btn-info">
+                                                    <i class="fa fa-eye me-1"></i>
+                                                    Detail & Beri Nomor
+                                                </a>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($transactions as $tx)
-                                            <tr class="text-sm">
-                                                <td>{{ $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() }}</td>
-                                                <td><span class="badge bg-light text-dark font-weight-bold">{{ $tx->transaction_code }}</span></td>
-                                                <td>{{ $tx->client->fullname ?? '-' }}</td>
-                                                <td>{{ $tx->relaas_number ?? '-' }}</td>
-                                                <td class="text-center">
-                                                    {{-- Di sini Kuncinya: Menggunakan transaction_code agar pencarian berikutnya bernilai tunggal dan masuk ke aktaInfo --}}
-                                                    <a href="{{ route('relaas_akta.indexNumber', ['search' => $tx->transaction_code]) }}" class="btn btn-xs btn-primary mb-0">
-                                                        <i class="fas fa-search-plus me-1"></i> Pilih
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @if($transactions->hasPages())
-                                <div class="card-footer py-2">
-                                    {{ $transactions->links() }}
-                                </div>
-                            @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
+
+                        <div class="d-flex justify-content-end mt-2">
+                            {{ $transactions->links() }}
+                        </div>
+                    </div>
+
                     @endif
 
                     {{-- KONDISI 2: JIKA TRANSAKSI TUNGGAL DITEMUKAN (Tampilkan Detail & Form Input) --}}
                     @if ($aktaInfo)
                         <div class="card mb-4 shadow-sm">
-                            <div class="card-header bg-primary text-white">
-                                <h6 class="mb-0 text-white">Detail Akta Transaksi</h6>
+                            <div class="col-md-6">
+                                <h6 class="mb-1"><strong>Klien</strong></h6>
+                                <p class="text-muted text-sm mb-0">{{ $aktaInfo->client->fullname ?? '-' }}</p>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
