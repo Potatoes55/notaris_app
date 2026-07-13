@@ -5,22 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Models\Documents;
-use App\Models\Notaris;
 use App\Models\NotaryClientDocument;
 use App\Models\NotaryClientWarkah;
 use App\Models\NotaryCost;
 use App\Models\NotaryPayment;
 use App\Models\PicDocuments;
-use App\Models\PicProcess;
 use App\Services\ClientService;
-use DNS2D;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
-use Milon\Barcode\Facades\DNS2DFacade;
-
 
 class ClientController extends Controller
 {
@@ -31,13 +26,12 @@ class ClientController extends Controller
         $this->clientService = $clientService;
     }
 
-
     public function index(Request $request)
     {
         $clients = $this->clientService->search($request->all());
+
         return view('pages.Client.index', compact('clients'));
     }
-
 
     public function create(Request $request)
     {
@@ -50,6 +44,7 @@ class ClientController extends Controller
     {
         $this->clientService->create($request->all());
         notyf()->position('x', 'right')->position('y', 'top')->success('Klien berhasil ditambahkan');
+
         return redirect()->route('clients.index');
     }
 
@@ -64,6 +59,7 @@ class ClientController extends Controller
     {
         $this->clientService->update($id, $request->all());
         notyf()->position('x', 'right')->position('y', 'top')->success('Klien berhasil diperbarui');
+
         return redirect()->route('clients.index');
     }
 
@@ -71,6 +67,7 @@ class ClientController extends Controller
     {
         $this->clientService->delete($id);
         notyf()->position('x', 'right')->position('y', 'top')->success('Klien berhasil dihapus');
+
         return redirect()->back();
     }
 
@@ -144,14 +141,15 @@ class ClientController extends Controller
 
         $validated = $request->validate([
             'fullname' => 'required|string|max:255',
-            'nik' => 'required_if:type,personal|string|max:20|unique:clients,nik,' . $client->id,
+            'nik' => 'required_if:type,personal|string|max:20|unique:clients,nik,'.$client->id,
             'birth_place' => 'required_if:type,personal|string|max:255',
             'gender' => 'required_if:type,personal',
             'marital_status' => 'required_if:type,personal|string',
             'job' => 'required_if:type,personal|string',
             'address' => 'required|string',
-            'city' => 'required|string',
-            'province' => 'required|string',
+            'province_name' => 'required|string',
+            'kecamatan_name' => 'required|string',
+            'kelurahan_name' => 'required|string',
             'postcode' => 'nullable|string',
             'phone' => 'required|string',
             'email' => 'nullable|email',
@@ -175,9 +173,9 @@ class ClientController extends Controller
         $client->update($validated);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Data klien berhasil diperbarui.');
+
         return redirect()->back();
     }
-
 
     public function storeClient(ClientRequest $request, $encryptedNotarisId)
     {
@@ -201,7 +199,7 @@ class ClientController extends Controller
         $client = Client::create($validated);
 
         $client->update([
-            'client_code' => 'N' . now()->format('ymd') . '-' . $notaris_id . '-' . $client->id . '-' . $sequence
+            'client_code' => 'N'.now()->format('ymd').'-'.$notaris_id.'-'.$client->id.'-'.$sequence,
         ]);
 
         notyf()->position('x', 'right')->position('y', 'top')
@@ -219,7 +217,8 @@ class ClientController extends Controller
         }
         $client->save();
 
-        notyf()->position('x', 'right')->position('y', 'top')->success('Status Klien Valid atas nama ' . $client->fullname . ' berhasil diubah');
+        notyf()->position('x', 'right')->position('y', 'top')->success('Status Klien Valid atas nama '.$client->fullname.' berhasil diubah');
+
         return redirect()->back();
     }
 
@@ -234,13 +233,12 @@ class ClientController extends Controller
         return view('pages.Client.modal.qr-code', compact('client', 'link', 'qrCode'));
     }
 
-
     public function showByUuid(Request $request, $uuid)
     {
         $client = Client::where('uuid', $uuid)->firstOrFail();
 
-        $notaryCost     = NotaryCost::where('client_code', $client->client_code)->get();
-        $notaryPayment  = NotaryPayment::where('client_code', $client->client_code)->get();
+        $notaryCost = NotaryCost::where('client_code', $client->client_code)->get();
+        $notaryPayment = NotaryPayment::where('client_code', $client->client_code)->get();
 
         $picDocuments = collect();
 
@@ -272,17 +270,15 @@ class ClientController extends Controller
         ));
     }
 
-
     public function searchByRegistrationCode(Request $request)
     {
         $request->validate([
-            'registration_code' => 'required|string'
+            'registration_code' => 'required|string',
         ]);
 
         $picDocuments = PicDocuments::with('processes')
             ->where('pic_document_code', $request->registration_code)
             ->get();
-
 
         return view('pages.Client.detail')->with('registration_code', $request->registration_code);
     }
@@ -298,9 +294,8 @@ class ClientController extends Controller
 
         $countToday += 1;
 
-        return 'N' . '-' . $today . '-' . $notarisId . '-' . $clientId . '-' . $countToday;
+        return 'N'.'-'.$today.'-'.$notarisId.'-'.$clientId.'-'.$countToday;
     }
-
 
     public function uploadDocument(Request $request, $uuid)
     {
@@ -314,22 +309,23 @@ class ClientController extends Controller
 
         $document = Documents::where('code', $validated['document_code'])->firstOrFail();
 
-        $fileName = time() . '_' . $request->file('document_link')->getClientOriginalName();
+        $fileName = time().'_'.$request->file('document_link')->getClientOriginalName();
         $filePath = $request->file('document_link')->storeAs('documents', $fileName, 'public');
 
         NotaryClientDocument::create([
-            'notaris_id'       => $client->notaris_id,
-            'client_id'        => $client->id,
+            'notaris_id' => $client->notaris_id,
+            'client_id' => $client->id,
             'registration_code' => $this->generateRegistrationCode($client->notaris_id, $client->id),
-            'document_code'    => $document->code,
-            'document_name'    => $document->name,
-            'note'             => $validated['note'] ?? null,
-            'document_link'    => $filePath,
-            'uploaded_at'      => now(),
-            'status'           => 'new',
+            'document_code' => $document->code,
+            'document_name' => $document->name,
+            'note' => $validated['note'] ?? null,
+            'document_link' => $filePath,
+            'uploaded_at' => now(),
+            'status' => 'new',
         ]);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Dokumen berhasil diupload');
+
         return redirect()->back()->with('active_tab', 'dokumen');
     }
 
@@ -345,7 +341,6 @@ class ClientController extends Controller
 
         return redirect()->route('clients.index')->with('revisionLink', $revisionLink);
     }
-
 
     public function showRevisionForm($encryptedClientId)
     {
@@ -392,7 +387,7 @@ class ClientController extends Controller
             'type' => 'nullable|string|max:50',
             'address' => 'nullable|string',
             'note' => 'nullable|string',
-            // 
+            //
             'legal_status' => 'nullable|string|max:255',
             'business_form' => 'nullable|string|max:255',
             'deed_number' => 'nullable|string|max:255',
@@ -412,5 +407,4 @@ class ClientController extends Controller
         return redirect()->route('clients.index')
             ->with('success', 'Data revisi berhasil dikirim kembali.');
     }
-    
 }
