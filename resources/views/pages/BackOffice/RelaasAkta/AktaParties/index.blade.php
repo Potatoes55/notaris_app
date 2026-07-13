@@ -9,66 +9,105 @@
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">
-                <div class="card-header pb-0">
+                <div class="card-header d-flex justify-content-between align-items-center mb-0 pb-0">
                     <h5>Pihak Akta</h5>
                 </div>
-                <div class="card-body pt-1">
+
+                <div class="card-body pt-2 pb-0">
 
                     {{-- Form Pencarian --}}
-                    <form method="GET" action="{{ route('relaas-parties.index') }}"
-                        class="d-flex gap-2 mb-3 justify-content-end">
-                        <div class="input-group" style="max-width: 400px;">
-                            <input type="text" name="search" class="form-control"
-                                placeholder="Cari Kode, No Akta, atau Nama Klien..." value="{{ request('search') }}">
-                            <button type="submit" class="btn btn-primary mb-0">Cari</button>
+                    <form method="GET"
+                        action="{{ route('relaas-parties.index') }}"
+                        class="mb-3">
+
+                        <div class="input-group w-100">
+                            <input type="text"
+                                name="search"
+                                class="form-control"
+                                placeholder="Cari Kode, No Akta, atau Nama Klien..."
+                                value="{{ request('search') }}">
+
+                            <button type="submit" class="btn btn-primary mb-0">
+                                Cari
+                            </button>
                         </div>
+
                     </form>
 
                     {{-- KONDISI 1: JIKA HASIL PENCARIAN BERUPA DAFTAR TRANSAKSI (Berdasarkan Nama Klien / Parsial) --}}
                     @if (isset($transactions) && $transactions->count() > 0)
-                        <div class="card mb-4 shadow-sm">
-                            <div class="card-header bg-secondary text-white py-2">
-                                <h6 class="mb-0 text-white text-sm">Hasil Pencarian Transaksi</h6>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center mb-0 table-hover">
-                                    <thead>
-                                        <tr class="text-xs font-weight-bold opacity-7">
-                                            <th class="ps-3">#</th>
-                                            <th>Kode Transaksi</th>
-                                            <th>Nama Klien</th>
-                                            <th>Nomor Akta</th>
-                                            <th class="text-center">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($transactions as $tx)
-                                            <tr class="text-sm">
-                                                <td class="ps-3">{{ $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() }}</td>
-                                                <td><span class="badge bg-light text-dark font-weight-bold">{{ $tx->transaction_code }}</span></td>
-                                                <td>{{ $tx->client->fullname ?? '-' }}</td>
-                                                <td>{{ $tx->relaas_number ?? '-' }}</td>
-                                                <td class="text-center">
-                                                    {{-- Gunakan transaction_code untuk memicu pencarian spesifik tunggal --}}
-                                                    <a href="{{ route('relaas-parties.index', ['search' => $tx->transaction_code]) }}" class="btn btn-xs btn-primary mb-0">
-                                                        <i class="fas fa-search-plus me-1"></i> Pilih
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @if($transactions->hasPages())
-                                <div class="card-footer py-2">
-                                    {{ $transactions->links() }}
-                                </div>
-                            @endif
-                        </div>
-                    @endif
 
-                    {{-- KONDISI 2: JIKA ADA DATA RELAAS TUNGGAL (Detail & Daftar Pihak Akta) --}}
-                    @if ($relaasInfo)
+                    <div class="mb-0">
+                        <h5>Daftar Transaksi Akta</h5>
+
+                        <div class="table-responsive p-0">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr class="text-center text-sm">
+                                        <th>#</th>
+                                        <th>Kode Transaksi</th>
+                                        <th>Nomor Akta</th>
+                                        <th>Nama Klien</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach($transactions as $tx)
+                                        <tr class="text-center text-sm">
+
+                                            <td>
+                                                {{ $transactions->firstItem() + $loop->index }}
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $tx->transaction_code }}</span>
+
+                                                    <button type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this,'{{ $tx->transaction_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $tx->relaas_number ?? '-' }}</span>
+
+                                                    @if($tx->relaas_number)
+                                                        <button type="button"
+                                                            class="btn btn-link p-0 text-primary"
+                                                            onclick="copyValue(this,'{{ $tx->relaas_number }}')">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+
+                                            <td>{{ $tx->client->fullname ?? '-' }}</td>
+
+                                            <td>
+                                                <a href="{{ route('relaas-parties.index', ['search' => $tx->transaction_code]) }}"
+                                                    class="btn btn-sm btn-info">
+                                                    <i class="fa fa-users me-1"></i>
+                                                    Pilih Pihak
+                                                </a>
+                                            </td>
+
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-2">
+                            {{ $transactions->links() }}
+                        </div>
+                    </div>
+
+                    @elseif($relaasInfo)
                         <div class="card mb-4 shadow-sm">
                             <div class="card-header bg-primary text-white">
                                 <h6 class="mb-0 text-white">Detail Pihak Akta</h6>
@@ -131,14 +170,14 @@
                         </div>
 
                         <div class="mb-0">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-0">
                                 <h5>Pihak Akta</h5>
                                 <a href="{{ route('relaas-parties.create', $relaasInfo->id) }}"
-                                    class="btn btn-primary btn-sm mb-0">+ Tambah Pihak Akta</a>
+                                    class="btn btn-primary btn-sm mb-2">+ Tambah Pihak Akta</a>
                             </div>
 
                             <div class="table-responsive p-0">
-                                <table class="table table-hover mb-0">
+                                <table class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -152,8 +191,7 @@
                                     </thead>
                                     <tbody>
                                         @forelse($parties as $party)
-                                            <tr class="text-sm">
-                                                {{-- Menggunakan logic bawaan pagination jika instance-nya LengthAwarePaginator --}}
+                                            <tr class="text-sm text-center">
                                                 <td>{{ method_exists($parties, 'firstItem') ? $parties->firstItem() + $loop->index : $loop->iteration }}</td>
                                                 <td>{{ $party->name }}</td>
                                                 <td>{{ $party->role }}</td>
@@ -180,14 +218,15 @@
 
                                 @if(method_exists($parties, 'links'))
                                     <div class="d-flex justify-content-end mt-3">
-                                        {{ $parties->withQueryString()->links() }}
+                                        {{ $parties->links() }}
                                     </div>
                                 @endif
                             </div>
                         </div>
-                    {{-- JIKA BELUM MELAKUKAN PENCARIAN ATAU DATA TIDAK COCOK --}}
                     @elseif(!isset($transactions) || $transactions->isEmpty())
-                        <p class="text-center text-muted text-sm mb-0">Masukkan Kode Transaksi atau Nama Klien untuk melihat daftar pihak akta.</p>
+                        <p class="text-center text-muted text-sm py-4">
+                            Silakan cari Kode Transaksi, Nomor Akta, atau nama klien untuk menampilkan data pihak.
+                        </p>
                     @endif
 
                 </div>

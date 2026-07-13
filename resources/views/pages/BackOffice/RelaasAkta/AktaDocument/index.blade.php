@@ -252,7 +252,7 @@
                         </div>
                     </div>
                 @else
-                    <p class="text-center text-muted text-sm mb-3">Masukkan Kata Kunci atau Rentang Tanggal untuk menampilkan dokumen akta.</p>
+                    <p class="text-center text-muted text-sm mb-3">Masukkan Kata Kunci atau Rentang Tanggal Untuk Menampilkan Dokumen akta.</p>
                 @endif
 
                 </div>

@@ -23,43 +23,79 @@
 
                     {{-- KONDISI 1: Tampilkan Daftar Transaksi (Jika hasil berupa partial/banyak data) --}}
                     @if (isset($transactions) && $transactions->count() > 0)
-                        <div class="card mb-4 shadow-sm">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0 text-dark">Hasil Pencarian Transaksi</h6>
-                            </div>
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Kode Transaksi</th>
-                                            <th>Nomor Akta</th>
-                                            <th>Klien</th>
-                                            <th>Jenis Akta</th>
-                                            <th class="text-center">Aksi</th>
+
+                    <div class="mb-0">
+                        <h5>Daftar Transaksi Akta</h5>
+
+                        <div class="table-responsive p-0">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr class="text-center text-sm">
+                                        <th>#</th>
+                                        <th>Kode Transaksi</th>
+                                        <th>Nomor Akta</th>
+                                        <th>Nama Klien</th>
+                                        <th>Jenis Akta</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach($transactions as $trans)
+                                        <tr class="text-center text-sm">
+
+                                            <td>
+                                                {{ $transactions->firstItem() + $loop->index }}
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $trans->transaction_code }}</span>
+
+                                                    <button type="button"
+                                                        class="btn btn-link p-0 text-primary"
+                                                        onclick="copyValue(this,'{{ $trans->transaction_code }}')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                    <span>{{ $trans->akta_number ?? '-' }}</span>
+
+                                                    @if($trans->akta_number)
+                                                        <button type="button"
+                                                            class="btn btn-link p-0 text-primary"
+                                                            onclick="copyValue(this,'{{ $trans->akta_number }}')">
+                                                            <i class="fa-solid fa-copy"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+
+                                            <td>{{ $trans->client->fullname ?? '-' }}</td>
+
+                                            <td>{{ $trans->akta_type->type ?? '-' }}</td>
+
+                                            <td>
+                                                <a href="{{ route('akta-parties.index', ['search' => $trans->transaction_code]) }}"
+                                                    class="btn btn-sm btn-info">
+                                                    <i class="fa fa-users me-1"></i>
+                                                    Pilih Pihak
+                                                </a>
+                                            </td>
+
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($transactions as $trans)
-                                            <tr class="text-sm">
-                                                <td>{{ $trans->transaction_code }}</td>
-                                                <td>{{ $trans->akta_number ?? '-' }}</td>
-                                                <td>{{ $trans->client->fullname ?? '-' }}</td>
-                                                <td>{{ $trans->akta_type->type ?? '-' }}</td>
-                                                <td class="text-center">
-                                                    <a href="{{ route('akta-parties.index', ['search' => $trans->transaction_code]) }}" 
-                                                       class="btn btn-sm btn-outline-primary mb-0">
-                                                        Pilih Pihak
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="d-flex justify-content-end p-3">
-                                {{ $transactions->links() }}
-                            </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
+
+                        <div class="d-flex justify-content-end mt-2">
+                            {{ $transactions->links() }}
+                        </div>
+                    </div>
 
                     {{-- KONDISI 2: Jika data akta pas (Exact Match) ditemukan, tampilkan Detail & Daftar Pihak --}}
                     @elseif ($aktaInfo)
