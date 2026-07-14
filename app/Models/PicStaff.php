@@ -19,16 +19,11 @@ class PicStaff extends Model
         'phone_number',
         'position',
         'address',
-        'note'
+        'note',
     ];
 
     public function notaris()
     {
         return $this->belongsTo(Notaris::class);
     }
-
-    protected $casts = [
-        'email' => 'encrypted',
-        'phone_number' => 'encrypted',
-    ];
 }
