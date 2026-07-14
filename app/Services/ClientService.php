@@ -6,8 +6,8 @@ use App\Models\Client;
 use App\Repositories\Interfaces\ClientRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class ClientService
 {
@@ -26,8 +26,10 @@ class ClientService
     public function search(array $filters)
     {
         $filters['notaris_id'] = auth()->user()->notaris_id;
+
         return $this->clientRepository->search($filters);
     }
+
     public function getById($id)
     {
         return $this->clientRepository->findById($id);
@@ -55,7 +57,7 @@ class ClientService
         $client = $this->clientRepository->create($validated);
 
         // 3️⃣ Generate client_code
-        $clientCode = 'N' . Carbon::now()->format('ymd') . '-' . $client->notaris_id . '-' . $client->id . '-' . $sequence;
+        $clientCode = 'N'.Carbon::now()->format('ymd').'-'.$client->notaris_id.'-'.$client->id.'-'.$sequence;
 
         // 4️⃣ Update client dengan client_code
         $client = $this->clientRepository->update($client->id, ['client_code' => $clientCode]);
@@ -81,6 +83,7 @@ class ClientService
     {
         $validated = $this->validate($data, $id);
         $validated['notaris_id'] = auth()->user()->notaris_id ?? null;
+
         return $this->clientRepository->update($id, $validated);
     }
 
@@ -100,8 +103,10 @@ class ClientService
             'marital_status' => 'required_if:type,personal|string',
             'job' => 'required_if:type,personal|string',
             'address' => 'required|string',
-            'city' => 'required|string',
-            'province' => 'required|string',
+            'kota_name' => 'required|string',
+            'provinsi_name' => 'required|string',
+            'kecamatan_name' => 'required|string',
+            'kelurahan_name' => 'required|string',
             'postcode' => 'nullable|string',
             'phone' => 'required|string',
             'email' => 'nullable|email',
@@ -123,26 +128,27 @@ class ClientService
 
         ];
 
-
         $messages = [
             'fullname.required' => 'Nama lengkap wajib diisi.',
-            'fullname.max'      => 'Nama lengkap maksimal 255 karakter.',
-            'nik.required'      => 'NIK wajib diisi.',
+            'fullname.max' => 'Nama lengkap maksimal 255 karakter.',
+            'nik.required' => 'NIK wajib diisi.',
             'birth_place.required' => 'Tempat lahir wajib diisi.',
-            'gender.required'   => 'Jenis kelamin wajib dipilih.',
+            'gender.required' => 'Jenis kelamin wajib dipilih.',
             'marital_status.required' => 'Status pernikahan wajib dipilih.',
-            'job.required'      => 'Pekerjaan wajib diisi.',
-            'address.required'  => 'Alamat wajib diisi.',
-            'city.required'     => 'Kota wajib diisi.',
-            'province.required' => 'Provinsi wajib diisi.',
+            'job.required' => 'Pekerjaan wajib diisi.',
+            'address.required' => 'Alamat wajib diisi.',
+            'kota.required' => 'Kota wajib diisi.',
+            'provinsi.required' => 'Provinsi wajib diisi.',
+            'Kecamatan.required' => 'Kecamatan wajib diisi.',
+            'Kelurahan.required' => 'Kelurahan wajib diisi.',
             'postcode.required' => 'Kode pos wajib diisi.',
-            'phone.required'    => 'Nomor telepon wajib diisi.',
-            'email.required'    => 'Email wajib diisi.',
-            'email.email'       => 'Format email tidak valid.',
-            'npwp.required'     => 'NPWP wajib diisi.',
-            'type.required'     => 'Tipe klien wajib dipilih.',
-            'type.in'           => 'Tipe klien hanya boleh "personal" atau "company".',
-            'status.required'   => 'Status wajib diisi.',
+            'phone.required' => 'Nomor telepon wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'npwp.required' => 'NPWP wajib diisi.',
+            'type.required' => 'Tipe klien wajib dipilih.',
+            'type.in' => 'Tipe klien hanya boleh "personal" atau "company".',
+            'status.required' => 'Status wajib diisi.',
         ];
 
         $validator = Validator::make($data, $rules, $messages);

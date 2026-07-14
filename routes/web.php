@@ -133,8 +133,6 @@ Route::middleware('guest', 'nocache')->group(function () {
 
     Route::post('/akta/{transaction_code}/verify-pin', [AktaQrController::class, 'checkPin'])
         ->name('akta.qr.pin.check');
-    Route::get('reset-pin/{token}', [ForgotPasswordController::class, 'showResetPinForm'])->name('pin.reset');
-    Route::post('reset-pin', [ForgotPasswordController::class, 'resetPin'])->name('pin.update');
 
 });
 Route::middleware(['auth', 'restrict.by.email'])->group(function () {
@@ -292,6 +290,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/management-process/{id}/valid', [NotaryClientProductController::class, 'markAsValid'])->name('management-process.markAsValid');
     Route::post('management-process/mark-done', [NotaryClientProductController::class, 'markDone'])->name('management-process.markDone');
     Route::post('management-process/add-progress', [NotaryClientProductController::class, 'addProgress'])->name('management-process.addProgress');
+
+    Route::get('reset-pin/{token}', [ForgotPasswordController::class, 'showResetPinForm'])->name('pin.reset');
+    Route::post('reset-pin', [ForgotPasswordController::class, 'resetPin'])->name('pin.update');
+
 });
 
 Route::middleware(['auth', 'check.full.access'])->group(function () {

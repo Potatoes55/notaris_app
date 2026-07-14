@@ -5,11 +5,11 @@ namespace App\Models;
 use App\LogsActivityCustom;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\User;
 
 class Client extends Model
 {
     use LogsActivityCustom, SoftDeletes;
+
     protected $table = 'clients';
 
     protected $fillable = [
@@ -23,8 +23,14 @@ class Client extends Model
         'marital_status',
         'job',
         'address',
-        'city',
-        'province',
+        'kelurahan_id',
+        'kelurahan_name',
+        'kecamatan_id',
+        'kecamatan_name',
+        'provinsi_id',
+        'provinsi_name',
+        'kota_id',
+        'kota_name',
         'postcode',
         'phone',
         'email',
@@ -70,7 +76,7 @@ class Client extends Model
     protected $casts = [
         'phone' => 'encrypted',
         'email' => 'encrypted',
-        'nik'   => 'encrypted',
-        'npwp'  => 'encrypted',
+        'nik' => 'encrypted',
+        'npwp' => 'encrypted',
     ];
 }

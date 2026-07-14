@@ -18,6 +18,15 @@
                     <form action="{{ isset($client) ? route('clients.update', $client->id) : route('clients.store') }}"
                         method="POST">
                         @csrf
+                        @if ($errors->any())
+    <div class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
                         @if (isset($client))
                             @method('PUT')
                         @endif
@@ -25,18 +34,13 @@
                         <div class="row">
                             <input type="hidden" name="notaris_id" value="{{ auth()->user()->notaris_id }}">
 
-
-                            {{--  --}}
                             {{-- <input type="text" name="tipe_klien" value="{{ request('type') }}" readonly> --}}
                             {{-- <input type="hidden" name="type" value="{{ $type ?? request('type') }}" readonly> --}}
                             {{-- <input type="hidden" name="type" value="{{ old('type', request('type')) }}"> --}}
                             <input type="hidden" name="type" value="{{ $type }}">
 
-                            {{--  --}}
-                            {{--  --}}
                             {{-- @if (request('type') == 'personal') --}}
                             @if ($type == 'personal')
-                                {{--  --}}
                                 {{-- @if ($errors->any())
                                     <div class="alert alert-danger">
                                         <ul class="mb-0">
@@ -123,31 +127,55 @@
                                     @enderror
                                 </div>
 
+                                <input type="hidden" name="provinsi_name" id="provinsi_name"
+                                    value="{{ old('provinsi_name', $client->provinsi_name ?? '') }}">
+
+                                <input type="hidden" name="kota_name" id="kota_name"
+                                    value="{{ old('kota_name', $client->kota_name ?? '') }}">
+
+                                <input type="hidden" name="kecamatan_name" id="kecamatan_name"
+                                    value="{{ old('kecamatan_name', $client->kecamatan_name ?? '') }}">
+
+                                <input type="hidden" name="kelurahan_name" id="kelurahan_name"
+                                    value="{{ old('kelurahan_name', $client->kelurahan_name ?? '') }}">
+
                                 <div class="col-md-6 mb-3">
-                                    <label for="address" class="form-label text-sm">Alamat</label>
-                                    <input type="text" name="address" class="form-control"
+                                    <label class="form-label text-sm">Provinsi</label>
+                                    <select id="provinsi" name="provinsi_id" class="form-select">
+                                        <option value="">Pilih Provinsi</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-sm">Kota / Kabupaten</label>
+                                    <select id="kota" name="kota_id" class="form-select">
+                                        <option value="">Pilih Kota / Kabupaten</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-sm">Kecamatan</label>
+                                    <select id="kecamatan" name="kecamatan_id" class="form-select">
+                                        <option value="">Pilih Kecamatan</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-sm">Kelurahan</label>
+                                    <select id="kelurahan" name="kelurahan_id" class="form-select">
+                                        <option value="">Pilih Kelurahan</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-sm">Alamat Lengkap</label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        class="form-control"
                                         placeholder="Masukkan alamat lengkap"
                                         value="{{ old('address', $client->address ?? '') }}">
                                     @error('address')
-                                        <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="city" class="form-label text-sm">Kota</label>
-                                    <input type="text" name="city" class="form-control"
-                                        placeholder="Masukkan nama kota" value="{{ old('city', $client->city ?? '') }}">
-                                    @error('city')
-                                        <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="province" class="form-label text-sm">Provinsi</label>
-                                    <input type="text" name="province" class="form-control"
-                                        placeholder="Masukkan provinsi"
-                                        value="{{ old('province', $client->province ?? '') }}">
-                                    @error('province')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -402,31 +430,48 @@
                                     @enderror --}}
                                 </div>
 
+                                <input type="hidden" name="province_name" id="provinsi_name">
+                                <input type="hidden" name="city_name" id="kota_name">
+                                <input type="hidden" name="kecamatan_name" id="kecamatan_name">
+                                <input type="hidden" name="kelurahan_name" id="kelurahan_name">
+
                                 <div class="col-md-6 mb-3">
-                                    <label for="address" class="form-label text-sm">Alamat Badan</label>
-                                    <input type="text" name="address" class="form-control"
+                                    <label class="form-label text-sm">Provinsi</label>
+                                    <select id="provinsi" name="province_id" class="form-select">
+                                        <option value="">Pilih Provinsi</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-sm">Kota / Kabupaten</label>
+                                    <select id="kota" name="city_id" class="form-select">
+                                        <option value="">Pilih Kota / Kabupaten</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-sm">Kecamatan</label>
+                                    <select id="kecamatan" name="kecamatan_id" class="form-select">
+                                        <option value="">Pilih Kecamatan</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-sm">Kelurahan</label>
+                                    <select id="kelurahan" name="kelurahan_id" class="form-select">
+                                        <option value="">Pilih Kelurahan</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-sm">Alamat Badan</label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        class="form-control"
                                         placeholder="Masukkan alamat lengkap"
-                                        value="{{ old('address', $client->address ?? '') }}" required>
+                                        value="{{ old('address', $client->address ?? '') }}">
                                     @error('address')
-                                        <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="city" class="form-label text-sm">Kota Badan</label>
-                                    <input type="text" name="city" class="form-control"
-                                        placeholder="Masukkan nama kota" value="{{ old('city', $client->city ?? '') }}" required>
-                                    @error('city')
-                                        <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="province" class="form-label text-sm">Provinsi Badan</label>
-                                    <input type="text" name="province" class="form-control"
-                                        placeholder="Masukkan provinsi"
-                                        value="{{ old('province', $client->province ?? '') }}" required>
-                                    @error('province')
                                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -496,8 +541,6 @@
                                     <textarea name="note" class="form-control" rows="3" placeholder="Tambahkan catatan jika diperlukan">{{ old('note', $client->note ?? '') }}</textarea>
                                 </div>
                         </div>
-
-                        {{--  --}}
                         @endif
                 </div>
 
@@ -512,4 +555,127 @@
         </div>
     </div>
     </div>
+   @push('js')
+
+<script>
+const selectedProvinsi = "{{ old('province_id', $client->province_id ?? '') }}";
+const selectedKota = "{{ old('city_id', $client->city_id ?? '') }}";
+const selectedKecamatan = "{{ old('kecamatan_id', $client->kecamatan_id ?? '') }}";
+const selectedKelurahan = "{{ old('kelurahan_id', $client->kelurahan_id ?? '') }}";
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const provinsi = document.getElementById('provinsi');
+    const kota = document.getElementById('kota');
+    const kecamatan = document.getElementById('kecamatan');
+    const kelurahan = document.getElementById('kelurahan');
+
+    const provinsiName = document.getElementById('provinsi_name');
+    const kotaName = document.getElementById('kota_name');
+    const kecamatanName = document.getElementById('kecamatan_name');
+    const kelurahanName = document.getElementById('kelurahan_name');
+
+    fetch('/api/provinsi')
+        .then(res => res.json())
+        .then(data => {
+
+            provinsi.innerHTML = '<option value="">Pilih Provinsi</option>';
+
+            data.forEach(i => {
+                provinsi.innerHTML += `<option value="${i.id}" ${i.id == selectedProvinsi ? 'selected' : ''}>${i.name}</option>`;
+            });
+
+            if (selectedProvinsi) {
+                provinsiName.value = provinsi.options[provinsi.selectedIndex].text;
+                loadKota(selectedProvinsi);
+            }
+        });
+
+    function loadKota(provinsiId) {
+
+        fetch(`/api/kota/${provinsiId}`)
+            .then(res => res.json())
+            .then(data => {
+
+                kota.innerHTML = '<option value="">Pilih Kota</option>';
+
+                data.forEach(i => {
+                    kota.innerHTML += `<option value="${i.id}" ${i.id == selectedKota ? 'selected' : ''}>${i.name}</option>`;
+                });
+
+                if (selectedKota) {
+                    kotaName.value = kota.options[kota.selectedIndex].text;
+                    loadKecamatan(selectedKota);
+                }
+            });
+    }
+
+    function loadKecamatan(kotaId) {
+
+        fetch(`/api/kecamatan/${kotaId}`)
+            .then(res => res.json())
+            .then(data => {
+
+                kecamatan.innerHTML = '<option value="">Pilih Kecamatan</option>';
+
+                data.forEach(i => {
+                    kecamatan.innerHTML += `<option value="${i.id}" ${i.id == selectedKecamatan ? 'selected' : ''}>${i.name}</option>`;
+                });
+
+                if (selectedKecamatan) {
+                    kecamatanName.value = kecamatan.options[kecamatan.selectedIndex].text;
+                    loadKelurahan(selectedKecamatan);
+                }
+            });
+    }
+
+    function loadKelurahan(kecamatanId) {
+
+        fetch(`/api/kelurahan/${kecamatanId}`)
+            .then(res => res.json())
+            .then(data => {
+
+                kelurahan.innerHTML = '<option value="">Pilih Kelurahan</option>';
+
+                data.forEach(i => {
+                    kelurahan.innerHTML += `<option value="${i.id}" ${i.id == selectedKelurahan ? 'selected' : ''}>${i.name}</option>`;
+                });
+
+                if (selectedKelurahan) {
+                    kelurahanName.value = kelurahan.options[kelurahan.selectedIndex].text;
+                }
+            });
+    }
+
+    provinsi.addEventListener('change', function() {
+        provinsiName.value = this.options[this.selectedIndex].text;
+        kota.innerHTML = '<option value="">Pilih Kota</option>';
+        kecamatan.innerHTML = '<option value="">Pilih Kecamatan</option>';
+        kelurahan.innerHTML = '<option value="">Pilih Kelurahan</option>';
+        loadKota(this.value);
+    });
+
+    kota.addEventListener('change', function() {
+        kotaName.value = this.options[this.selectedIndex].text;
+        kecamatan.innerHTML = '<option value="">Pilih Kecamatan</option>';
+        kelurahan.innerHTML = '<option value="">Pilih Kelurahan</option>';
+        loadKecamatan(this.value);
+    });
+
+    kecamatan.addEventListener('change', function() {
+        kecamatanName.value = this.options[this.selectedIndex].text;
+        kelurahan.innerHTML = '<option value="">Pilih Kelurahan</option>';
+        loadKelurahan(this.value);
+    });
+
+    kelurahan.addEventListener('change', function() {
+        kelurahanName.value = this.options[this.selectedIndex].text;
+    });
+
+});
+</script>
+
+@endpush
 @endsection

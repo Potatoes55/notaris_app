@@ -28,6 +28,13 @@ class NotaryAktaPartyService
                 if (! empty($filters['akta_number'])) {
                     $query->orWhere('akta_number', $filters['akta_number']);
                 }
+
+                if (! empty($filters['fullname'])) {
+                    $query->orWhereHas('client', function ($q) use ($filters) {
+                        $q->where('fullname', 'like', '%'.$filters.'%');
+                    });
+
+                }
             })
             ->get();
     }

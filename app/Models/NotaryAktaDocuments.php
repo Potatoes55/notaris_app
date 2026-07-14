@@ -27,11 +27,11 @@ class NotaryAktaDocuments extends Model
 
     public function client()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Client::class, 'client_code', 'client_code');
     }
 
     public function akta_transaction()
     {
-        return $this->belongsTo(NotaryAktaTransaction::class);
+        return $this->belongsTo(NotaryAktaTransaction::class, 'akta_transaction_id', 'id');
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\NotaryAktaDocument;
 use App\Models\NotaryAktaDocuments;
 use App\Repositories\Interfaces\NotaryAktaDocumentRepositoryInterface;
 
@@ -12,15 +11,27 @@ class NotaryAktaDocumentRepository implements NotaryAktaDocumentRepositoryInterf
     {
         $query = NotaryAktaDocuments::query()->where('notaris_id', auth()->user()->notaris_id);
 
-        if (!empty($filters['client_code'])) {
-            $query->where('client_code', 'like', '%' . $filters['client_code'] . '%');
+        if (! empty($filters['akta_transaction_id'])) {
+            $query->where('akta_transaction_id', $filters['akta_transaction_id']);
         }
 
-        if (!empty($filters['akta_number'])) {
-            $query->where('akta_number', 'like', '%' . $filters['akta_number'] . '%');
+        if (! empty($filters['client_code'])) {
+            $query->where('client_code', 'like', '%'.$filters['client_code'].'%');
         }
 
-        return $query->where('notaris_id', auth()->user()->notaris_id)->get();
+        if (! empty($filters['akta_number'])) {
+            $query->whereHas('akta_transaction', function ($q) use ($filters) {
+                $q->where('akta_number', 'like', '%'.$filters['akta_number'].'%');
+            });
+        }
+
+        if (! empty($filters['fullname'])) {
+            $query->whereHas('client', function ($q) use ($filters) {
+                $q->where('fullname', 'like', '%'.$filters['fullname'].'%');
+            });
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
     }
 
     public function getById($id)
@@ -37,12 +48,14 @@ class NotaryAktaDocumentRepository implements NotaryAktaDocumentRepositoryInterf
     {
         $document = $this->getById($id);
         $document->update($data);
+
         return $document;
     }
 
     public function delete($id)
     {
         $document = $this->getById($id);
+
         return $document->delete();
     }
 }
