@@ -18,6 +18,15 @@
                     <form action="{{ isset($client) ? route('clients.update', $client->id) : route('clients.store') }}"
                         method="POST">
                         @csrf
+                        @if ($errors->any())
+    <div class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
                         @if (isset($client))
                             @method('PUT')
                         @endif
@@ -118,11 +127,11 @@
                                     @enderror
                                 </div>
 
-                                <input type="hidden" name="province_name" id="provinsi_name"
-                                    value="{{ old('province_name', $client->province_name ?? '') }}">
+                                <input type="hidden" name="provinsi_name" id="provinsi_name"
+                                    value="{{ old('provinsi_name', $client->provinsi_name ?? '') }}">
 
-                                <input type="hidden" name="city_name" id="kota_name"
-                                    value="{{ old('city_name', $client->city_name ?? '') }}">
+                                <input type="hidden" name="kota_name" id="kota_name"
+                                    value="{{ old('kota_name', $client->kota_name ?? '') }}">
 
                                 <input type="hidden" name="kecamatan_name" id="kecamatan_name"
                                     value="{{ old('kecamatan_name', $client->kecamatan_name ?? '') }}">
@@ -132,14 +141,14 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label text-sm">Provinsi</label>
-                                    <select id="provinsi" name="province_id" class="form-select">
+                                    <select id="provinsi" name="provinsi_id" class="form-select">
                                         <option value="">Pilih Provinsi</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label text-sm">Kota / Kabupaten</label>
-                                    <select id="kota" name="city_id" class="form-select">
+                                    <select id="kota" name="kota_id" class="form-select">
                                         <option value="">Pilih Kota / Kabupaten</option>
                                     </select>
                                 </div>
