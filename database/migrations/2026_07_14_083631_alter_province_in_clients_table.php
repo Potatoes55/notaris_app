@@ -31,14 +31,9 @@ return new class extends Migration
             $table->string('province_id')->nullable(false)->change();
             $table->string('province_name')->nullable(false)->change();
 
-            $table->string('kota_id')->nullable()->after('kelurahan_name');
-            $table->string('kota_name')->nullable()->after('kota_id');
-
             $table->dropColumn([
                 'provinsi_id',
                 'provinsi_name',
-                'kota_id',
-                'kota_name',
             ]);
         });
     }
