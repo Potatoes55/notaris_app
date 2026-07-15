@@ -156,14 +156,32 @@
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     @if($isImage)
-                                                                        <div class="d-flex justify-content-center">
-                                                                            <img src="{{ $file }}" class="img-fluid rounded shadow-sm" style="max-height:90vh;object-fit:contain;">
-                                                                        </div>
-                                                                    @elseif($isPdf)
-                                                                        <iframe src="{{ $file }}" width="100%" height="700px" style="border:none;"></iframe>
-                                                                    @else
-                                                                        <p class="text-muted text-center">Format dokumen tidak dapat ditampilkan.</p>
-                                                                    @endif
+    <div class="d-flex justify-content-center position-relative">
+        <img src="{{ $file }}" class="img-fluid rounded shadow-sm" style="max-height:90vh;object-fit:contain;">
+        
+        @if($doc->relaases && $doc->relaases->notaris_id)
+            <div style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: white; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">
+                {!! SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+                    ->size(80)
+                    ->margin(0)
+                    ->generate(route('profileNotaris', \Illuminate\Support\Facades\Crypt::encryptString($doc->relaases->notaris_id))) !!}
+            </div>
+        @endif
+    </div>
+@elseif($isPdf)
+    <div class="position-relative">
+        <iframe src="{{ $file }}" width="100%" height="700px" style="border:none;"></iframe>
+        
+        @if($doc->relaases && $doc->relaases->notaris_id)
+            <div style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: white; padding: 5px; border-radius: 5px; border: 1px solid #ddd; z-index: 10;">
+                {!! SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+                    ->size(80)
+                    ->margin(0)
+                    ->generate(route('profileNotaris', \Illuminate\Support\Facades\Crypt::encryptString($doc->relaases->notaris_id))) !!}
+            </div>
+        @endif
+    </div>
+@endif
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -171,14 +189,25 @@
                                                 @else
                                                     <span class="badge bg-secondary">Tidak Ada File</span>
                                                 @endif
-                                            </td>
-                                            <td class="d-flex gap-1 justify-content-center">
-                                                <a href="#" class="btn btn-info btn-sm mb-0">Edit</a>
-                                                <form action="#" method="POST" class="d-inline">
-                                                    @csrf @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm mb-0">Hapus</button>
-                                                </form>
-                                            </td>
+                                                <td class="d-flex gap-1 justify-content-center">
+                                                    <a href="{{ route('akta-documents.edit', $doc->id) }}"
+                                                        class="btn btn-info btn-sm mb-0">
+                                                        <i class="fa fa-pen me-1"></i>
+                                                        Edit
+                                                    </a>
+
+                                                    <form action="{{ route('akta-documents.destroy', $doc->id) }}"
+                                                        method="POST"
+                                                        class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button type="submit" class="btn btn-danger btn-sm mb-0">
+                                                            <i class="fa fa-trash me-1"></i>
+                                                            Hapus
+                                                        </button>
+                                                    </form>
+                                                </td>
                                         </tr>
                                     @empty
                                         <tr><td colspan="6" class="text-center text-muted text-sm">Belum ada dokumen akta.</td></tr>

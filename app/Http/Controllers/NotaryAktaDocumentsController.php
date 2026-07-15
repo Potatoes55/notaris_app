@@ -82,8 +82,8 @@ class NotaryAktaDocumentsController extends Controller
 
     public function createData($transaction_id)
     {
-        $transaction = NotaryAktaTransaction::with('akta_type', 'notaris', 'client')
-            ->findOrFail($transaction_id);
+        $transaction = NotaryAktaTransaction::with(['akta_type', 'notaris', 'client'])
+        ->findOrFail($transaction_id);
 
         $aktaType = strtolower($transaction->akta_type->type ?? '');
 
@@ -166,8 +166,7 @@ class NotaryAktaDocumentsController extends Controller
             ->success('Berhasil menambahkan akta dokumen.');
 
         return redirect()->route('akta-documents.index', [
-            'transaction_code' => $transaction->transaction_code,
-            'akta_number' => $transaction->akta_number
+            'search' => $transaction->transaction_code
         ]);
     }
 
@@ -242,7 +241,9 @@ class NotaryAktaDocumentsController extends Controller
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil menghapus akta dokumen.');
 
-        return redirect()->route('akta-documents.index', ['transaction_code' => $transaction->transaction_code, 'akta_number' => $transaction->akta_number]);
+        return redirect()->route('akta-documents.index', [
+            'search' => $transaction->transaction_code
+        ]);
     }
 
     // Tambahkan method ini di dalam NotaryAktaDocumentsController

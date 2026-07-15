@@ -38,7 +38,10 @@
                             <div class="row text-sm">
                                 <div class="col-md-6 mb-1"><strong>Nomor Akta</strong><br>{{ $transaction->akta_number ?? '-' }}</div>
                                 <div class="col-md-6 mb-1"><strong>Klien</strong><br>{{ $transaction->client->fullname ?? '-' }}</div>
-                                <div class="col-md-6 mb-1"><strong>Jenis Akta</strong><br>{{ $transaction->akta_type->name ?? '-' }}</div>
+                                <div class="col-md-6 mb-1">
+                                    <strong>Jenis Akta</strong><br>
+                                    {{ $transaction->akta_type->type ?? $transaction->akta_type->name ?? '-' }}
+                                </div>
                                 <div class="col-md-6 mb-1"><strong>Kategori</strong><br><span class="badge bg-gradient-info">{{ $transaction->akta_type->category ?? '-' }}</span></div>
                             </div>
                         </div>
@@ -48,71 +51,71 @@
                           method="POST" enctype="multipart/form-data">
 
                         @csrf
-@if($isEditMode)
-    @method('PUT')
-@endif
+                        @if($isEditMode)
+                            @method('PUT')
+                        @endif
 
-@if($isSkMode)
+                        @if($isSkMode)
 
-    <input type="hidden" name="type" value="sk_kemenkum">
+                            <input type="hidden" name="type" value="sk_kemenkum">
 
-    <div class="mb-3">
-        <label class="form-control-label">Nomor / SK Kemenkum</label>
-        <div class="input-group input-group-outline">
-            <input type="text"
-                name="name"
-                class="form-control @error('name') is-invalid @enderror"
-                value="{{ old('name', $document->name ?? '') }}"
-                required>
-        </div>
-        @error('name')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                            <div class="mb-3">
+                                <label class="form-control-label">Nomor / SK Kemenkum</label>
+                                <div class="input-group input-group-outline">
+                                    <input type="text"
+                                        name="name"
+                                        class="form-control @error('name') is-invalid @enderror"
+                                        value="{{ old('name', $document->name ?? '') }}"
+                                        required>
+                                </div>
+                                @error('name')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
 
-@else
+                        @else
 
-    <div class="mb-3">
-        <label class="form-control-label">Nama Dokumen</label>
-        <div class="input-group input-group-outline">
-            <input type="text"
-                name="name"
-                class="form-control @error('name') is-invalid @enderror"
-                value="{{ old('name', $document->name ?? '') }}"
-                required>
-        </div>
-        @error('name')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                            <div class="mb-3">
+                                <label class="form-control-label">Nama Dokumen</label>
+                                <div class="input-group input-group-outline">
+                                    <input type="text"
+                                        name="name"
+                                        class="form-control @error('name') is-invalid @enderror"
+                                        value="{{ old('name', $document->name ?? '') }}"
+                                        required>
+                                </div>
+                                @error('name')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
 
-    <div class="mb-3">
-        <label class="form-control-label">Tipe</label>
-        <div class="input-group input-group-outline">
-            <select name="type" class="form-control @error('type') is-invalid @enderror" required>
-                @php
-                    $currentType = old('type', $document->type ?? '');
-                @endphp
+                            <div class="mb-3">
+                                <label class="form-control-label">Tipe</label>
+                                <div class="input-group input-group-outline">
+                                    <select name="type" class="form-control @error('type') is-invalid @enderror" required>
+                                        @php
+                                            $currentType = old('type', $document->type ?? '');
+                                        @endphp
 
-                <option value="">Pilih</option>
-                <option value="Akta" {{ $currentType == 'Akta' ? 'selected' : '' }}>
-                    Akta
-                </option>
-                <option value="Salinan" {{ $currentType == 'Salinan' ? 'selected' : '' }}>
-                    Salinan
-                </option>
-                <option value="Berkas Pendukung" {{ $currentType == 'Berkas Pendukung' ? 'selected' : '' }}>
-                    Berkas Pendukung
-                </option>
-            </select>
-        </div>
+                                        <option value="">Pilih</option>
+                                        <option value="Akta" {{ $currentType == 'Akta' ? 'selected' : '' }}>
+                                            Akta
+                                        </option>
+                                        <option value="Salinan" {{ $currentType == 'Salinan' ? 'selected' : '' }}>
+                                            Salinan
+                                        </option>
+                                        <option value="Berkas Pendukung" {{ $currentType == 'Berkas Pendukung' ? 'selected' : '' }}>
+                                            Berkas Pendukung
+                                        </option>
+                                    </select>
+                                </div>
 
-        @error('type')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
+                                @error('type')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
 
-@endif
+                        @endif
                         <div class="mb-3">
                             <label class="form-control-label">Tanggal Upload</label>
                             <div class="input-group input-group-outline">
@@ -147,14 +150,17 @@
                         </div>
 
                         <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('akta-documents.index', ['transaction_code' => $transaction->transaction_code, 'akta_number' => $transaction->akta_number]) }}"
-                               class="btn btn-light mb-0">Batal</a>
+                            <a href="{{ route('akta-documents.index', [
+                                'search' => $transaction->transaction_code
+                            ]) }}"
+                            class="btn btn-light mb-0">
+                                Batal
+                            </a>
 
                             <button type="submit" class="btn bg-gradient-primary mb-0">
-                                {{ $isEditMode ? 'Simpan' : 'Simpan' }}
+                                Simpan
                             </button>
                         </div>
-
                     </form>
 
                 </div>
