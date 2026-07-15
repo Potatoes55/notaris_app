@@ -124,7 +124,7 @@ class ClientService
             'pic_name' => 'required_if:type,company|string|max:255',
             'pic_position' => 'required_if:type,company|string|max:255',
             'pic_phone' => 'required_if:type,company|string|max:20',
-            'pic_email' => 'required_if:type,company|email|max:255',
+            'pic_email' => 'nullable_if:type,company|email|max:255',
 
         ];
 

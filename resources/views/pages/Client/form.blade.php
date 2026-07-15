@@ -52,7 +52,7 @@
                                 @endif --}}
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="fullname" class="form-label text-sm">Nama Lengkap</label>
+                                    <label for="fullname" class="form-label text-sm">Nama Lengkap<span class="text-danger"> *</span></label>
                                     <input type="text" name="fullname" class="form-control"
                                         placeholder="Masukkan nama lengkap"
                                         value="{{ old('fullname', $client->fullname ?? '') }}">
@@ -62,7 +62,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="nik" class="form-label text-sm">NIK</label>
+                                    <label for="nik" class="form-label text-sm">NIK<span class="text-danger"> *</span></label>
                                     <input type="text" name="nik" class="form-control"
                                         placeholder="Masukkan nomor NIK" value="{{ old('nik', $client->nik ?? '') }}">
                                     @error('nik')
@@ -71,7 +71,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="birth_place" class="form-label text-sm">Tempat Lahir</label>
+                                    <label for="birth_place" class="form-label text-sm">Tempat Lahir<span class="text-danger"> *</span></label>
                                     <input type="text" name="birth_place" class="form-control"
                                         placeholder="Masukkan tempat lahir"
                                         value="{{ old('birth_place', $client->birth_place ?? '') }}">
@@ -81,7 +81,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="gender" class="form-label text-sm">Jenis Kelamin</label>
+                                    <label for="gender" class="form-label text-sm">Jenis Kelamin<span class="text-danger"> *</span></label>
                                     <select name="gender" class="form-select">
                                         <option value="" hidden>Pilih jenis kelamin</option>
                                         <option value="Laki-Laki"
@@ -97,7 +97,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="marital_status" class="form-label text-sm">Status Perkawinan</label>
+                                    <label for="marital_status" class="form-label text-sm">Status Perkawinan<span class="text-danger"> *</span></label>
                                     <select name="marital_status" class="form-select">
                                         <option value="" hidden>Pilih status perkawinan</option>
                                         <option value="Belum Menikah"
@@ -119,7 +119,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="job" class="form-label text-sm">Pekerjaan</label>
+                                    <label for="job" class="form-label text-sm">Pekerjaan<span class="text-danger"> *</span></label>
                                     <input type="text" name="job" class="form-control"
                                         placeholder="Masukkan pekerjaan" value="{{ old('job', $client->job ?? '') }}">
                                     @error('job')
@@ -140,35 +140,35 @@
                                     value="{{ old('kelurahan_name', $client->kelurahan_name ?? '') }}">
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Provinsi</label>
+                                    <label class="form-label text-sm">Provinsi<span class="text-danger"> *</span></label>
                                     <select id="provinsi" name="provinsi_id" class="form-select">
                                         <option value="">Pilih Provinsi</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Kota / Kabupaten</label>
+                                    <label class="form-label text-sm">Kota / Kabupaten<span class="text-danger"> *</span></label>
                                     <select id="kota" name="kota_id" class="form-select">
                                         <option value="">Pilih Kota / Kabupaten</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Kecamatan</label>
+                                    <label class="form-label text-sm">Kecamatan<span class="text-danger"> *</span></label>
                                     <select id="kecamatan" name="kecamatan_id" class="form-select">
                                         <option value="">Pilih Kecamatan</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Kelurahan</label>
+                                    <label class="form-label text-sm">Kelurahan<span class="text-danger"> *</span></label>
                                     <select id="kelurahan" name="kelurahan_id" class="form-select">
                                         <option value="">Pilih Kelurahan</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Alamat Lengkap</label>
+                                    <label class="form-label text-sm">Alamat Lengkap<span class="text-danger"> *</span></label>
                                     <input
                                         type="text"
                                         name="address"
@@ -191,7 +191,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="phone" class="form-label text-sm">Telepon</label>
+                                    <label for="phone" class="form-label text-sm">Telepon<span class="text-danger"> *</span></label>
                                     <input type="text" name="phone" class="form-control"
                                         placeholder="Masukkan nomor telepon"
                                         value="{{ old('phone', $client->phone ?? '') }}">
@@ -248,7 +248,7 @@
                                 </div> --}}
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="status" class="form-label text-sm">Status</label>
+                                    <label for="status" class="form-label text-sm">Status<span class="text-danger"> *</span></label>
                                     <select name="status" class="form-select" required>
                                         <option value="" hidden>Pilih status klien</option>
                                         <option value="pending"
@@ -286,7 +286,7 @@
                                 @endif --}}
                                 <div class="col-md-6 mb-3">
                                     <label for="fullname" class="form-label text-sm">Nama Badan Usaha/Badan
-                                        Hukum</label>
+                                        Hukum<span class="text-danger"> *</span></label>
                                     <input type="text" name="fullname" class="form-control"
                                         placeholder="Masukkan nama "
                                         value="{{ old('fullname', $client->fullname ?? '') }}" required>
@@ -296,7 +296,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="legal_status" class="form-label text-sm">Status Legal</label>
+                                    <label for="legal_status" class="form-label text-sm">Status Legal<span class="text-danger"> *</span></label>
                                     <select name="legal_status" class="form-select" required>
                                         <option value="" hidden>Pilih</option>
                                         <option value="legal_entity"
@@ -315,7 +315,7 @@
                                     </div> --}}
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="business_form" class="form-label text-sm">Bentuk Usaha</label>
+                                    <label for="business_form" class="form-label text-sm">Bentuk Usaha<span class="text-danger"> *</span></label>
                                     <select name="business_form" class="form-select" required>
                                         <option value="" hidden>Pilih</option>
                                         <option value="CV"
@@ -353,7 +353,7 @@
 
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="deed_number" class="form-label text-sm">Nomor Akta Pendirian</label>
+                                    <label for="deed_number" class="form-label text-sm">Nomor Akta Pendirian<span class="text-danger"> *</span></label>
                                     <input type="text" name="deed_number" class="form-control"
                                         placeholder="Masukkan nomor akta pendirian"
                                         value="{{ old('deed_number', $client->deed_number ?? '') }}" required>
@@ -363,7 +363,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="deed_date" class="form-label text-sm">Tanggal Akta Pendirian</label>
+                                    <label for="deed_date" class="form-label text-sm">Tanggal Akta Pendirian<span class="text-danger"> *</span></label>
                                     <input type="date" name="deed_date" class="form-control"
                                         placeholder="Masukkan tanggal akta pendirian"
                                         value="{{ old('deed_date', $client->deed_date ?? '') }}" required>
@@ -373,7 +373,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="nib" class="form-label text-sm">NIB</label>
+                                    <label for="nib" class="form-label text-sm">NIB<span class="text-danger"> *</span></label>
                                     <input type="text" class="form-control" id="nib" name="nib"
                                         placeholder="Masukkan nomor NIB" value="{{ old('nib', $client->nib ?? '') }}" required>
                                     {{-- @error('nib')
@@ -382,7 +382,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="npwp" class="form-label text-sm">NPWP</label>
+                                    <label for="npwp" class="form-label text-sm">NPWP<span class="text-danger"> *</span></label>
                                     <input type="text" name="npwp" class="form-control"
                                         placeholder="Masukkan nomor NPWP" value="{{ old('npwp', $client->npwp ?? '') }}">
                                     @error('npwp')
@@ -391,7 +391,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="pic_name" class="form-label">PIC Name</label>
+                                    <label for="pic_name" class="form-label">PIC Name<span class="text-danger"> *</span></label>
                                     <input type="text" class="form-control" id="pic_name" name="pic_name"
                                         placeholder="Masukkan Nama PIC"
                                         value="{{ old('pic_name', $client->pic_name ?? '') }}" required>
@@ -401,7 +401,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="pic_position" class="form-label">PIC Position</label>
+                                    <label for="pic_position" class="form-label">PIC Position<span class="text-danger"> *</span></label>
                                     <input type="text" class="form-control" id="pic_position" name="pic_position"
                                         placeholder="Masukkan Jabatan"
                                         value="{{ old('pic_position', $client->pic_position ?? '') }}" required>
@@ -411,7 +411,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="pic_phone" class="form-label">PIC Phone</label>
+                                    <label for="pic_phone" class="form-label">PIC Phone<span class="text-danger"> *</span></label>
                                     <input type="text" class="form-control" id="pic_phone" name="pic_phone"
                                         placeholder="Masukkan no hp PIC"
                                         value="{{ old('pic_phone', $client->pic_phone ?? '') }}" required>
@@ -436,35 +436,35 @@
                                 <input type="hidden" name="kelurahan_name" id="kelurahan_name">
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Provinsi</label>
+                                    <label class="form-label text-sm">Provinsi<span class="text-danger"> *</span></label>
                                     <select id="provinsi" name="province_id" class="form-select">
                                         <option value="">Pilih Provinsi</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Kota / Kabupaten</label>
+                                    <label class="form-label text-sm">Kota / Kabupaten<span class="text-danger"> *</span></label>
                                     <select id="kota" name="city_id" class="form-select">
                                         <option value="">Pilih Kota / Kabupaten</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Kecamatan</label>
+                                    <label class="form-label text-sm">Kecamatan<span class="text-danger"> *</span></label>
                                     <select id="kecamatan" name="kecamatan_id" class="form-select">
                                         <option value="">Pilih Kecamatan</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Kelurahan</label>
+                                    <label class="form-label text-sm">Kelurahan<span class="text-danger"> *</span></label>
                                     <select id="kelurahan" name="kelurahan_id" class="form-select">
                                         <option value="">Pilih Kelurahan</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label text-sm">Alamat Badan</label>
+                                    <label class="form-label text-sm">Alamat Badan<span class="text-danger"> *</span></label>
                                     <input
                                         type="text"
                                         name="address"
@@ -497,7 +497,7 @@
                                 </div> --}}
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="phone" class="form-label text-sm">Telepon Perusahaan</label>
+                                    <label for="phone" class="form-label text-sm">Telepon Perusahaan<span class="text-danger"> *</span></label>
                                     <input type="text" name="phone" class="form-control"
                                         placeholder="Masukkan nomor telepon perusahaan"
                                         value="{{ old('phone', $client->phone ?? '') }}" required>
@@ -507,7 +507,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label text-sm">Email Perusahaan</label>
+                                    <label for="email" class="form-label text-sm">Email Perusahaan<span class="text-danger"> *</span></label>
                                     <input type="email" name="email" class="form-control"
                                         placeholder="Masukkan alamat email perusahaan"
                                         value="{{ old('email', $client->email ?? '') }}" required>
@@ -517,7 +517,7 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="status" class="form-label text-sm">Status</label>
+                                    <label for="status" class="form-label text-sm">Status<span class="text-danger"> *</span></label>
                                     <select name="status" class="form-select">
                                         <option value="" hidden>Pilih status klien</option>
                                         <option value="pending"
