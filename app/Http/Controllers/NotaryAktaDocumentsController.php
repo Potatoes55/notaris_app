@@ -108,7 +108,7 @@ class NotaryAktaDocumentsController extends Controller
             'file_url' => 'required|max:10240|mimes:png,jpg,jpeg,pdf',
             'uploaded_at' => 'required|date',
         ];
-        dd($aktaType);
+        // dd($aktaType);
         if ($request->input('type') === 'sk_kemenkum' && ! $isSkCategory) {
             notyf()
                 ->position('x', 'right')
