@@ -143,7 +143,6 @@ class ClientService
             'Kelurahan.required' => 'Kelurahan wajib diisi.',
             'postcode.required' => 'Kode pos wajib diisi.',
             'phone.required' => 'Nomor telepon wajib diisi.',
-            'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'npwp.required' => 'NPWP wajib diisi.',
             'type.required' => 'Tipe klien wajib dipilih.',

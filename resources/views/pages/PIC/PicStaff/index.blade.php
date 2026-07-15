@@ -7,19 +7,14 @@
 @include('layouts.navbars.auth.topnav', [
     'title' => $module . ' / PIC Staff'
 ])
+@php
+    $role = session('login_role');
+@endphp
 
-@if ($module == 'PPAT')
-    @include('components.ppat-menu')
-@elseif ($module == 'Proses Lain')
-    @include('components.proseslain-menu')
-@else
-    @include('components.notaris-menu')
-@endif
-
-@if(session('login_role') != 'staff')
-    @if ($module == 'PPAT')
+@if($role !== 'staff')
+    @if ($module === 'PPAT')
         @include('components.ppat-menu')
-    @elseif ($module == 'Proses Lain')
+    @elseif ($module === 'Proses Lain')
         @include('components.proseslain-menu')
     @else
         @include('components.notaris-menu')
