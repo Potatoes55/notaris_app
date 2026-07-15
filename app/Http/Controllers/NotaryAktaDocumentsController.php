@@ -85,12 +85,9 @@ class NotaryAktaDocumentsController extends Controller
     {
         $transaction = NotaryAktaTransaction::with('akta_type', 'notaris', 'client')
             ->findOrFail($transaction_id);
+        $category = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
 
-        $aktaType = strtolower($transaction->akta_type->type ?? '');
-
-        $isSkRequired = str_contains($aktaType, 'pendirian')
-            || str_contains($aktaType, 'perubahan')
-            || str_contains($aktaType, 'pembubaran');
+        $isSkRequired = in_array($category, ['pendirian', 'perubahan', 'pembubaran']);
 
         return view('pages.BackOffice.AktaDocument.form', compact('transaction', 'isSkRequired'));
     }
@@ -101,10 +98,8 @@ class NotaryAktaDocumentsController extends Controller
 
     public function storeData(Request $request, $transaction_id)
     {
-        $transaction = NotaryAktaTransaction::with('akta_type')
-            ->findOrFail($transaction_id);
-
-        $aktaType = $transaction->akta_type->type ?? '';
+        $transaction = NotaryAktaTransaction::findOrFail($transaction_id);
+        $aktaType = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
         $isSkCategory = Str::contains($aktaType, ['pendirian', 'perubahan', 'pembubaran'], true);
 
         $rules = [
@@ -113,7 +108,7 @@ class NotaryAktaDocumentsController extends Controller
             'file_url' => 'required|max:10240|mimes:png,jpg,jpeg,pdf',
             'uploaded_at' => 'required|date',
         ];
-
+        dd($aktaType);
         if ($request->input('type') === 'sk_kemenkum' && ! $isSkCategory) {
             notyf()
                 ->position('x', 'right')
