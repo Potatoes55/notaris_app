@@ -151,7 +151,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($documents as $doc)
+                                        @forelse($documents as $doc)
                                         <tr class="text-center text-sm">
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $doc->name }}</td>

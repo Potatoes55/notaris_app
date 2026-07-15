@@ -48,48 +48,71 @@
                           method="POST" enctype="multipart/form-data">
 
                         @csrf
-                        @if($isEditMode) @method('PUT') @endif
+@if($isEditMode)
+    @method('PUT')
+@endif
 
-                        @if($isSkMode)
+@if($isSkMode)
 
-                            <div class="mb-3">
-                                <label class="form-control-label">Nomor / SK Kemenkum</label>
-                                <div class="input-group input-group-outline">
-                                    <input type="text" name="name"
-                                           class="form-control @error('name') is-invalid @enderror"
-                                           value="{{ old('name', $document->name ?? '') }}" required>
-                                </div>
-                                @error('name') <small class="text-danger">{{ $message }}</small> @enderror
-                            </div>
+    <input type="hidden" name="type" value="sk_kemenkum">
 
-                        @else
+    <div class="mb-3">
+        <label class="form-control-label">Nomor / SK Kemenkum</label>
+        <div class="input-group input-group-outline">
+            <input type="text"
+                name="name"
+                class="form-control @error('name') is-invalid @enderror"
+                value="{{ old('name', $document->name ?? '') }}"
+                required>
+        </div>
+        @error('name')
+            <small class="text-danger">{{ $message }}</small>
+        @enderror
+    </div>
 
-                            <div class="mb-3">
-                                <label class="form-control-label">Nama Dokumen</label>
-                                <div class="input-group input-group-outline">
-                                    <input type="text" name="name"
-                                           class="form-control @error('name') is-invalid @enderror"
-                                           value="{{ old('name', $document->name ?? '') }}" required>
-                                </div>
-                                @error('name') <small class="text-danger">{{ $message }}</small> @enderror
-                            </div>
+@else
 
-                            <div class="mb-3">
-                                <label class="form-control-label">Tipe</label>
-                                <div class="input-group input-group-outline">
-                                    <select name="type" class="form-control @error('type') is-invalid @enderror" required>
-                                        @php $currentType = old('type', $document->type ?? ''); @endphp
-                                        <option value="">Pilih</option>
-                                        <option value="Akta" {{ $currentType=='Akta'?'selected':'' }}>Akta</option>
-                                        <option value="Salinan" {{ $currentType=='Salinan'?'selected':'' }}>Salinan</option>
-                                        <option value="Berkas Pendukung" {{ $currentType=='Berkas Pendukung'?'selected':'' }}>Berkas Pendukung</option>
-                                    </select>
-                                </div>
-                                @error('type') <small class="text-danger">{{ $message }}</small> @enderror
-                            </div>
+    <div class="mb-3">
+        <label class="form-control-label">Nama Dokumen</label>
+        <div class="input-group input-group-outline">
+            <input type="text"
+                name="name"
+                class="form-control @error('name') is-invalid @enderror"
+                value="{{ old('name', $document->name ?? '') }}"
+                required>
+        </div>
+        @error('name')
+            <small class="text-danger">{{ $message }}</small>
+        @enderror
+    </div>
 
-                        @endif
+    <div class="mb-3">
+        <label class="form-control-label">Tipe</label>
+        <div class="input-group input-group-outline">
+            <select name="type" class="form-control @error('type') is-invalid @enderror" required>
+                @php
+                    $currentType = old('type', $document->type ?? '');
+                @endphp
 
+                <option value="">Pilih</option>
+                <option value="Akta" {{ $currentType == 'Akta' ? 'selected' : '' }}>
+                    Akta
+                </option>
+                <option value="Salinan" {{ $currentType == 'Salinan' ? 'selected' : '' }}>
+                    Salinan
+                </option>
+                <option value="Berkas Pendukung" {{ $currentType == 'Berkas Pendukung' ? 'selected' : '' }}>
+                    Berkas Pendukung
+                </option>
+            </select>
+        </div>
+
+        @error('type')
+            <small class="text-danger">{{ $message }}</small>
+        @enderror
+    </div>
+
+@endif
                         <div class="mb-3">
                             <label class="form-control-label">Tanggal Upload</label>
                             <div class="input-group input-group-outline">
