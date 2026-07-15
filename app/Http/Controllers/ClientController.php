@@ -37,6 +37,8 @@ class ClientController extends Controller
     {
         $type = $request->get('type', 'personal');
 
+        notyf()->position('x', 'right')->position('y', 'top')->warning('Klien sama dengan pihak dalam akta');
+
         return view('pages.Client.form', compact('type'));
     }
 
