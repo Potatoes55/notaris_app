@@ -6,6 +6,7 @@ use App\Models\NotaryAktaDocuments;
 use App\Models\NotaryAktaTransaction;
 use App\Services\NotaryAktaDocumentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class NotaryAktaDocumentsController extends Controller
 {
@@ -82,14 +83,11 @@ class NotaryAktaDocumentsController extends Controller
 
     public function createData($transaction_id)
     {
-        $transaction = NotaryAktaTransaction::with(['akta_type', 'notaris', 'client'])
-        ->findOrFail($transaction_id);
+        $transaction = NotaryAktaTransaction::with('akta_type', 'notaris', 'client')
+            ->findOrFail($transaction_id);
+        $category = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
 
-        $aktaType = strtolower($transaction->akta_type->type ?? '');
-
-        $isSkRequired = str_contains($aktaType, 'pendirian')
-            || str_contains($aktaType, 'perubahan')
-            || str_contains($aktaType, 'pembubaran');
+        $isSkRequired = in_array($category, ['pendirian', 'perubahan', 'pembubaran']);
 
         return view('pages.BackOffice.AktaDocument.form', compact('transaction', 'isSkRequired'));
     }
@@ -100,14 +98,9 @@ class NotaryAktaDocumentsController extends Controller
 
     public function storeData(Request $request, $transaction_id)
     {
-        $transaction = NotaryAktaTransaction::with('akta_type')
-            ->findOrFail($transaction_id);
-
-        $aktaType = strtolower($transaction->akta_type->type ?? '');
-
-        $isSkCategory = str_contains($aktaType, 'pendirian')
-            || str_contains($aktaType, 'perubahan')
-            || str_contains($aktaType, 'pembubaran');
+        $transaction = NotaryAktaTransaction::findOrFail($transaction_id);
+        $aktaType = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
+        $isSkCategory = Str::contains($aktaType, ['pendirian', 'perubahan', 'pembubaran'], true);
 
         $rules = [
             'name' => 'required|string',
@@ -115,7 +108,7 @@ class NotaryAktaDocumentsController extends Controller
             'file_url' => 'required|max:10240|mimes:png,jpg,jpeg,pdf',
             'uploaded_at' => 'required|date',
         ];
-
+        // dd($aktaType);
         if ($request->input('type') === 'sk_kemenkum' && ! $isSkCategory) {
             notyf()
                 ->position('x', 'right')
@@ -166,7 +159,9 @@ class NotaryAktaDocumentsController extends Controller
             ->success('Berhasil menambahkan akta dokumen.');
 
         return redirect()->route('akta-documents.index', [
-            'search' => $transaction->transaction_code
+            'search' => $transaction->transaction_code,
+            'transaction_code' => $transaction->transaction_code,
+            'akta_number' => $transaction->akta_number,
         ]);
     }
 
@@ -250,7 +245,6 @@ class NotaryAktaDocumentsController extends Controller
 
     public function viewPdf($id)
     {
-        // try {
         $doc = \App\Models\NotaryAktaDocuments::find($id);
 
         if (! $doc) {
@@ -269,6 +263,7 @@ class NotaryAktaDocumentsController extends Controller
             return response()->json(['error' => 'Data transaksi tidak ditemukan untuk dokumen ini.'], 404);
         }
 
+        // 1. Generate QR Code jika tipenya bukan sk_kemenkum
         $qrCodeCleanSvg = null;
         if ($doc->type !== 'sk_kemenkum') {
             $transactionCode = $transaction->transaction_code;
@@ -281,28 +276,31 @@ class NotaryAktaDocumentsController extends Controller
             $qrCodeCleanSvg = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrCodeSvg);
         }
 
-        $mpdf = new \Mpdf\Mpdf([
-            'format' => 'A4',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-        ]);
-
         $fileType = strtolower($doc->file_type);
 
+        // 2. PROSES CONFIG UNTUK FILE GAMBAR
         if (in_array($fileType, ['png', 'jpg', 'jpeg', 'svg'])) {
+            [$imgWidth, $imgHeight] = getimagesize($filePath);
 
-            $widthMm = 210;
-            $heightMm = 297;
+            // Konversi pixel ke milimeter (Menggunakan basis kalkulasi aman 96 DPI: 1px = 0.264583mm)
+            $widthMm = $imgWidth * 0.264583;
+            $heightMm = $imgHeight * 0.264583;
 
+            // Buat canvas mPDF dengan ukuran pas sesuai gambar (Tanpa template A4/A4-L)
+            $mpdf = new \Mpdf\Mpdf([
+                'format' => [$widthMm, $heightMm],
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+            ]);
+
+            // Posisi QR Code: Dinamis 40% dari total tinggi gambar yang sebenarnya
             $topPositionMm = $heightMm * 0.4;
             $leftPositionMm = 5;
 
-            $htmlContent = '
-        <div style="position: absolute; top: 0; left: 0; width: 210mm; height: 297mm; z-index: 1; margin: 0; padding: 0;">
-            <img src="'.$filePath.'" style="width: 210mm; height: 297mm; object-fit: contain; margin: 0; padding: 0;" />
-        </div>';
+            // Gambar diset memenuhi 100% canvas dinamis yang sudah kita ciptakan
+            $htmlContent = '<img src="'.$filePath.'" style="width: 100%; display: block; margin: 0; padding: 0;" />';
 
             if ($doc->type !== 'sk_kemenkum' && $qrCodeCleanSvg) {
                 $htmlContent .= '
@@ -315,7 +313,16 @@ class NotaryAktaDocumentsController extends Controller
 
             $mpdf->WriteHTML($htmlContent);
 
+            // 3. PROSES CONFIG UNTUK FILE PDF ASLI (Bawaan dokumen)
         } else {
+            $mpdf = new \Mpdf\Mpdf([
+                'format' => 'A4',
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+            ]);
+
             $pageCount = $mpdf->setSourceFile($filePath);
 
             for ($i = 1; $i <= $pageCount; $i++) {
@@ -335,7 +342,6 @@ class NotaryAktaDocumentsController extends Controller
                 $mpdf->useTemplate($importPage);
                 $mpdf->page = $i;
 
-                // Tempel QR Code di halaman PDF hanya jika tipenya bukan sk_kemenkum
                 if ($doc->type !== 'sk_kemenkum' && $qrCodeCleanSvg) {
                     $topPositionMm = $heightMm * 0.4;
                     $leftPositionMm = 4;
@@ -354,12 +360,5 @@ class NotaryAktaDocumentsController extends Controller
 
         return response($mpdf->Output("preview_dokumen_{$id}.pdf", 'I'))
             ->header('Content-Type', 'application/pdf');
-
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'error' => 'Terjadi kesalahan sistem.',
-        //         'message' => $e->getMessage(),
-        //     ], 500);
-        // }
     }
 }

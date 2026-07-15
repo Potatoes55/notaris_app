@@ -126,88 +126,57 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($documents as $doc)
-                                        <tr class="text-center text-sm">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $doc->name }}</td>
-                                            <td>{{ $doc->type ?? '-' }}</td>
-                                            <td>{{ $doc->uploaded_at ? \Carbon\Carbon::parse($doc->uploaded_at)->format('d F Y H:i:s') : '-' }}</td>
-                                            <td>
-                                                @if ($doc->file_url)
-                                                    <button type="button" class="btn btn-primary btn-xs mb-0"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#viewDocumentModal-{{ $doc->id }}">
-                                                        <i class="fa fa-file me-1"></i> Lihat Akta
-                                                    </button>
+                                         @forelse($documents as $doc)
+                                            <tr class="text-sm">
+                                                <td class="ps-3">
+                                                    {{ method_exists($documents, 'firstItem') ? ($documents->firstItem() + $loop->index) : ($loop->iteration) }}
+                                                </td>
+                                                <td>{{ $doc->name }}</td>
+                                                <td>{{ $doc->type }}</td>
+                                                <td>
+                                                    {{ $doc->uploaded_at ? \Carbon\Carbon::parse($doc->uploaded_at)->format('d F Y H:i:s') : '-' }}
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($doc->file_url)
+                                                        <button type="button" class="btn btn-sm btn-primary mb-0"
+                                                            data-bs-toggle="modal" data-bs-target="#fileModal{{ $doc->id }}">
+                                                            <i class="fa fa-file me-1"></i> Lihat Akta Dokumen
+                                                        </button>
 
-                                                    @php
-                                                        $file = asset('storage/'.$doc->file_url);
-                                                        $ext = strtolower(pathinfo($doc->file_url, PATHINFO_EXTENSION));
-                                                        $isImage = in_array($ext, ['jpg','jpeg','png','svg','webp']);
-                                                        $isPdf = $ext === 'pdf';
-                                                    @endphp
+                                                        @php
+                                                            $isPdf = $doc->file_type === 'pdf';
+                                                            $modalSize = $isPdf ? 'modal-xl' : 'modal-lg';
+                                                        @endphp
 
-                                                    <div class="modal fade" id="viewDocumentModal-{{ $doc->id }}" tabindex="-1" aria-hidden="true" style="z-index:9999;">
-                                                        <div class="modal-dialog modal-dialog-centered {{ $isPdf ? 'modal-xl' : 'modal-lg' }}">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">Dokumen Akta</h5>
-                                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    @if($isImage)
-    <div class="d-flex justify-content-center position-relative">
-        <img src="{{ $file }}" class="img-fluid rounded shadow-sm" style="max-height:90vh;object-fit:contain;">
-        
-        @if($doc->relaases && $doc->relaases->notaris_id)
-            <div style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: white; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">
-                {!! SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
-                    ->size(80)
-                    ->margin(0)
-                    ->generate(route('profileNotaris', \Illuminate\Support\Facades\Crypt::encryptString($doc->relaases->notaris_id))) !!}
-            </div>
-        @endif
-    </div>
-@elseif($isPdf)
-    <div class="position-relative">
-        <iframe src="{{ $file }}" width="100%" height="700px" style="border:none;"></iframe>
-        
-        @if($doc->relaases && $doc->relaases->notaris_id)
-            <div style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: white; padding: 5px; border-radius: 5px; border: 1px solid #ddd; z-index: 10;">
-                {!! SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
-                    ->size(80)
-                    ->margin(0)
-                    ->generate(route('profileNotaris', \Illuminate\Support\Facades\Crypt::encryptString($doc->relaases->notaris_id))) !!}
-            </div>
-        @endif
-    </div>
-@endif
+                                                        <div class="modal fade" id="fileModal{{ $doc->id }}" tabindex="-1" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered {{ $modalSize }}">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header py-2">
+                                                                        <h5 class="modal-title">Preview: {{ $doc->name }}</h5>
+                                                                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body text-center p-0">
+                                                                        @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg', 'webp']))
+                                                                            <embed src="{{ route('akta-documents.view-pdf', ['id' => $doc->id]) }}"
+                                                                                type="application/pdf" width="100%" height="700px" />
+                                                                        @else
+                                                                            <p class="text-muted p-4">File tidak dapat ditampilkan langsung.</p>
+                                                                        @endif
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                @else
-                                                    <span class="badge bg-secondary">Tidak Ada File</span>
-                                                @endif
-                                                <td class="d-flex gap-1 justify-content-center">
-                                                    <a href="{{ route('akta-documents.edit', $doc->id) }}"
-                                                        class="btn btn-info btn-sm mb-0">
-                                                        <i class="fa fa-pen me-1"></i>
-                                                        Edit
-                                                    </a>
-
-                                                    <form action="{{ route('akta-documents.destroy', $doc->id) }}"
-                                                        method="POST"
-                                                        class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-
-                                                        <button type="submit" class="btn btn-danger btn-sm mb-0">
-                                                            <i class="fa fa-trash me-1"></i>
-                                                            Hapus
-                                                        </button>
-                                                    </form>
-                                                </td>
+                                                    @else
+                                                        <span class="badge bg-secondary">Tidak Ada File</span>
+                                                    @endif
+                                            </td>
+                                            <td class="d-flex gap-1 justify-content-center">
+                                                <a href="#" class="btn btn-info btn-sm mb-0">Edit</a>
+                                                <form action="#" method="POST" class="d-inline">
+                                                    @csrf @method('DELETE')
+                                                    <button class="btn btn-danger btn-sm mb-0">Hapus</button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr><td colspan="6" class="text-center text-muted text-sm">Belum ada dokumen akta.</td></tr>

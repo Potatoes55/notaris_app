@@ -213,7 +213,7 @@ class NotaryRelaasDocumentController extends Controller
     {
         try {
             $doc = \App\Models\NotaryRelaasDocument::find($id);
-            // dd($doc);
+
             if (! $doc) {
                 return response()->json(['error' => 'Data dokumen tidak ditemukan.'], 404);
             }
@@ -230,6 +230,7 @@ class NotaryRelaasDocumentController extends Controller
                 return response()->json(['error' => 'Data transaksi tidak ditemukan untuk dokumen ini.'], 404);
             }
 
+            // 1. Generate QR Code
             $transactionCode = $transaction->transaction_code;
             $hash = \Illuminate\Support\Facades\Crypt::encryptString($transactionCode);
 
@@ -239,39 +240,53 @@ class NotaryRelaasDocumentController extends Controller
 
             $qrCodeCleanSvg = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrCodeSvg);
 
-            $mpdf = new \Mpdf\Mpdf([
-                'format' => 'A4',
-                'margin_left' => 0,
-                'margin_right' => 0,
-                'margin_top' => 0,
-                'margin_bottom' => 0,
-            ]);
-
             $fileType = strtolower($doc->file_type);
 
+            // 2. LOGIKA UNTUK FILE GAMBAR (PNG, JPG, JPEG, SVG)
             if (in_array($fileType, ['png', 'jpg', 'jpeg', 'svg'])) {
+                [$imgWidth, $imgHeight] = getimagesize($filePath);
 
-                $widthMm = 210;
-                $heightMm = 297;
+                // Konversi piksel asli gambar ke milimeter (Basis kalkulasi 96 DPI: 1px = 0.264583mm)
+                $widthMm = $imgWidth * 0.264583;
+                $heightMm = $imgHeight * 0.264583;
 
+                // Inisialisasi mPDF dengan format kustom seukuran gambar asli
+                $mpdf = new \Mpdf\Mpdf([
+                    'format' => [$widthMm, $heightMm],
+                    'margin_left' => 0,
+                    'margin_right' => 0,
+                    'margin_top' => 0,
+                    'margin_bottom' => 0,
+                ]);
+
+                // Posisi QR Code dinamis: 40% dari total tinggi gambar asli
                 $topPositionMm = $heightMm * 0.4;
                 $leftPositionMm = 5;
 
-                $htmlContent = '
-            <div style="position: absolute; top: 0; left: 0; width: 210mm; height: 297mm; z-index: 1; margin: 0; padding: 0;">
-                <img src="'.$filePath.'" style="width: 210mm; height: 297mm; object-fit: contain; margin: 0; padding: 0;" />
-            </div>
+                // Render gambar langsung memenuhi 100% canvas dinamis tanpa div pembungkus absolute
+                $htmlContent = '<img src="'.$filePath.'" style="width: 100%; display: block; margin: 0; padding: 0;" />';
 
-            <tt>
-                <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
-                    '.$qrCodeCleanSvg.'
-                </div>
-            </tt>
-            ';
+                if ($qrCodeCleanSvg) {
+                    $htmlContent .= '
+                <tt>
+                    <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
+                        '.$qrCodeCleanSvg.'
+                    </div>
+                </tt>';
+                }
 
                 $mpdf->WriteHTML($htmlContent);
 
+                // 3. LOGIKA UNTUK FILE PDF ASLI
             } else {
+                $mpdf = new \Mpdf\Mpdf([
+                    'format' => 'A4',
+                    'margin_left' => 0,
+                    'margin_right' => 0,
+                    'margin_top' => 0,
+                    'margin_bottom' => 0,
+                ]);
+
                 $pageCount = $mpdf->setSourceFile($filePath);
 
                 for ($i = 1; $i <= $pageCount; $i++) {
@@ -291,17 +306,19 @@ class NotaryRelaasDocumentController extends Controller
                     $mpdf->useTemplate($importPage);
                     $mpdf->page = $i;
 
-                    $topPositionMm = $heightMm * 0.4;
-                    $leftPositionMm = 4;
+                    if ($qrCodeCleanSvg) {
+                        $topPositionMm = $heightMm * 0.4;
+                        $leftPositionMm = 4;
 
-                    $htmlQrLeftCenter = '
-                <tt>
-                    <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
-                        '.$qrCodeCleanSvg.'
-                    </div>
-                </tt>';
+                        $htmlQrLeftCenter = '
+                    <tt>
+                        <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
+                            '.$qrCodeCleanSvg.'
+                        </div>
+                    </tt>';
 
-                    $mpdf->WriteHTML($htmlQrLeftCenter);
+                        $mpdf->WriteHTML($htmlQrLeftCenter);
+                    }
                 }
             }
 
