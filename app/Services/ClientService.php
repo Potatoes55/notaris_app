@@ -124,7 +124,7 @@ class ClientService
             'pic_name' => 'required_if:type,company|string|max:255',
             'pic_position' => 'required_if:type,company|string|max:255',
             'pic_phone' => 'required_if:type,company|string|max:20',
-            'pic_email' => 'required_if:type,company|email|max:255',
+            'pic_email' => 'nullable_if:type,company|email|max:255',
 
         ];
 
@@ -143,7 +143,6 @@ class ClientService
             'Kelurahan.required' => 'Kelurahan wajib diisi.',
             'postcode.required' => 'Kode pos wajib diisi.',
             'phone.required' => 'Nomor telepon wajib diisi.',
-            'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'npwp.required' => 'NPWP wajib diisi.',
             'type.required' => 'Tipe klien wajib dipilih.',

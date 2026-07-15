@@ -54,16 +54,15 @@ class PicStaffController extends Controller
     {
         $validated = $request->validate(
             [
-                'full_name'    => 'required|string|max:255',
-                'email'        => 'required|email',
+                'full_name' => 'required|string|max:255',
+                'email' => 'nullable|email',
                 'phone_number' => 'required|string|max:50',
-                'position'     => 'required|string|max:100',
-                'address'      => 'required|string|max:255',
-                'note'         => 'nullable|string|max:255',
+                'position' => 'required|string|max:100',
+                'address' => 'required|string|max:255',
+                'note' => 'nullable|string|max:255',
             ],
             [
                 'full_name.required' => 'Nama lengkap harus diisi.',
-                'email.required' => 'Email harus diisi.',
                 'email.email' => 'Format email tidak valid.',
                 'phone_number.required' => 'Nomor telepon harus diisi.',
                 'position.required' => 'Posisi harus diisi.',
@@ -96,12 +95,12 @@ class PicStaffController extends Controller
     public function update(Request $request, PicStaff $pic_staff)
     {
         $validated = $request->validate([
-            'full_name'    => 'required|string|max:255',
-            'email'        => 'required|email',
+            'full_name' => 'required|string|max:255',
+            'email' => 'nullable|email',
             'phone_number' => 'required|string|max:50',
-            'position'     => 'required|string|max:100',
-            'address'      => 'required|string|max:255',
-            'note'         => 'nullable|string|max:255',
+            'position' => 'required|string|max:100',
+            'address' => 'required|string|max:255',
+            'note' => 'nullable|string|max:255',
         ]);
 
         $validated['notaris_id'] = auth()->user()->notaris_id;
