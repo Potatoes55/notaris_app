@@ -84,9 +84,12 @@ class NotaryAktaDocumentsController extends Controller
     {
         $transaction = NotaryAktaTransaction::with('akta_type', 'notaris', 'client')
             ->findOrFail($transaction_id);
-        $category = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
 
-        $isSkRequired = in_array($category, ['perubahan', 'pembubaran']);
+        $aktaType = strtolower($transaction->akta_type->type ?? '');
+
+        $isSkRequired = str_contains($aktaType, 'pendirian')
+            || str_contains($aktaType, 'perubahan')
+            || str_contains($aktaType, 'pembubaran');
 
         return view('pages.BackOffice.AktaDocument.form', compact('transaction', 'isSkRequired'));
     }
@@ -97,27 +100,33 @@ class NotaryAktaDocumentsController extends Controller
 
     public function storeData(Request $request, $transaction_id)
     {
-        $transaction = NotaryAktaTransaction::findOrFail($transaction_id);
-        $category = isset($transaction->akta_type) ? strtolower($transaction->akta_type->category) : '';
-        $isSkCategory = in_array($category, ['perubahan', 'pembubaran']);
+        $transaction = NotaryAktaTransaction::with('akta_type')
+            ->findOrFail($transaction_id);
+
+        $aktaType = strtolower($transaction->akta_type->type ?? '');
+
+        $isSkCategory = str_contains($aktaType, 'pendirian')
+            || str_contains($aktaType, 'perubahan')
+            || str_contains($aktaType, 'pembubaran');
 
         $rules = [
             'name' => 'required|string',
-            'type' => 'required|string',
+            'type' => 'nullable|string',
             'file_url' => 'required|max:10240|mimes:png,jpg,jpeg,pdf',
             'uploaded_at' => 'required|date',
         ];
 
-        // JIKA form dikhususkan untuk SK Kemenkumham (misal di input type-nya sengaja di-set 'sk_kemenkumham')
         if ($request->input('type') === 'sk_kemenkum' && ! $isSkCategory) {
-            notyf()->position('x', 'right')->position('y', 'top')->error('Jenis akta ini tidak memerlukan SK Kemenkum.');
+            notyf()
+                ->position('x', 'right')
+                ->position('y', 'top')
+                ->error('Jenis akta ini tidak memerlukan SK Kemenkum.');
 
             return redirect()->back()->withInput();
         }
 
         $messages = [
             'name.required' => 'Nama dokumen harus diisi.',
-            'type.required' => 'Tipe dokumen harus diisi.',
             'file_url.required' => 'File dokumen harus diupload.',
             'uploaded_at.required' => 'Tanggal upload harus diisi.',
             'file_url.max' => 'Ukuran file maksimal 10MB.',
@@ -126,6 +135,10 @@ class NotaryAktaDocumentsController extends Controller
 
         $data = $request->validate($rules, $messages);
 
+        if ($request->input('type') === 'sk_kemenkum') {
+            $data['type'] = 'sk_kemenkum';
+        }
+
         $data['notaris_id'] = $transaction->notaris_id;
         $data['akta_transaction_id'] = $transaction->id;
         $data['client_code'] = $transaction->client_code;
@@ -133,11 +146,11 @@ class NotaryAktaDocumentsController extends Controller
 
         if ($request->hasFile('file_url')) {
             $file = $request->file('file_url');
+
             $originalName = $file->getClientOriginalName();
             $fileNameOnly = pathinfo($originalName, PATHINFO_FILENAME);
             $fileExtension = $file->getClientOriginalExtension();
 
-            // Simpan file ke storage/app/documents
             $storedPath = $file->storeAs('documents', $originalName);
 
             $data['file_url'] = $storedPath;
@@ -147,9 +160,15 @@ class NotaryAktaDocumentsController extends Controller
 
         NotaryAktaDocuments::create($data);
 
-        notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil menambahkan akta dokumen.');
+        notyf()
+            ->position('x', 'right')
+            ->position('y', 'top')
+            ->success('Berhasil menambahkan akta dokumen.');
 
-        return redirect()->route('akta-documents.index', ['transaction_code' => $transaction->transaction_code, 'akta_number' => $transaction->akta_number]);
+        return redirect()->route('akta-documents.index', [
+            'transaction_code' => $transaction->transaction_code,
+            'akta_number' => $transaction->akta_number
+        ]);
     }
 
     public function edit($id)

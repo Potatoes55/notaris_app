@@ -9,10 +9,10 @@
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center mb-0 pb-0">
-                    <h5>Dokumen Akta</h5>
-                </div>
-                <div class="card-body pt-2 pb-0">
+                <div class="card-header pb-0">
+                <h5>Dokumen Akta</h5>
+            </div>
+            <div class="card-body pt-1 pb-0">
 
                 {{-- Form Pencarian Terpadu --}}
                 <form method="GET" action="{{ route('akta-documents.index') }}"
@@ -93,7 +93,25 @@
                     <div class="mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h5>Dokumen Akta</h5>
-                            <a href="{{ route('akta-documents.createData', ['akta_transaction_id' => $transaction->id]) }}" class="btn btn-primary btn-sm mb-0">+ Tambah Dokumen</a>
+
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('akta-documents.createData', [
+                                    'akta_transaction_id' => $transaction->id
+                                ]) }}"
+                                    class="btn btn-primary btn-sm mb-0">
+                                    <i class="fa fa-file-circle-plus me-1"></i>
+                                    Tambah Dokumen
+                                </a>
+
+                                <a href="{{ route('akta-documents.createData', [
+                                    'akta_transaction_id' => $transaction->id,
+                                    'type' => 'sk_kemenkum'
+                                ]) }}"
+                                    class="btn btn-success btn-sm mb-0">
+                                    <i class="fa fa-file-signature me-1"></i>
+                                    SK Kemenkum
+                                </a>
+                            </div>
                         </div>
                         <div class="table-responsive p-0">
                             <table class="table table-hover mb-0">
@@ -116,9 +134,40 @@
                                             <td>{{ $doc->uploaded_at ? \Carbon\Carbon::parse($doc->uploaded_at)->format('d F Y H:i:s') : '-' }}</td>
                                             <td>
                                                 @if ($doc->file_url)
-                                                    <button type="button" class="btn btn-sm btn-primary mb-0" data-bs-toggle="modal" data-bs-target="#fileModal{{ $doc->id }}">
+                                                    <button type="button" class="btn btn-primary btn-xs mb-0"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#viewDocumentModal-{{ $doc->id }}">
                                                         <i class="fa fa-file me-1"></i> Lihat Akta
                                                     </button>
+
+                                                    @php
+                                                        $file = asset('storage/'.$doc->file_url);
+                                                        $ext = strtolower(pathinfo($doc->file_url, PATHINFO_EXTENSION));
+                                                        $isImage = in_array($ext, ['jpg','jpeg','png','svg','webp']);
+                                                        $isPdf = $ext === 'pdf';
+                                                    @endphp
+
+                                                    <div class="modal fade" id="viewDocumentModal-{{ $doc->id }}" tabindex="-1" aria-hidden="true" style="z-index:9999;">
+                                                        <div class="modal-dialog modal-dialog-centered {{ $isPdf ? 'modal-xl' : 'modal-lg' }}">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Dokumen Akta</h5>
+                                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    @if($isImage)
+                                                                        <div class="d-flex justify-content-center">
+                                                                            <img src="{{ $file }}" class="img-fluid rounded shadow-sm" style="max-height:90vh;object-fit:contain;">
+                                                                        </div>
+                                                                    @elseif($isPdf)
+                                                                        <iframe src="{{ $file }}" width="100%" height="700px" style="border:none;"></iframe>
+                                                                    @else
+                                                                        <p class="text-muted text-center">Format dokumen tidak dapat ditampilkan.</p>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 @else
                                                     <span class="badge bg-secondary">Tidak Ada File</span>
                                                 @endif
@@ -138,6 +187,7 @@
                             </table>
                         </div>
                     </div>
+                    
 
                     {{-- KONDISI 2: Jika Pencarian Berupa Daftar Transaksi --}}
                     @elseif (isset($transactions) && $transactions->isNotEmpty())
@@ -218,10 +268,7 @@
                     </div>
 
                     @else
-                        <div class="text-center text-muted text-sm py-5">
-                            <i class="fa-solid fa-folder-magnifying-glass fa-2x mb-3 text-secondary"></i>
-                            <p>Silakan masukkan kata kunci pencarian (Nomor Akta, Nama Klien) atau rentang tanggal untuk memuat data berkas.</p>
-                        </div>
+                        <p class="text-center text-muted text-sm mb-3">Masukkan Kata Kunci atau Rentang Tanggal Untuk Menampilkan Dokumen akta.</p>
                     @endif
 
     <script>
