@@ -6,6 +6,7 @@ use App\Models\NotaryAktaDocuments;
 use App\Models\NotaryAktaTransaction;
 use App\Services\NotaryAktaDocumentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class NotaryAktaDocumentsController extends Controller
 {
@@ -103,11 +104,8 @@ class NotaryAktaDocumentsController extends Controller
         $transaction = NotaryAktaTransaction::with('akta_type')
             ->findOrFail($transaction_id);
 
-        $aktaType = strtolower($transaction->akta_type->type ?? '');
-
-        $isSkCategory = str_contains($aktaType, 'pendirian')
-            || str_contains($aktaType, 'perubahan')
-            || str_contains($aktaType, 'pembubaran');
+        $aktaType = $transaction->akta_type->type ?? '';
+        $isSkCategory = Str::contains($aktaType, ['pendirian', 'perubahan', 'pembubaran'], true);
 
         $rules = [
             'name' => 'required|string',
