@@ -193,12 +193,24 @@
                                                 @endif
                                             </td>
                                             <td class="d-flex gap-1 justify-content-center">
-                                                <a href="{{ route('relaas-documents.edit', [$relaasInfo->id, $doc->id]) }}" class="btn btn-info btn-sm mb-0">Edit</a>
-                                                <form action="{{ route('relaas-documents.destroy', $doc->id) }}" method="POST" class="d-inline">
-                                                    @csrf @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm mb-0">Hapus</button>
-                                                </form>
-                                            </td>
+                                                    <a href="{{ route('relaas-documents.edit', [$relaasInfo->id, $doc->id]) }}" 
+                                                    class="btn btn-info btn-sm mb-0">
+                                                        <i class="fa fa-pen me-1"></i>
+                                                        Edit
+                                                    </a>
+
+                                                    <form action="{{ route('relaas-documents.destroy', $doc->id) }}" 
+                                                        method="POST" 
+                                                        class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button type="submit" class="btn btn-danger btn-sm mb-0">
+                                                            <i class="fa fa-trash me-1"></i>
+                                                            Hapus
+                                                        </button>
+                                                    </form>
+                                                </td>
                                         </tr>
                                     @empty
                                         <tr>
