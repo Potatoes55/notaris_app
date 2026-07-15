@@ -151,7 +151,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($documents as $doc)
+                                        @forelse($documents as $doc)
                                         <tr class="text-center text-sm">
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $doc->name }}</td>
@@ -162,42 +162,27 @@
                                                     <button type="button" class="btn btn-sm btn-primary mb-0"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#fileModal{{ $doc->id }}">
-                                                        <i class="fa fa-file me-1"></i> Lihat Dokumen
+                                                        <i class="fa fa-file me-1"></i> Lihat Akta Dokumen
                                                     </button>
 
                                                     @php
-                                                        $file = asset('storage/'.$doc->file_url);
-                                                        $ext = strtolower(pathinfo($doc->file_url, PATHINFO_EXTENSION));
-
-                                                        $isImage = in_array($ext, ['jpg','jpeg','png','svg','webp']);
-                                                        $isPdf = $ext === 'pdf';
+                                                        $isImage = in_array($doc->file_type, ['jpg', 'jpeg', 'png', 'svg', 'webp']);
+                                                        $isPdf = $doc->file_type === 'pdf';
                                                         $modalSize = $isPdf ? 'modal-xl' : ($isImage ? 'modal-lg' : '');
                                                     @endphp
-
-                                                    <div class="modal fade" id="fileModal{{ $doc->id }}" tabindex="-1" aria-hidden="true" style="z-index:9999;">
+                                                    
+                                                    <div class="modal fade" id="fileModal{{ $doc->id }}" tabindex="-1" aria-hidden="true">
                                                         <div class="modal-dialog modal-dialog-centered {{ $modalSize }}">
                                                             <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">Dokumen PPAT</h5>
-                                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                                <div class="modal-header py-2">
+                                                                    <h5 class="modal-title">File Dokumen Akta</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
-
-                                                                <div class="modal-body">
-                                                                    @if($isImage)
-                                                                        <div class="d-flex justify-content-center">
-                                                                            <img src="{{ $file }}"
-                                                                                class="img-fluid rounded shadow-sm"
-                                                                                style="max-height:90vh;object-fit:contain;">
-                                                                        </div>
-                                                                    @elseif($isPdf)
-                                                                        <iframe src="{{ $file }}"
-                                                                            width="100%"
-                                                                            height="700px"
-                                                                            style="border:none;"></iframe>
+                                                                <div class="modal-body text-center">
+                                                                    @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg']))
+                                                                        <embed src="{{ route('ppat-documents.view-pdf', ['id' => $doc->id]) }}" type="application/pdf" width="100%" height="700px" />
                                                                     @else
-                                                                        <p class="text-muted text-center">
-                                                                            Format dokumen tidak dapat ditampilkan.
-                                                                        </p>
+                                                                        <p class="text-muted">File tidak dapat ditampilkan.</p>
                                                                     @endif
                                                                 </div>
                                                             </div>
