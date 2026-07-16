@@ -259,6 +259,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('warkah/update/{id}', [NotaryClientWarkahController::class, 'update'])->name('warkah.update');
     // Route::post('warkah/add-document/{id}', [NotaryClientWarkahController::class, 'addDocument'])->name('warkah.addDocument');
     Route::post('warkah/status/{id}', [NotaryClientWarkahController::class, 'updateStatus'])->name('warkah.updateStatus');
+    Route::delete('/warkah/{id}', [NotaryClientWarkahController::class, 'destroy'])->name('warkah.destroy');
     // // End
     //
     Route::resource('notary-letters', NotaryLettersController::class);
