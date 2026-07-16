@@ -230,14 +230,41 @@
                                                 </div>
                                             @endif
                                             @if ($product->status === 'invalid')
-                                                <form action="{{ route('warkah.destroy', $product->id) }}" method="POST" 
-                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus data warkah ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-xs mb-0">
-                                                        <i class="fa fa-trash me-1"></i> Hapus
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn btn-danger btn-xs mb-0" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal-{{ $product->id }}">
+                                                    <i class="fa fa-trash me-1"></i> Hapus
+                                                </button>
+
+                                                <div class="modal fade" id="deleteModal-{{ $product->id }}" 
+                                                    tabindex="-1" aria-labelledby="deleteModalLabel-{{ $product->id }}" 
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="deleteModalLabel-{{ $product->id }}">Konfirmasi Hapus</h5>
+                                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body text-center text-wrap py-4">
+                                                                <i class="fa-solid fa-exclamation-triangle text-danger mb-3" style="font-size: 2.5rem;"></i>
+                                                                <p class="mb-0 text-sm">
+                                                                    Apakah Anda yakin ingin menghapus dokumen warkah 
+                                                                    <strong>{{ $product->warkah_name ?? $product->document_name }}</strong>?
+                                                                </p>
+                                                                <small class="text-muted d-block mt-2">Tindakan ini tidak dapat dibatalkan.</small>
+                                                            </div>
+                                                            <div class="modal-footer d-flex justify-content-end gap-2">
+                                                                <button type="button" class="btn btn-secondary btn-sm mb-0" data-bs-dismiss="modal">Batal</button>
+                                                                
+                                                                <form action="{{ route('warkah.destroy', $product->id) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-danger btn-sm mb-0">Ya, Hapus</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endif
                                         </div>
                                         </td>
