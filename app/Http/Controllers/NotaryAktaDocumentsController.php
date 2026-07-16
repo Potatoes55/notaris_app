@@ -159,6 +159,7 @@ class NotaryAktaDocumentsController extends Controller
             ->success('Berhasil menambahkan akta dokumen.');
 
         return redirect()->route('akta-documents.index', [
+            'search' => $transaction->transaction_code,
             'transaction_code' => $transaction->transaction_code,
             'akta_number' => $transaction->akta_number,
         ]);
@@ -235,7 +236,9 @@ class NotaryAktaDocumentsController extends Controller
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil menghapus akta dokumen.');
 
-        return redirect()->route('akta-documents.index', ['transaction_code' => $transaction->transaction_code, 'akta_number' => $transaction->akta_number]);
+        return redirect()->route('akta-documents.index', [
+            'search' => $transaction->transaction_code
+        ]);
     }
 
     // Tambahkan method ini di dalam NotaryAktaDocumentsController
