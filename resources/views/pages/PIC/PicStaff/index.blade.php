@@ -8,10 +8,10 @@
     'title' => $module . ' / PIC Staff'
 ])
 @php
-    $role = session('login_role');
+    $role = session('access_all_menu');
 @endphp
 
-@if($role !== 'staff')
+@if($role)
     @if ($module === 'PPAT')
         @include('components.ppat-menu')
     @elseif ($module === 'Proses Lain')
