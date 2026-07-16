@@ -229,6 +229,17 @@
                                                     </div>
                                                 </div>
                                             @endif
+                                            @if ($product->status === 'invalid')
+                                                <form action="{{ route('warkah.destroy', $product->id) }}" method="POST" 
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus data warkah ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-xs mb-0">
+                                                        <i class="fa fa-trash me-1"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
                                         </td>
                                     </tr>
                                 @empty

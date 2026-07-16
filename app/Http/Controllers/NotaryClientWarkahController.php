@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Documents;
 use App\Models\NotaryClientWarkah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class NotaryClientWarkahController extends Controller
 {
@@ -97,9 +98,9 @@ class NotaryClientWarkahController extends Controller
         $validated = $request->validate([
             'client_code' => 'required',
             'warkah_name' => 'required',
-            'city'        => 'required|string|max:255',
+            'city' => 'required|string|max:255',
             'warkah_link' => 'required|mimes:jpg,jpeg,png,pdf|max:15240',
-            'note'        => 'nullable',
+            'note' => 'nullable',
             'uploaded_at' => 'required|date',
         ]);
 
@@ -109,7 +110,7 @@ class NotaryClientWarkahController extends Controller
             $path = $request->file('warkah_link')
                 ->storeAs(
                     'documents',
-                    time() . '_' . $request->file('warkah_link')->getClientOriginalName()
+                    time().'_'.$request->file('warkah_link')->getClientOriginalName()
                 );
         }
 
@@ -117,12 +118,12 @@ class NotaryClientWarkahController extends Controller
 
         NotaryClientWarkah::create([
             'client_code' => $validated['client_code'],
-            'notaris_id'  => $notarisId,
+            'notaris_id' => $notarisId,
             'warkah_name' => $validated['warkah_name'],
-            'city'        => $validated['city'],
+            'city' => $validated['city'],
             'warkah_link' => $path,
-            'note'        => $validated['note'] ?? null,
-            'status'      => 'new',
+            'note' => $validated['note'] ?? null,
+            'status' => 'new',
             'uploaded_at' => $validated['uploaded_at'],
         ]);
 
@@ -130,5 +131,28 @@ class NotaryClientWarkahController extends Controller
             ->success('Warkah berhasil ditambahkan');
 
         return redirect()->route('warkah.index', ['id' => $client->id]);
+    }
+
+    public function destroy($id)
+    {
+        $notarisId = auth()->user()->notaris_id;
+
+        $warkah = NotaryClientWarkah::where('notaris_id', $notarisId)->findOrFail($id);
+
+        $client = Client::where('client_code', $warkah->client_code)->first();
+
+        if ($warkah->warkah_link && Storage::exists($warkah->warkah_link)) {
+            Storage::delete($warkah->warkah_link);
+        }
+
+        $warkah->delete();
+
+        notyf()->position('x', 'right')->position('y', 'top')->success('Warkah berhasil dihapus');
+
+        if ($client) {
+            return redirect()->route('warkah.index', ['id' => $client->id]);
+        }
+
+        return back();
     }
 }
