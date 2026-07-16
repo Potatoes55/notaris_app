@@ -126,56 +126,91 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                         @forelse($documents as $doc)
-                                            <tr class="text-sm">
-                                                <td class="ps-3">
-                                                    {{ method_exists($documents, 'firstItem') ? ($documents->firstItem() + $loop->index) : ($loop->iteration) }}
-                                                </td>
-                                                <td>{{ $doc->name }}</td>
-                                                <td>{{ $doc->type }}</td>
-                                                <td>
-                                                    {{ $doc->uploaded_at ? \Carbon\Carbon::parse($doc->uploaded_at)->format('d F Y H:i:s') : '-' }}
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($doc->file_url)
-                                                        <button type="button" class="btn btn-sm btn-primary mb-0"
-                                                            data-bs-toggle="modal" data-bs-target="#fileModal{{ $doc->id }}">
-                                                            <i class="fa fa-file me-1"></i> Lihat Akta Dokumen
-                                                        </button>
+                                    @forelse($documents as $doc)
+                                        <tr class="text-sm">
+                                            <td class="ps-3">
+                                                {{ method_exists($documents, 'firstItem') ? ($documents->firstItem() + $loop->index) : ($loop->iteration) }}
+                                            </td>
+                                            <td>{{ $doc->name }}</td>
+                                            <td>{{ $doc->type }}</td>
+                                            <td>
+                                                {{ $doc->uploaded_at ? \Carbon\Carbon::parse($doc->uploaded_at)->format('d F Y H:i:s') : '-' }}
+                                            </td>
+                                            <td class="text-center">
+                                                @if ($doc->file_url)
+                                                    <button type="button" class="btn btn-sm btn-primary mb-0"
+                                                        data-bs-toggle="modal" data-bs-target="#fileModal{{ $doc->id }}">
+                                                        <i class="fa fa-file me-1"></i> Lihat Akta Dokumen
+                                                    </button>
 
-                                                        @php
-                                                            $isPdf = $doc->file_type === 'pdf';
-                                                            $modalSize = $isPdf ? 'modal-xl' : 'modal-lg';
-                                                        @endphp
+                                                    @php
+                                                        $isPdf = $doc->file_type === 'pdf';
+                                                        $modalSize = $isPdf ? 'modal-xl' : 'modal-lg';
+                                                    @endphp
 
-                                                        <div class="modal fade" id="fileModal{{ $doc->id }}" tabindex="-1" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered {{ $modalSize }}">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header py-2">
-                                                                        <h5 class="modal-title">Preview: {{ $doc->name }}</h5>
-                                                                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body text-center p-0">
-                                                                        @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg', 'webp']))
-                                                                            <embed src="{{ route('akta-documents.view-pdf', ['id' => $doc->id]) }}"
-                                                                                type="application/pdf" width="100%" height="700px" />
-                                                                        @else
-                                                                            <p class="text-muted p-4">File tidak dapat ditampilkan langsung.</p>
-                                                                        @endif
-                                                                    </div>
+                                                    <div class="modal fade" id="fileModal{{ $doc->id }}" tabindex="-1" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered {{ $modalSize }}">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header py-2">
+                                                                    <h5 class="modal-title">Preview: {{ $doc->name }}</h5>
+                                                                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body text-center p-0">
+                                                                    @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg', 'webp']))
+                                                                        <embed src="{{ route('akta-documents.view-pdf', ['id' => $doc->id]) }}"
+                                                                            type="application/pdf" width="100%" height="700px" />
+                                                                    @else
+                                                                        <p class="text-muted p-4">File tidak dapat ditampilkan langsung.</p>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    @else
-                                                        <span class="badge bg-secondary">Tidak Ada File</span>
-                                                    @endif
+                                                    </div>
+                                                @else
+                                                    <span class="badge bg-secondary">Tidak Ada File</span>
+                                                @endif
                                             </td>
-                                            <td class="d-flex gap-1 justify-content-center">
-                                                <a href="#" class="btn btn-info btn-sm mb-0">Edit</a>
-                                                <form action="#" method="POST" class="d-inline">
-                                                    @csrf @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm mb-0">Hapus</button>
-                                                </form>
+                                            
+                                            {{-- PERBAIKAN PADA KOLOM AKSI --}}
+                                            <td class="text-center">
+                                                <div class="d-flex gap-1 justify-content-center">
+                                                    {{-- 1. Tombol Edit --}}
+                                                    <a href="{{ route('akta-documents.edit', $doc->id) }}" class="btn btn-info btn-sm mb-0">
+                                                        <i class="fa fa-edit me-1"></i> Edit
+                                                    </a>
+
+                                                    {{-- 2. Tombol Pemicu Modal Hapus --}}
+                                                    <button type="button" class="btn btn-danger btn-sm mb-0" 
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal{{ $doc->id }}">
+                                                        <i class="fa fa-trash me-1"></i> Hapus
+                                                    </button>
+                                                </div>
+
+                                                {{-- 3. Struktur Modal Konfirmasi Hapus (Unik per Dokumen) --}}
+                                                <div class="modal fade" id="deleteModal{{ $doc->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $doc->id }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header py-2">
+                                                                <h5 class="modal-title" id="deleteModalLabel{{ $doc->id }}">Konfirmasi Hapus</h5>
+                                                                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body text-start">
+                                                                Apakah Anda yakin ingin menghapus dokumen <strong>{{ $doc->name }}</strong>? Tindakan ini tidak dapat dibatalkan.
+                                                            </div>
+                                                            <div class="modal-footer py-2">
+                                                                {{-- Tombol Batal --}}
+                                                                <button type="button" class="btn btn-secondary btn-sm mb-0" data-bs-dismiss="modal">Batal</button>
+                                                                
+                                                                {{-- Form Proses Hapus Sesungguhnya --}}
+                                                                <form action="{{ route('akta-documents.destroy', $doc->id) }}" method="POST" class="d-inline">
+                                                                    @csrf 
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-danger btn-sm mb-0">Ya, Hapus</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty

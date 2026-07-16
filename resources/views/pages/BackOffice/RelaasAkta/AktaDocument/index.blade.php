@@ -192,25 +192,44 @@
                                                     <span class="badge bg-secondary">Tidak Ada File</span>
                                                 @endif
                                             </td>
-                                            <td class="d-flex gap-1 justify-content-center">
-                                                    <a href="{{ route('relaas-documents.edit', [$relaasInfo->id, $doc->id]) }}" 
-                                                    class="btn btn-info btn-sm mb-0">
-                                                        <i class="fa fa-pen me-1"></i>
-                                                        Edit
-                                                    </a>
+                                            <td>
+                                                <div class="d-flex gap-1 justify-content-center">
+                                                    {{-- Tombol Edit --}}
+                                                    <a href="{{ route('relaas-documents.edit', [$relaasInfo->id, $doc->id]) }}" class="btn btn-info btn-sm mb-0">Edit</a>
+                                                    
+                                                    {{-- Tombol Pemicu Konfirmasi Hapus --}}
+                                                    <button type="button" class="btn btn-danger btn-sm mb-0" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#deleteModal{{ $doc->id }}">
+                                                        Hapus
+                                                    </button>
+                                                </div>
 
-                                                    <form action="{{ route('relaas-documents.destroy', $doc->id) }}" 
-                                                        method="POST" 
-                                                        class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-
-                                                        <button type="submit" class="btn btn-danger btn-sm mb-0">
-                                                            <i class="fa fa-trash me-1"></i>
-                                                            Hapus
-                                                        </button>
-                                                    </form>
-                                                </td>
+                                                {{-- Modal Konfirmasi Hapus --}}
+                                                <div class="modal fade" id="deleteModal{{ $doc->id }}" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header py-2">
+                                                                <h5 class="modal-title text-start w-100">Konfirmasi Hapus</h5>
+                                                                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body text-start">
+                                                                Apakah Anda yakin ingin menghapus dokumen <strong>{{ $doc->name }}</strong>? Tindakan ini tidak dapat dibatalkan.
+                                                            </div>
+                                                            <div class="modal-footer py-2">
+                                                                <button type="button" class="btn btn-secondary btn-sm mb-0" data-bs-dismiss="modal">Batal</button>
+                                                                
+                                                                {{-- Form Hapus dengan Route Relaas --}}
+                                                                <form action="{{ route('relaas-documents.destroy', $doc->id) }}" method="POST" class="d-inline">
+                                                                    @csrf 
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-danger btn-sm mb-0">Ya, Hapus</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
