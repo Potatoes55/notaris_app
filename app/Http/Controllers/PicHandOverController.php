@@ -85,7 +85,11 @@ class PicHandoverController extends Controller
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Serah terima berhasil ditambahkan.');
 
-        return redirect()->route('pic_handovers.index');
+        return redirect()->route(
+            request()->routeIs('ppat.*')
+                ? 'ppat.pic.handovers'
+                : 'notaris.pic.handovers'
+        );
     }
 
     public function destroy($id)

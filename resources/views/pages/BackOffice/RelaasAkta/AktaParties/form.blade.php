@@ -103,8 +103,10 @@
                     </div> --}}
 
 
-                        <a href="{{ route('relaas-parties.index', ['search' => $relaas->client_code]) }}"
-                            class="btn btn-secondary">Kembali</a>
+                        <a href="{{ route('relaas-parties.index', ['search' => $relaas->transaction_code]) }}"
+                            class="btn btn-secondary">
+                            Kembali
+                        </a>
                         <button type="submit" class="btn btn-primary">{{ isset($party) ? 'Ubah' : 'Simpan' }}</button>
                     </form>
                 </div>

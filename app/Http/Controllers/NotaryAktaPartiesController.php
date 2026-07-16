@@ -102,8 +102,7 @@ class NotaryAktaPartiesController extends Controller
         notyf()->position('x', 'right')->position('y', 'top')->success('Pihak akta berhasil ditambahkan.');
 
         return redirect()->route('akta-parties.index', [
-            'transaction_code' => $request->transaction_code,
-            'akta_number' => $request->akta_number ?? null,
+            'search' => $request->transaction_code,
         ]);
     }
 
@@ -123,8 +122,7 @@ class NotaryAktaPartiesController extends Controller
         notyf()->position('x', 'right')->position('y', 'top')->success('Pihak akta berhasil diperbarui.');
 
         return redirect()->route('akta-parties.index', [
-            'transaction_code' => $request->transaction_code,
-            'akta_number' => $request->akta_number ?? null,
+            'search' => $request->transaction_code,
         ]);
     }
 

@@ -111,12 +111,18 @@
 
                         <div class="mt-3">
 
-                            <a href="{{ route('akta-parties.index', ['transaction_code' => $transaction->transaction_code, 'akta_number' => $transaction->akta_number]) }}" class="btn btn-secondary">
-                                Batal
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                {{ isset($aktaParty) ? 'Ubah' : 'Simpan' }}
-                            </button>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{{ route('akta-parties.index', [
+                                    'search' => $transaction->transaction_code
+                                ]) }}"
+                                class="btn btn-light mb-0">
+                                    Batal
+                                </a>
+
+                                <button type="submit" class="btn bg-gradient-primary mb-0">
+                                    Simpan
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>

@@ -629,9 +629,17 @@ main .nav-container h6,
 }
 
 #collapsePic .nav-link {
-    margin-left: 12px !important;
+    margin-left: 20px !important;
     margin-right: 12px !important;
-    padding-left: 14px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    width: calc(100% - 32px) !important;
+    height: auto !important;
+    min-height: 40px !important;
+    white-space: normal !important;
+    line-height: 1.3 !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .navbar-nav {

@@ -150,11 +150,20 @@ class NotaryRelaasPartiesController extends Controller
     }
 
     public function destroy($id)
-    {
-        $this->service->destroy($id);
+{
+    $party = $this->service->findById($id);
 
-        notyf()->position('x', 'right')->position('y', 'top')->success('Pihak Akta berhasil dihapus.');
+    $relaas = NotaryRelaasAkta::findOrFail($party->relaas_id);
 
-        return redirect()->back();
-    }
+    $this->service->destroy($id);
+
+    notyf()
+        ->position('x', 'right')
+        ->position('y', 'top')
+        ->success('Pihak Akta berhasil dihapus.');
+
+    return redirect()->route('relaas-parties.index', [
+        'search' => $relaas->transaction_code,
+    ]);
+}
 }

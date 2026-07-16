@@ -29,9 +29,10 @@ class NotaryCostController extends Controller
     private function routeName()
     {
         return match (request()->segment(1)) {
+            'notaris' => 'notaris.costs',
             'ppat' => 'ppat.costs',
             'proses-lain' => 'proses-lain.biaya.total',
-            default => 'notary_costs.index',
+            default => 'notaris.costs',
         };
     }
 

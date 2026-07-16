@@ -108,32 +108,38 @@
                     {{-- KONDISI 2: JIKA TRANSAKSI TUNGGAL DITEMUKAN (Tampilkan Detail & Form Input) --}}
                     @if ($aktaInfo)
                         <div class="card mb-4 shadow-sm">
-                            <div class="col-md-6">
-                                <h6 class="mb-1"><strong>Klien</strong></h6>
-                                <p class="text-muted text-sm mb-0">{{ $aktaInfo->client->fullname ?? '-' }}</p>
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0 text-white">Detail Transaksi Akta</h5>
                             </div>
-                            <div class="card-body">
+
+                            <div class="card-body pb-2">
                                 <div class="row g-3">
+
                                     <div class="col-md-6">
-                                        <h6 class="mb-1"><strong>Kode Klien</strong></h6>
+                                        <h6><strong>Kode Klien</strong></h6>
                                         <div class="d-flex align-items-center gap-2">
-                                            <p class="text-muted text-sm mb-0">{{ $aktaInfo->client_code ?? '-' }}</p>
-                                            @if($aktaInfo->client_code)
-                                                <button type="button" class="btn btn-link p-0 text-primary copy-btn"
-                                                    onclick="copyValue(this, '{{ $aktaInfo->client_code }}')" title="Salin Kode Klien">
-                                                    <i class="fa-solid fa-copy"></i>
-                                                </button>
-                                            @endif
+                                            <p class="text-muted text-sm mb-0">{{ $aktaInfo->client_code }}</p>
+
+                                            <button type="button"
+                                                class="btn btn-link p-0 text-primary"
+                                                onclick="copyValue(this,'{{ $aktaInfo->client_code }}')">
+                                                <i class="fa-solid fa-copy"></i>
+                                            </button>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <h6 class="mb-1"><strong>Nomor Akta</strong></h6>
+                                        <h6><strong>Nomor Akta</strong></h6>
+
                                         <div class="d-flex align-items-center gap-2">
-                                            <p class="text-muted text-sm mb-0">{{ $aktaInfo->relaas_number ?? '-' }}</p>
+                                            <p class="text-muted text-sm mb-0">
+                                                {{ $aktaInfo->relaas_number ?? '-' }}
+                                            </p>
+
                                             @if($aktaInfo->relaas_number)
-                                                <button type="button" class="btn btn-link p-0 text-primary copy-btn"
-                                                    onclick="copyValue(this, '{{ $aktaInfo->relaas_number }}')" title="Salin Nomor Akta">
+                                                <button type="button"
+                                                    class="btn btn-link p-0 text-primary"
+                                                    onclick="copyValue(this,'{{ $aktaInfo->relaas_number }}')">
                                                     <i class="fa-solid fa-copy"></i>
                                                 </button>
                                             @endif
@@ -141,12 +147,29 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <h6 class="mb-1"><strong>Notaris</strong></h6>
-                                        <p class="text-muted text-sm">{{ $aktaInfo->notaris->display_name ?? '-' }}</p>
+                                        <h6><strong>Jenis Akta</strong></h6>
+                                        <p class="text-muted text-sm mb-0">
+                                            {{ $aktaInfo->relaasType->type ?? '-' }}
+                                        </p>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
-                                        <p class="mb-1"><strong>Status</strong></p>
+                                        <h6><strong>Notaris</strong></h6>
+                                        <p class="text-muted text-sm mb-0">
+                                            {{ $aktaInfo->notaris->display_name ?? '-' }}
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h6><strong>Klien</strong></h6>
+                                        <p class="text-muted text-sm mb-0">
+                                            {{ $aktaInfo->client->fullname ?? '-' }}
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h6><strong>Status</strong></h6>
+
                                         <span class="badge text-capitalize
                                             @switch($aktaInfo->status)
                                                 @case('draft') bg-secondary @break
@@ -154,11 +177,11 @@
                                                 @case('selesai') bg-success @break
                                                 @case('dibatalkan') bg-danger @break
                                                 @default bg-light text-dark
-                                            @endswitch
-                                        ">
+                                            @endswitch">
                                             {{ $aktaInfo->status }}
                                         </span>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
