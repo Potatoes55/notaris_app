@@ -130,6 +130,7 @@ class NotaryAktaDocumentsController extends Controller
 
         if ($request->input('type') === 'sk_kemenkum') {
             $data['type'] = 'sk_kemenkum';
+
         }
 
         $data['notaris_id'] = $transaction->notaris_id;
@@ -237,7 +238,7 @@ class NotaryAktaDocumentsController extends Controller
         notyf()->position('x', 'right')->position('y', 'top')->success('Berhasil menghapus akta dokumen.');
 
         return redirect()->route('akta-documents.index', [
-            'search' => $transaction->transaction_code
+            'search' => $transaction->transaction_code,
         ]);
     }
 
@@ -265,7 +266,7 @@ class NotaryAktaDocumentsController extends Controller
 
         // 1. Generate QR Code jika tipenya bukan sk_kemenkum
         $qrCodeCleanSvg = null;
-        if ($doc->type !== 'sk_kemenkum') {
+        if (! in_array($doc->type, ['sk_kemenkum', 'Akta'])) {
             $transactionCode = $transaction->transaction_code;
             $hash = \Illuminate\Support\Facades\Crypt::encryptString($transactionCode);
 
@@ -302,7 +303,7 @@ class NotaryAktaDocumentsController extends Controller
             // Gambar diset memenuhi 100% canvas dinamis yang sudah kita ciptakan
             $htmlContent = '<img src="'.$filePath.'" style="width: 100%; display: block; margin: 0; padding: 0;" />';
 
-            if ($doc->type !== 'sk_kemenkum' && $qrCodeCleanSvg) {
+            if (! in_array($doc->type, ['sk_kemenkum', 'Akta']) && $qrCodeCleanSvg) {
                 $htmlContent .= '
             <tt>
                 <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
@@ -342,7 +343,7 @@ class NotaryAktaDocumentsController extends Controller
                 $mpdf->useTemplate($importPage);
                 $mpdf->page = $i;
 
-                if ($doc->type !== 'sk_kemenkum' && $qrCodeCleanSvg) {
+                if (! in_array($doc->type, ['sk_kemenkum', 'Akta']) && $qrCodeCleanSvg) {
                     $topPositionMm = $heightMm * 0.4;
                     $leftPositionMm = 4;
 
