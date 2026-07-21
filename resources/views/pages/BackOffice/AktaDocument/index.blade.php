@@ -153,7 +153,12 @@
                                                             <div class="modal-content">
                                                                 <div class="modal-header py-2">
                                                                     <h5 class="modal-title">Preview: {{ $doc->name }}</h5>
-                                                                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    <button
+                                                                        type="button"
+                                                                        class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close">
+                                                                    </button>
                                                                 </div>
                                                                 <div class="modal-body text-center p-0">
                                                                     @if (in_array($doc->file_type, ['pdf', 'png', 'jpg', 'jpeg', 'svg', 'webp']))
