@@ -266,7 +266,7 @@ class NotaryAktaDocumentsController extends Controller
 
         // 1. Generate QR Code jika tipenya bukan sk_kemenkum
         $qrCodeCleanSvg = null;
-        if (! in_array($doc->type, ['sk_kemenkum', 'Akta'])) {
+        if (! in_array($doc->type, ['sk_kemenkum', 'Minuta Akta'])) {
             $transactionCode = $transaction->transaction_code;
             $hash = \Illuminate\Support\Facades\Crypt::encryptString($transactionCode);
 
@@ -303,7 +303,7 @@ class NotaryAktaDocumentsController extends Controller
             // Gambar diset memenuhi 100% canvas dinamis yang sudah kita ciptakan
             $htmlContent = '<img src="'.$filePath.'" style="width: 100%; display: block; margin: 0; padding: 0;" />';
 
-            if (! in_array($doc->type, ['sk_kemenkum', 'Akta']) && $qrCodeCleanSvg) {
+            if (! in_array($doc->type, ['sk_kemenkum', 'Minuta Akta']) && $qrCodeCleanSvg) {
                 $htmlContent .= '
             <tt>
                 <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
@@ -343,7 +343,7 @@ class NotaryAktaDocumentsController extends Controller
                 $mpdf->useTemplate($importPage);
                 $mpdf->page = $i;
 
-                if (! in_array($doc->type, ['sk_kemenkum', 'Akta']) && $qrCodeCleanSvg) {
+                if (! in_array($doc->type, ['sk_kemenkum', 'Minuta Akta']) && $qrCodeCleanSvg) {
                     $topPositionMm = $heightMm * 0.4;
                     $leftPositionMm = 4;
 

@@ -49,13 +49,31 @@
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
+                        {{-- DROPDOWN TIPE DOKUMEN --}}
                         <div class="mb-3">
                             <label class="form-control-label">Tipe Dokumen</label>
-                            <div class="input-group input-group-outline {{ old('type', $doc->type ?? '') ? 'is-filled' : '' }}">
-                                <input type="text" name="type" class="form-control @error('type') is-invalid @enderror"
-                                       value="{{ old('type', $doc->type ?? '') }}" placeholder="Contoh: Draft, Final, Dokumen Pendukung" required>
+                            <div class="input-group input-group-outline">
+                                <select name="type" class="form-control @error('type') is-invalid @enderror" required>
+                                    @php
+                                        $currentType = old('type', $doc->type ?? '');
+                                    @endphp
+
+                                    <option value="">Pilih</option>
+                                    <option value="Minuta Akta" {{ $currentType == 'Minuta Akta' ? 'selected' : '' }}>
+                                        Minuta Akta
+                                    </option>
+                                    <option value="Salinan Akta" {{ $currentType == 'Salinan Akta' ? 'selected' : '' }}>
+                                        Salinan Akta
+                                    </option>
+                                    <option value="Berkas Pendukung" {{ $currentType == 'Berkas Pendukung' ? 'selected' : '' }}>
+                                        Berkas Pendukung
+                                    </option>
+                                </select>
                             </div>
-                            @error('type') <small class="text-danger">{{ $message }}</small> @enderror
+
+                            @error('type')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <div class="mb-3">

@@ -98,11 +98,11 @@
                                         @endphp
 
                                         <option value="">Pilih</option>
-                                        <option value="Akta" {{ $currentType == 'Akta' ? 'selected' : '' }}>
-                                            Akta
+                                        <option value="Minuta Akta" {{ $currentType == 'Minuta Akta' ? 'selected' : '' }}>
+                                            Minuta Akta
                                         </option>
-                                        <option value="Salinan" {{ $currentType == 'Salinan' ? 'selected' : '' }}>
-                                            Salinan
+                                        <option value="Salinan Akta" {{ $currentType == 'Salinan Akta' ? 'selected' : '' }}>
+                                            Salinan Akta
                                         </option>
                                         <option value="Berkas Pendukung" {{ $currentType == 'Berkas Pendukung' ? 'selected' : '' }}>
                                             Berkas Pendukung

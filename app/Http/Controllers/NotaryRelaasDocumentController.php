@@ -230,15 +230,18 @@ class NotaryRelaasDocumentController extends Controller
                 return response()->json(['error' => 'Data transaksi tidak ditemukan untuk dokumen ini.'], 404);
             }
 
-            // 1. Generate QR Code
-            $transactionCode = $transaction->transaction_code;
-            $hash = \Illuminate\Support\Facades\Crypt::encryptString($transactionCode);
+            // 1. Generate QR Code HANYA jika tipe dokumen BUKAN 'Minuta Akta'
+            $qrCodeCleanSvg = null;
+            if ($doc->type !== 'Minuta Akta') {
+                $transactionCode = $transaction->transaction_code;
+                $hash = \Illuminate\Support\Facades\Crypt::encryptString($transactionCode);
 
-            $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)
-                ->margin(0)
-                ->generate(route('akta.qr.show', ['transaction_code' => $hash]));
+                $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)
+                    ->margin(0)
+                    ->generate(route('akta.qr.show', ['transaction_code' => $hash]));
 
-            $qrCodeCleanSvg = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrCodeSvg);
+                $qrCodeCleanSvg = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrCodeSvg);
+            }
 
             $fileType = strtolower($doc->file_type);
 
@@ -263,16 +266,16 @@ class NotaryRelaasDocumentController extends Controller
                 $topPositionMm = $heightMm * 0.4;
                 $leftPositionMm = 5;
 
-                // Render gambar langsung memenuhi 100% canvas dinamis tanpa div pembungkus absolute
+                // Render gambar langsung memenuhi 100% canvas dinamis
                 $htmlContent = '<img src="'.$filePath.'" style="width: 100%; display: block; margin: 0; padding: 0;" />';
 
                 if ($qrCodeCleanSvg) {
                     $htmlContent .= '
-                <tt>
-                    <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
-                        '.$qrCodeCleanSvg.'
-                    </div>
-                </tt>';
+            <tt>
+                <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
+                    '.$qrCodeCleanSvg.'
+                </div>
+            </tt>';
                 }
 
                 $mpdf->WriteHTML($htmlContent);
@@ -311,11 +314,11 @@ class NotaryRelaasDocumentController extends Controller
                         $leftPositionMm = 4;
 
                         $htmlQrLeftCenter = '
-                    <tt>
-                        <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
-                            '.$qrCodeCleanSvg.'
-                        </div>
-                    </tt>';
+                <tt>
+                    <div style="position: absolute; top: '.$topPositionMm.'mm; left: '.$leftPositionMm.'mm; width: 65px; height: 65px; z-index: 99999; background-color: #ffffff; padding: 4px; border: 1px solid #dddddd; border-radius: 4px;">
+                        '.$qrCodeCleanSvg.'
+                    </div>
+                </tt>';
 
                         $mpdf->WriteHTML($htmlQrLeftCenter);
                     }
