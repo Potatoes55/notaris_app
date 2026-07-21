@@ -27,8 +27,10 @@
                     <div class="card bg-gray-100 border-0 mb-4">
                         <div class="card-body py-3">
                             <div class="row text-sm">
-                                <div class="col-md-6 mb-1"><strong>Relaas ID</strong><br>{{ $relaas->id ?? '-' }}</div>
-                                <div class="col-md-6 mb-1"><strong>Kode Klien</strong><br>{{ $relaas->client_code ?? '-' }}</div>
+                                <div class="col-md-6 mb-1"><strong>Nomor Akta</strong><br>{{ $relaas->akta_number ?? '-' }}</div>
+                                <div class="col-md-6 mb-1"><strong>Kode Klien</strong><br>{{ $relaas->client->fullname ?? '-' }}</div>
+                                <div class="col-md-6 mb-1"><strong>Jenis Akta</strong><br>{{ $relaas->akta_type->type ?? '-' }}</div>
+                                <div class="col-md-6 mb-1"><strong>Kategori</strong><br><span class="badge bg-gradient-info">{{ $relaas->akta_type->category ?? '-' }}</span></div>
                             </div>
                         </div>
                     </div>
