@@ -50,9 +50,15 @@
                 <i class="fa-solid fa-chart-column me-2"></i> Laporan PPAT
             </a>
 
-            {{-- Surat Keluar --}}
+            {{-- Surat Masuk PPAT --}}
+            <a href="{{ route('ppat.letters.incoming.index') }}"
+            class="btn {{ request()->routeIs('ppat.letters.incoming.*') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
+                <i class="fa-solid fa-envelope me-2"></i> Surat Masuk
+            </a>
+
+            {{-- Surat Keluar PPAT --}}
             <a href="{{ route('ppat.letters') }}"
-                class="btn {{ request()->routeIs('ppat.letters') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
+            class="btn {{ request()->routeIs('ppat.letters*') && !request()->routeIs('ppat.letters.incoming.*') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
                 <i class="fa-solid fa-envelope-open-text me-2"></i> Surat Keluar PPAT
             </a>
 

@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NotaryLetters extends Model
 {
-
     protected $table = 'notary_letters';
+
     use LogsActivityCustom, SoftDeletes;
 
     protected $fillable = [
         'notaris_id',
         'client_code',
         'letter_number',
+        'letter_type',
         'type',
         'recipient',
         'subject',
@@ -23,7 +24,7 @@ class NotaryLetters extends Model
         'summary',
         'attachment',
         'notes',
-        'file_path'
+        'file_path',
     ];
 
     public function notaris()

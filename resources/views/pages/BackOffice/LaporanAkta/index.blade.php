@@ -7,11 +7,18 @@
 @include('layouts.navbars.auth.topnav', [
     'title' => $module . ' / Laporan Akta'
 ])
+@php
+    $role = session('access_all_menu');
+@endphp
 
-@if ($module == 'PPAT')
-    @include('components.ppat-menu')
-@else
-    @include('components.notaris-menu')
+@if($role)
+    @if ($module === 'PPAT')
+        @include('components.ppat-menu')
+    @elseif ($module === 'Proses Lain')
+        @include('components.proseslain-menu')
+    @else
+        @include('components.notaris-menu')
+    @endif
 @endif
 
     <div class="row mt-4 mx-4">

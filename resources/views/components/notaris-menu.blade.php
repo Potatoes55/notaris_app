@@ -76,11 +76,18 @@
                 </ul>
             </div>
             
+            {{-- Surat Masuk --}}
+            <a href="{{ route('notary-letters.incoming.index') }}"
+               class="btn {{ request()->routeIs('notary-letters.incoming.*') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
+                <i class="fa-solid fa-envelope me-2"></i> Surat Masuk
+            </a>
+            
             {{-- Surat Keluar --}}
             <a href="{{ route('notaris.letters') }}"
                class="btn {{ request()->routeIs('notaris.letters') ? 'btn-primary active-menu' : 'btn-outline-secondary' }}">
                 <i class="fa-solid fa-envelope-open-text me-2"></i> Surat Keluar
             </a>
+            
 
             {{-- Covernote --}}
             <a href="{{ route('notaris.covernotes') }}"

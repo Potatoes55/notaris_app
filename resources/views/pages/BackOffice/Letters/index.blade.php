@@ -1,29 +1,44 @@
 @extends('layouts.app')
 
-@section('title', 'Surat Keluar')
+@php
+    $isIncoming = ($letterType ?? 'surat_keluar') === 'surat_masuk';
+    $titleText = $isIncoming ? 'Surat Masuk' : 'Surat Keluar';
+
+    // Route dinamis
+    $createRoute = $isIncoming ? route('notary-letters.incoming.create') : route('notary-letters.create');
+    $searchRoute = $isIncoming ? route('notary-letters.incoming.index') : route('notary-letters.index');
+    $editRouteName = $isIncoming ? 'notary-letters.incoming.edit' : 'notary-letters.edit';
+    $destroyRouteName = $isIncoming ? 'notary-letters.incoming.destroy' : 'notary-letters.destroy';
+@endphp
+
+@section('title', $titleText)
 
 @section('content')
 
 @include('layouts.navbars.auth.topnav', [
-    'title' => $module . ' / Surat Keluar'
+    'title' => $module . ' / ' . $titleText
 ])
-
-@if ($module == 'PPAT')
-    @include('components.ppat-menu')
-@else
-    @include('components.notaris-menu')
+@php
+    $role = session('access_all_menu');
+@endphp
+@if($role)
+    @if ($module == 'PPAT')
+        @include('components.ppat-menu')
+    @else
+        @include('components.notaris-menu')
+    @endif
 @endif
 
     <div class="row mt-4 mx-4">
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="mb-0">Surat Keluar</h5>
-                    <a href="{{ route('notary-letters.create') }}" class="btn btn-primary btn-sm mb-0">
-                        + Tambah Surat Keluar
+                    <h5 class="mb-0">{{ $titleText }}</h5>
+                    <a href="{{ $createRoute }}" class="btn btn-primary btn-sm mb-0">
+                        + Tambah {{ $titleText }}
                     </a>
                 </div>
-                <form method="GET" action="{{ route('notary-letters.index') }}" class="d-flex gap-2 ms-auto me-4"
+                <form method="GET" action="{{ $searchRoute }}" class="d-flex gap-2 ms-auto me-4"
                     style="width: 500px; max-width: 100%;" class="no-spinner">
                     <input type="text" name="search" placeholder="Cari nomor surat..." value="{{ request('search') }}"
                         class="form-control">
@@ -41,9 +56,9 @@
                                     <th class="th-title">Kode Klien</th>
                                     <th class="th-title">Nomor Surat</th>
                                     <th class="th-title">Jenis</th>
-                                    <th class="th-title">Penerima</th>
+                                    <th class="th-title">{{ $isIncoming ? 'Pengirim' : 'Penerima' }}</th>
                                     <th class="th-title">Subjek</th>
-                                    <th class="th-title">Tanggal</th>
+                                    <th class="th-title">{{ $isIncoming ? 'Tgl Diterima' : 'Tanggal' }}</th>
                                     <th class="th-title">Lampiran</th>
                                     <th class="th-title">File</th>
                                     <th class="th-title">Aksi</th>
@@ -169,9 +184,9 @@
                                         </td>
 
                                         <td class="text-center">
-                                            <a href="{{ route('notary-letters.edit', $letter->id) }}"
+                                            <a href="{{ route($editRouteName, $letter->id) }}"
                                                 class="btn btn-info btn-sm mb-0">Edit</a>
-                                            <form action="{{ route('notary-letters.destroy', $letter->id) }}"
+                                            <form action="{{ route($destroyRouteName, $letter->id) }}"
                                                 method="POST" class="d-inline-block">
                                                 @csrf
                                                 @method('DELETE')
@@ -181,11 +196,10 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="10" class="text-center text-muted text-sm">Belum ada data surat
-                                            keluar.
+                                        <td colspan="11" class="text-center text-muted text-sm">Belum ada data {{ strtolower($titleText) }}.
                                         </td>
                                     </tr>
-                                @endforelse
+                                @endempty
                             </tbody>
                         </table>
                         <div class="mt-3 d-flex justify-content-end">

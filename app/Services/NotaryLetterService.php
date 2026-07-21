@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\NotaryLetter;
-use App\Models\NotaryLetters;
 use App\Repositories\Interfaces\NotaryLetterRepositoryInterface;
 
 class NotaryLetterService
@@ -15,9 +13,9 @@ class NotaryLetterService
         $this->repository = $repository;
     }
 
-    public function getAll(?string $search = null)
+    public function getAll(?string $search = null, string $letterType = 'surat_keluar')
     {
-        return $this->repository->all($search);
+        return $this->repository->all($search, $letterType);
     }
 
     public function getById($id)

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use App\Models\NotaryLetters;
 use App\Services\NotaryLetterService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class NotaryLettersController extends Controller
 {
@@ -16,27 +16,44 @@ class NotaryLettersController extends Controller
         $this->service = $service;
     }
 
+    /**
+     * Helper untuk menentukan letter_type berdasarkan URL route saat ini
+     */
+    private function getLetterType(): string
+    {
+        if (
+            request()->routeIs('*incoming*') ||
+            request()->is('*surat-masuk*') ||
+            request()->segment(2) === 'surat-masuk'
+        ) {
+            return 'surat_masuk';
+        }
+
+        return 'surat_keluar';
+    }
+
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $letterType = $this->getLetterType();
+        // dd($letterType);
+        $notaryLetters = $this->service->getAll($search, $letterType);
 
-        $notaryLetters = $this->service->getAll($search);
-
-        $module = request()->segment(1) === 'ppat'
-            ? 'PPAT'
-            : 'Notaris';
+        $module = request()->segment(1) === 'ppat' ? 'PPAT' : 'Notaris';
 
         return view('pages.BackOffice.Letters.index', compact(
             'notaryLetters',
-            'module'
+            'module',
+            'letterType'
         ));
     }
 
     public function create()
     {
-        $clients = Client::all()->where('notaris_id', auth()->user()->notaris_id);
+        $letterType = $this->getLetterType();
+        $clients = Client::where('notaris_id', auth()->user()->notaris_id)->get();
 
-        return view('pages.BackOffice.Letters.form', compact('clients'));
+        return view('pages.BackOffice.Letters.form', compact('clients', 'letterType'));
     }
 
     public function store(Request $request)
@@ -66,27 +83,36 @@ class NotaryLettersController extends Controller
             $data['file_path'] = $request->file('file_path')->store('notary_letters', 'public');
         }
 
+        // Set otomatis letter_type dan notaris_id
+        $data['letter_type'] = $this->getLetterType();
         $data['notaris_id'] = auth()->user()->notaris_id;
 
         $this->service->create($data);
 
         notyf()->position('x', 'right')->position('y', 'top')->success('Surat berhasil ditambahkan.');
 
-        return redirect()->route('notary-letters.index');
-    }
+        // Redirect sesuai tipe suratnya
+        $redirectRoute = $data['letter_type'] === 'surat_masuk'
+            ? 'notary-letters.incoming.index'
+            : 'notary-letters.index';
 
-    public function show(NotaryLetters $notaryLetters) {}
+        return redirect()->route($redirectRoute);
+    }
 
     public function edit($id)
     {
         $data = $this->service->getById($id);
-        $clients = Client::all();
+        $letterType = $data->letter_type ?? $this->getLetterType();
 
-        return view('pages.BackOffice.Letters.form', compact('data', 'clients'));
+        // Filter client berdasarkan notaris_id
+        $clients = Client::where('notaris_id', auth()->user()->notaris_id)->get();
+
+        return view('pages.BackOffice.Letters.form', compact('data', 'clients', 'letterType'));
     }
 
     public function update(Request $request, $id)
     {
+        $letter = $this->service->getById($id);
 
         $data = $request->validate([
             'client_code' => 'required',
@@ -107,10 +133,13 @@ class NotaryLettersController extends Controller
             'date.required' => 'Tanggal harus diisi.',
             'file_path.max' => 'Ukuran file maksimal 10 MB.',
             'file_path.mimes' => 'Format file harus PDF, JPG, PNG, DOC, atau DOCX.',
-
         ]);
 
         if ($request->hasFile('file_path')) {
+            // Hapus file lama jika ada
+            if ($letter->file_path && Storage::disk('public')->exists($letter->file_path)) {
+                Storage::disk('public')->delete($letter->file_path);
+            }
             $data['file_path'] = $request->file('file_path')->store('notary_letters', 'public');
         }
 
@@ -119,14 +148,24 @@ class NotaryLettersController extends Controller
         $this->service->update($id, $data);
         notyf()->position('x', 'right')->position('y', 'top')->success('Surat berhasil diubah.');
 
-        return redirect()->route('notary-letters.index');
+        $redirectRoute = $letter->letter_type === 'surat_masuk'
+            ? 'notary-letters.incoming.index'
+            : 'notary-letters.index';
+
+        return redirect()->route($redirectRoute);
     }
 
     public function destroy($id)
     {
+        $letter = $this->service->getById($id);
+
+        if ($letter->file_path && Storage::disk('public')->exists($letter->file_path)) {
+            Storage::disk('public')->delete($letter->file_path);
+        }
+
         $this->service->delete($id);
         notyf()->position('x', 'right')->position('y', 'top')->success('Surat berhasil dihapus.');
 
-        return redirect()->route('notary-letters.index');
+        return redirect()->back();
     }
 }

@@ -30,7 +30,7 @@ use App\Http\Controllers\NotaryRelaasLogsController;
 use App\Http\Controllers\NotaryRelaasPartiesController;
 use App\Http\Controllers\NotaryWaarmerkingController;
 use App\Http\Controllers\PicDocumentsController;
-use App\Http\Controllers\PicHandOverController;
+use App\Http\Controllers\PicHandoverController;
 use App\Http\Controllers\PicProcessController;
 use App\Http\Controllers\PicStaffController;
 use App\Http\Controllers\PinController;
@@ -263,6 +263,14 @@ Route::middleware(['auth'])->group(function () {
     // // End
     //
     Route::resource('notary-letters', NotaryLettersController::class);
+    Route::prefix('surat-masuk')->name('notary-letters.incoming.')->group(function () {
+        Route::get('/', [NotaryLettersController::class, 'index'])->name('index');
+        Route::get('/create', [NotaryLettersController::class, 'create'])->name('create');
+        Route::post('/', [NotaryLettersController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [NotaryLettersController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [NotaryLettersController::class, 'update'])->name('update');
+        Route::delete('/{id}', [NotaryLettersController::class, 'destroy'])->name('destroy');
+    });
     Route::get('laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan-akta.index');
     Route::get('laporan-akta/export-pdf', [NotaryLaporanAktaController::class, 'exportPdf'])
         ->name('laporan-akta.export-pdf');
@@ -318,6 +326,14 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
         Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
         Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
+        Route::prefix('surat-masuk')->name('notary-letters.incoming.')->group(function () {
+            Route::get('/', [NotaryLettersController::class, 'index'])->name('index');
+            Route::get('/create', [NotaryLettersController::class, 'create'])->name('create');
+            Route::post('/', [NotaryLettersController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [NotaryLettersController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [NotaryLettersController::class, 'update'])->name('update');
+            Route::delete('/{id}', [NotaryLettersController::class, 'destroy'])->name('destroy');
+        });
         Route::get('/laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan');
 
         /* PIC STAFF */
@@ -371,6 +387,14 @@ Route::middleware(['auth', 'check.full.access'])->group(function () {
 
         Route::get('/covernotes', [CovernoteController::class, 'index'])->name('covernotes');
         Route::get('/surat-keluar', [NotaryLettersController::class, 'index'])->name('letters');
+        Route::prefix('surat-masuk')->name('letters.incoming.')->group(function () {
+            Route::get('/', [NotaryLettersController::class, 'index'])->name('index');
+            Route::get('/create', [NotaryLettersController::class, 'create'])->name('create');
+            Route::post('/', [NotaryLettersController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [NotaryLettersController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [NotaryLettersController::class, 'update'])->name('update');
+            Route::delete('/{id}', [NotaryLettersController::class, 'destroy'])->name('destroy');
+        });
         Route::get('/laporan-akta', [NotaryLaporanAktaController::class, 'index'])->name('laporan');
 
         /* PIC STAFF */

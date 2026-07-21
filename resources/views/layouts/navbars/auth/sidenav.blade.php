@@ -53,6 +53,7 @@
                     request()->routeIs('relaas-logs.*') ||
                     request()->routeIs('ppat.laporan') ||
                     request()->routeIs('ppat.letters') ||
+                    request()->routeIs('ppat.letters.incoming') ||
                     request()->routeIs('ppat.covernotes') ||
                     request()->routeIs('ppat.pic.*') ||
                     request()->is('pic_staff*') ||
@@ -162,7 +163,18 @@
                 </li>
                 
                 <li class="nav-item">
-                    <a href="{{ route('notary-letters.index') }}" class="nav-link {{ request()->is('notary-letters*') ? 'active' : '' }}">
+                    <a href="{{ route('notary-letters.incoming.index') }}" 
+                    class="nav-link {{ request()->routeIs('notary-letters.incoming*') || request()->is('surat-masuk*') ? 'active' : '' }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-envelope text-dark text-sm opacity-10 pb-0"></i>
+                        </div>
+                        <span class="nav-link-text ms-1 mt-2">Surat Masuk</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('notary-letters.index') }}" 
+                    class="nav-link {{ request()->routeIs('notary-letters.index*') || (request()->is('notary-letters*') && !request()->routeIs('notary-letters.incoming*')) ? 'active' : '' }}">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-envelope-open-text text-dark text-sm opacity-10 pb-0"></i>
                         </div>
